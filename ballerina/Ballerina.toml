@@ -1,0 +1,46 @@
+[package]
+org = "ballerina"
+name = "avro"
+version = "0.1.0"
+authors = ["Ballerina"]
+export=["avro"]
+keywords = ["avro"]
+repository = "https://github.com/ballerina-platform/module-ballerinax-avro"
+license = ["Apache-2.0"]
+distribution = "2201.8.0"
+
+[[platform.java17.dependency]]
+path = "../native/build/libs/avro-native-0.1.0-SNAPSHOT.jar"
+groupId = "io.ballerina.stdlib"
+artifactId = "avro-native"
+version = "0.1.0"
+
+[[platform.java17.dependency]]
+path = "./lib/avro-1.11.3.jar"
+groupId = "org.apache.avro"
+artifactId = "avro"
+version = "1.11.3"
+
+[[platform.java17.dependency]]
+groupId = "com.fasterxml.jackson.core"
+artifactId = "jackson-core"
+version = "2.15.2"
+path = "./lib/jackson-core-2.15.2.jar"
+
+[[platform.java11.dependency]]
+groupId = "com.fasterxml.jackson.core"
+artifactId = "jackson-annotations"
+version = "2.15.2"
+path = "./lib/jackson-annotations-2.15.2.jar"
+
+[[platform.java11.dependency]]
+groupId = "com.fasterxml.jackson.core"
+artifactId = "jackson-databind"
+version = "2.17.0"
+path = "./lib/jackson-databind-2.15.2.jar"
+
+[[platform.java11.dependency]]
+groupId = "com.fasterxml.jackson.dataformat"
+artifactId = "jackson-dataformat-avro"
+version = "2.17.0"
+path = "./lib/jackson-dataformat-avro-2.15.2.jar"
