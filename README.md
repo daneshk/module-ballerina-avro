@@ -22,7 +22,7 @@ A `Client` can be defined using the string value of an Avro schema as shown belo
 avro:Avro avro = check new("avro-schema-string");
 ```
 
-### APIs associated with Pipe
+### APIs associated with Avro
 
 - **toAvro**: Serializes the given data according to the Avro format.
 - **fromAvro**: Deserializes the given Avro encoded message to the given data type.
