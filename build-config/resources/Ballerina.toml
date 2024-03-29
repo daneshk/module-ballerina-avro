@@ -44,5 +44,3 @@ groupId = "com.fasterxml.jackson.dataformat"
 artifactId = "jackson-dataformat-avro"
 version = "@jackson.version@"
 path = "./lib/jackson-dataformat-avro-@jackson.version@.jar"
-
-

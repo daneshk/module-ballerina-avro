@@ -59,5 +59,3 @@ public class Avro {
 isolated function generateSchema(string schema) returns handle = @java:Constructor {
     'class: "io.ballerina.lib.avro.Avro"
 } external;
-
-
