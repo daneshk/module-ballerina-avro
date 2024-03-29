@@ -9,6 +9,12 @@ repository = "https://github.com/ballerina-platform/module-ballerinax-avro"
 license = ["Apache-2.0"]
 distribution = "2201.8.0"
 
+[build-options]
+observabilityIncluded = true
+
+[platform.java17]
+graalvmCompatible = true
+
 [[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "avro-native"
