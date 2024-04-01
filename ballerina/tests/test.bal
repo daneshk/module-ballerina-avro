@@ -35,6 +35,25 @@ public isolated function testEnums() returns error? {
     test:assertEquals(number, deserialize);
 }
 
+@test:Config{
+  groups: ["errors"]
+}
+public isolated function testEnumsWithString() returns error? {
+    string schema = string `
+        {
+            "type" : "enum",
+            "name" : "Numbers", 
+            "namespace": "data", 
+            "symbols" : [ "ONE", "TWO", "THREE", "FOUR" ]
+        }`;
+
+    string number = "FIVE";
+
+    Avro avro = check new(schema);
+    byte[]|error encode = avro.toAvro(number);
+    test:assertTrue(encode is error);
+}
+
 @test:Config{}
 public isolated function testMaps() returns error? {
     string schema = string `
@@ -136,6 +155,44 @@ public isolated function testArraysInRecords() returns error? {
     byte[] serialize = check avro.toAvro(colors);
     Color deserialize = check avro.fromAvro(serialize);
     test:assertEquals(colors, deserialize);
+}
+
+@test:Config{
+  groups: ["errors", "qwe"]
+}
+public isolated function testArraysInRecordsWithInvalidSchema() returns error? {
+    string schema = string `
+        {
+            "namespace": "example.avro",
+            "type": "record",
+            "name": "Student",
+            "fields": [
+                {"name": "name", "type": "string"},
+                {"name": "colors", "type": {"type": "array", "items": "string"}}
+            ]
+        }`;
+
+    Color colors = {
+        name: "Red",
+        colors:  ["maroon", "dark red", "light red"]
+    };
+
+    Avro avroProducer = check new(schema);
+    byte[] serialize = check avroProducer.toAvro(colors);
+
+    string schema2 = string `
+    {
+        "namespace": "example.avro",
+        "type": "record",
+        "name": "Student",
+        "fields": [
+            {"name": "name", "type": "string"},
+            {"name": "colors", "type": {"type": "array", "items": "int"}}
+        ]
+    }`;
+    Avro avroConsumer = check new(schema2);
+    Color|Error deserialize = avroConsumer.fromAvro(serialize);
+    test:assertTrue(deserialize is error);
 }
 
 @test:Config{}
@@ -352,6 +409,21 @@ public isolated function testNullValues() returns error? {
     byte[] encode = check avro.toAvro(());
     () deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, ());
+}
+
+@test:Config{}
+public isolated function testNullValuesWithNonNullData() returns error? {
+
+    string schema = string `
+        {
+            "type": "null",
+            "name" : "nullValue", 
+            "namespace": "data"
+        }`;
+
+    Avro avro = check new(schema);
+    byte[]|error encode = avro.toAvro("string");
+    test:assertTrue(encode is error);
 }
 
 @test:Config{}
