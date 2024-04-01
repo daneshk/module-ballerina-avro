@@ -19,7 +19,7 @@ avro:Avro avro = check new("avro-schema-string");
 - **toAvro**: Serializes the given data according to the Avro format.
 - **fromAvro**: Deserializes the given Avro encoded message to the given data type.
 
-#### `toAvro`
+#### `toAvro()` API
 
 Serializes the given data according to the Avro format.
 
@@ -33,7 +33,7 @@ public function main() returns error? {
 }
 ```
 
-#### `fromAvro`
+#### `fromAvro()` API
 
 Deserializes the given Avro encoded message to the given data type.
 
