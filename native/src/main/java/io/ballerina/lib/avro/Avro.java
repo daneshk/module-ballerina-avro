@@ -35,6 +35,9 @@ import io.ballerina.runtime.api.values.BTypedesc;
 import org.apache.avro.Schema;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 import static io.ballerina.lib.avro.ModuleUtils.AVRO_SCHEMA;
@@ -69,10 +72,32 @@ public class Avro {
             } else if (Objects.equals(schema.getType(), Schema.Type.FIXED)) {
                 return ValueCreator.createArrayValue(((BArray) jsonObject).getByteArray());
             }
+
+            applyByteValuesToJsonString(data, schema, jsonObject);
+
             byte[] avroBytes = (new AvroMapper()).writer(new AvroSchema(schema)).writeValueAsBytes(jsonObject);
             return ValueCreator.createArrayValue(avroBytes);
         } catch (JsonProcessingException e) {
             return Utils.createError(e.getMessage(), Utils.createError(e.getCause().getMessage()));
+        }
+    }
+
+    private static void applyByteValuesToJsonString(Object bData, Schema schema, Object jsonObject) {
+        ArrayList<String> byteFields = new ArrayList<>();
+        if (schema.getType() == Schema.Type.RECORD) {
+            for (Schema.Field field : schema.getFields()) {
+                if (Objects.equals(field.schema().getType(), Schema.Type.BYTES)) {
+                    byteFields.add(field.name());
+                }
+            }
+        }
+        if (byteFields.isEmpty()) {
+            return;
+        }
+        LinkedHashMap<?, BArray> data = (LinkedHashMap<?, BArray>) bData;
+        LinkedHashMap hashedMap = (LinkedHashMap<?, ?>) jsonObject;
+        for (String fieldName: byteFields) {
+            hashedMap.put(fieldName, data.get(StringUtils.fromString(fieldName)).getByteArray());
         }
     }
 
@@ -92,13 +117,36 @@ public class Avro {
             return Utils.createError(e.getMessage(), Utils.createError(e.getCause().getMessage()));
         }
         Object jsonObject = JsonUtils.parse(deserializedJsonString.toPrettyString());
+        applyByteValueToDeserializeData(schema, jsonObject);
+
         return ValueUtils.convert(jsonObject, typeParam.getDescribingType());
+    }
+
+    private static void applyByteValueToDeserializeData(Schema schema, Object jsonObject) {
+        ArrayList<String> byteFields = new ArrayList<>();
+        if (schema.getType() == Schema.Type.RECORD) {
+            for (Schema.Field field : schema.getFields()) {
+                if (Objects.equals(field.schema().getType(), Schema.Type.BYTES)) {
+                    byteFields.add(field.name());
+                }
+            }
+        }
+        if (byteFields.isEmpty()) {
+            return;
+        }
+        LinkedHashMap hashedMap = (LinkedHashMap<?, ?>) jsonObject;
+        for (String fieldName: byteFields) {
+            byte[] values = Base64.getDecoder().decode(((LinkedHashMap<?, BString>) jsonObject)
+                    .get(StringUtils.fromString(fieldName)).getValue());
+            BArray byteArray = ValueCreator.createArrayValue(values);
+            hashedMap.put(StringUtils.fromString(fieldName), byteArray);
+        }
     }
 
     private static Object generateJsonObject(Object data, Schema schema,
                                              ObjectMapper objectMapper) throws JsonProcessingException {
         Object jsonObject;
-        if (Objects.equals(schema.getType(), Schema.Type.NULL) 
+        if (Objects.equals(schema.getType(), Schema.Type.NULL)
             || Objects.equals(schema.getType(), Schema.Type.FIXED)) {
             jsonObject = data;
         } else if (Objects.equals(schema.getType(), Schema.Type.STRING) ||
