@@ -28,6 +28,7 @@ import io.ballerina.runtime.api.Module;
  */
 public class ModuleUtils {
 
+    private ModuleUtils() {}
     public static final String AVRO_SCHEMA = "avroSchema";
     private static Module avroModule = null;
 

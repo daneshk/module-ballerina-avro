@@ -72,7 +72,7 @@ public class Avro {
             byte[] avroBytes = (new AvroMapper()).writer(new AvroSchema(schema)).writeValueAsBytes(jsonObject);
             return ValueCreator.createArrayValue(avroBytes);
         } catch (JsonProcessingException e) {
-            return Utils.createError(e.getMessage(), Utils.createError(e.getCause().getMessage()));
+            return Utils.createError(e.getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ public class Avro {
         try {
             deserializedJsonString = mapper.readerFor(Object.class).with(new AvroSchema(schema)).readTree(avroBytes);
         } catch (IOException e) {
-            return Utils.createError(e.getMessage(), Utils.createError(e.getCause().getMessage()));
+            return Utils.createError(e.getMessage());
         }
         Object jsonObject = JsonUtils.parse(deserializedJsonString.toPrettyString());
         return ValueUtils.convert(jsonObject, typeParam.getDescribingType());
