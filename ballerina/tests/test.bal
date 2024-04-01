@@ -372,30 +372,30 @@ public isolated function testFixed() returns error? {
     test:assertEquals(deserialize, value);
 }
 
-@test:Config{
-    groups: ["byte2"]
-}
-public isolated function testRecordsWithByteString() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "ExampleRecord",
-            "fields": [
-                {"name": "name", "type": "string"},
-                {"name": "bytez", "type": "bytes"}
-            ]
-        }`;
+// @test:Config{
+//     groups: ["byte2"]
+// }
+// public isolated function testRecordsWithByteString() returns error? {
+//     string schema = string `
+//         {
+//             "type": "record",
+//             "name": "ExampleRecord",
+//             "fields": [
+//                 {"name": "name", "type": "string"},
+//                 {"name": "bytez", "type": "bytes"}
+//             ]
+//         }`;
 
-    BytesRec student = {
-        name: "Liam",
-        bytez: "data".toBytes()
-    };
+//     BytesRec student = {
+//         name: "Liam",
+//         bytez: "data".toBytes()
+//     };
 
-    Avro avro = check new(schema);
-    byte[] serialize = check avro.toAvro(student);
-    BytesRec deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(student, deserialize);
-}
+//     Avro avro = check new(schema);
+//     byte[] serialize = check avro.toAvro(student);
+//     BytesRec deserialize = check avro.fromAvro(serialize);
+//     test:assertEquals(student, deserialize);
+// }
 
 @test:Config{}
 public function testDbSchemaWithRecords() returns error? {

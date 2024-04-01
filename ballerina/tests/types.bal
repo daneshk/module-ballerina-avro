@@ -44,19 +44,9 @@ public type Color record {
     string[] colors;
 };
 
-public type ByteRecord record {
-    string name;
-    byte bytez;
-};
-
 public type FixedRec record {
     byte[] fixed_field;
     string other_field;
-};
-
-public type BytesRec record {
-    string name;
-    byte[] bytez;
 };
 
 enum Numbers {
