@@ -54,9 +54,143 @@ public type FixedRec record {
     string other_field;
 };
 
+public type BytesRec record {
+    string name;
+    byte[] bytez;
+};
+
 enum Numbers {
     ONE,
     TWO,
     THREE,
     FOUR
+};
+
+public type SchemaChangeKey record {
+    string databaseName;
+};
+
+public type Value record {
+    int ID;
+    string? OfferID;
+    int? PropertyId;
+    string? PlayerUnityID;
+    string? HALoOfferStatus;
+    int? StatusDateTime;
+    int? OfferSegmentID;
+    int? RedemptionDate;
+    int? OfferItemID;
+    string? OfferPrizeCode;
+    float? AmountRedeemed;
+    int? ItemQuantity;
+    string? OfferType;
+    int? CreatedDate;
+    string? CreatedBy;
+    int? UpdatedDate;
+    string? UpdatedBy;
+};
+
+public type Source record {
+    string version;
+    string connector;
+    string name;
+    int ts_ms;
+    string snapshot;
+    string db;
+    string? sequence;
+    string schema;
+    string 'table;
+    string? change_lsn;
+    string? commit_lsn;
+    int? event_serial_no;
+};
+
+public type Block record {
+    string id;
+    int total_order;
+    int data_collection_order;
+};
+
+public type Envelope record {
+    Value? before;
+    Value? after;
+    Source 'source;
+    string op;
+    int? ts_ms;
+    Block? 'transaction;
+};
+
+public type Value2 record {
+    int CorePlayerID;
+    string? AccountNumber;
+    string? LastName;
+    string? FirstName;
+    string? MiddleName;
+    string? Gender;
+    string? Language;
+    boolean? Discreet;
+    boolean? Deceased;
+    boolean? IsBanned;
+    string? EmailAddress;
+    boolean? IsVerified;
+    string? EmailStatus;
+    string? MobilePhone;
+    string? HomePhone;
+    string? HomeStreetAddress;
+    string? HomeCity;
+    string? HomeState;
+    string? HomePostalCode;
+    string? HomeCountry;
+    string? AltStreetAddress;
+    string? AltCity;
+    string? AltState;
+    string? AltCountry;
+    int? DateOfBirth;
+    int? EnrollDate;
+    string? PredomPropertyId;
+    string? AccountType;
+    int? InsertDtm;
+    string? AltPostalCode;
+    int? BatchID;
+    string? GlobalRank;
+    float? GlobalValuationScore;
+    string? PlayerType;
+    string? AccountStatus;
+    string? RegistrationSource;
+    string? BannedReason;
+    string? TierCode;
+    string? TierName;
+    int? TierEndDate;
+    boolean? VIPFlag;
+};
+
+public type Source2 record {
+    string version;
+    string connector;
+    string name;
+    int ts_ms;
+    string snapshot;
+    string db;
+    string? sequence;
+    string schema;
+    string 'table;
+    string? change_lsn;
+    string? commit_lsn;
+    int? event_serial_no;
+};
+
+public type Block2 record {
+    string id;
+    int total_order;
+    int data_collection_order;
+};
+
+public type Envelope2 record {
+    Value2? before;
+    Value2? after;
+    Source2 'source;
+    string op;
+    int? ts_ms;
+    Block2? 'transaction;
+    string? MessageSource;
 };
