@@ -16,7 +16,6 @@
  * under the License.
  */
 
-
 package io.ballerina.lib.avro;
 
 import io.ballerina.runtime.api.creators.ErrorCreator;
