@@ -35,25 +35,25 @@ public class Avro {
     # avro:Avro avro = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`); \
     # int value = 5; \
     # byte[] serializeData = check avro.toAvro(value);
-    # 
+    #
     # + data - The data to be serialized
     # + return - A `byte` array of the serialized data or else an `avro:Error`
     public isolated function toAvro(anydata data) returns byte[]|Error = @java:Method {
         'class: "io.ballerina.lib.avro.Avro"
-    }  external;
+    } external;
 
     # Deserializes the given Avro encoded message to the given data type.
-    # 
+    #
     # byte[] data = // Avro encoded message ; \
     # int deserializeData = check avro.fromAvro(data);
-    # 
+    #
     # + encodedMessage - The Avro encoded message
     # + T - Default parameter use to infer the user specified type
     # + return - A deserialized data with the given type or else an `avro:Error`
     public isolated function fromAvro(byte[] encodedMessage, typedesc<anydata> T = <>)
         returns T|Error = @java:Method {
         'class: "io.ballerina.lib.avro.Avro"
-    }  external;
+    } external;
 }
 
 isolated function generateSchema(string schema) returns handle = @java:Constructor {
