@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static io.ballerina.lib.avro.Utils.AVRO_SCHEMA;
+import static io.ballerina.lib.avro.Utils.DESERIALIZATION_ERROR;
+import static io.ballerina.lib.avro.Utils.JSON_PROCESSING_ERROR;
 
 public class Avro {
 
@@ -59,7 +61,7 @@ public class Avro {
             byte[] avroBytes = (new AvroMapper()).writer(new AvroSchema(schema)).writeValueAsBytes(jsonObject);
             return ValueCreator.createArrayValue(avroBytes);
         } catch (JsonProcessingException e) {
-            return Utils.createError(e.getMessage());
+            return Utils.createError(JSON_PROCESSING_ERROR, e);
         }
     }
 
@@ -74,7 +76,7 @@ public class Avro {
             AvroMapper mapper = new AvroMapper();
             deserializedJsonString = mapper.readerFor(Object.class).with(new AvroSchema(schema)).readTree(avroBytes);
         } catch (IOException e) {
-            return Utils.createError(e.getMessage());
+            return Utils.createError(DESERIALIZATION_ERROR, e);
         }
         Object jsonObject = JsonUtils.parse(deserializedJsonString.toPrettyString());
         return ValueUtils.convert(jsonObject, typeParam.getDescribingType());

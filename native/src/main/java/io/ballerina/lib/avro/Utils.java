@@ -32,12 +32,12 @@ public class Utils {
     public static final String ERROR_TYPE = "Error";
     public static final String AVRO_SCHEMA = "avroSchema";
 
-    public static BError createError(String message) {
-        return ErrorCreator.createError(getModule(), ERROR_TYPE,
-                                        StringUtils.fromString(message), null, null);
-    }
+    public static final String JSON_PROCESSING_ERROR = "JSON processing error";
+    public static final String DESERIALIZATION_ERROR = "Unable to deserialize the byte value";
 
-    public static BError createError(String message, BError cause) {
+
+    public static BError createError(String message, Throwable throwable) {
+        BError cause = throwable == null ? null : ErrorCreator.createError(throwable);
         return ErrorCreator.createError(getModule(), ERROR_TYPE, StringUtils.fromString(message), cause, null);
     }
 }

@@ -192,7 +192,7 @@ public isolated function testArraysInRecordsWithInvalidSchema() returns error? {
     }`;
     Schema avroConsumer = check new (schema2);
     Color|Error deserialize = avroConsumer.fromAvro(serialize);
-    test:assertTrue(deserialize is error);
+    test:assertTrue(deserialize is Error);
 }
 
 @test:Config {}
