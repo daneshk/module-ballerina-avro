@@ -11,7 +11,7 @@ plugins {
     id "com.gradle.enterprise" version "3.2"
 }
 
-rootProject.name = 'module-ballerinax-avro'
+rootProject.name = 'module-ballerina-avro'
 
 include ':checkstyle'
 include ':avro-native'
