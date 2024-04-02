@@ -30,7 +30,6 @@ public class ModuleUtils {
 
     private ModuleUtils() {}
 
-    public static final String AVRO_SCHEMA = "avroSchema";
     private static Module avroModule = null;
 
     public static Module getModule() {

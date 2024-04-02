@@ -30,6 +30,7 @@ public class Utils {
     }
 
     public static final String ERROR_TYPE = "Error";
+    public static final String AVRO_SCHEMA = "avroSchema";
 
     public static BError createError(String message) {
         return ErrorCreator.createError(getModule(), ERROR_TYPE,

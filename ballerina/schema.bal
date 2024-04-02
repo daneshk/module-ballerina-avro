@@ -16,23 +16,21 @@
 
 import ballerina/jballerina.java;
 
-public class Avro {
-    private handle avroSchema;
-    private typedesc<anydata> dataType;
+public class Schema {
 
     # Generates a schema for a given data type.
     #
     # avro:Avro avro = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
     #
     # + schema - The Avro schema
-    # + return - A `avro:Error` if the schema is not valid or else `()`
+    # + return - An `avro:Error` if the schema is not valid or else `()`
     public isolated function init(string schema) returns Error? {
-        self.avroSchema = generateSchema(schema);
+        self.generateSchema(schema);
     }
 
     # Serializes the given data according to the Avro format.
     #
-    # avro:Avro avro = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`); \
+    # avro:Avro avro = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`); \
     # int value = 5; \
     # byte[] serializeData = check avro.toAvro(value);
     #
@@ -54,8 +52,8 @@ public class Avro {
         returns T|Error = @java:Method {
         'class: "io.ballerina.lib.avro.Avro"
     } external;
-}
 
-isolated function generateSchema(string schema) returns handle = @java:Constructor {
-    'class: "io.ballerina.lib.avro.Avro"
-} external;
+    isolated function generateSchema(string schema) = @java:Method {
+        'class: "io.ballerina.lib.avro.Avro"
+    } external;
+}

@@ -29,7 +29,7 @@ public isolated function testEnums() returns error? {
 
     Numbers number = "ONE";
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(number);
     Numbers deserialize = check avro.fromAvro(encode);
     test:assertEquals(number, deserialize);
@@ -49,7 +49,7 @@ public isolated function testEnumsWithString() returns error? {
 
     string number = "FIVE";
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[]|error encode = avro.toAvro(number);
     test:assertTrue(encode is error);
 }
@@ -65,7 +65,7 @@ public isolated function testMaps() returns error? {
 
     map<int> colors = {"red": 0, "green": 1, "blue": 2};
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(colors);
     map<int> deserialize = check avro.fromAvro(encode);
     test:assertEquals(colors, deserialize);
@@ -127,7 +127,7 @@ public isolated function testNestedRecords() returns error? {
         }
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(lecturer);
     Lecturer deserialize = check avro.fromAvro(serialize);
     test:assertEquals(lecturer, deserialize);
@@ -151,7 +151,7 @@ public isolated function testArraysInRecords() returns error? {
         colors: ["maroon", "dark red", "light red"]
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(colors);
     Color deserialize = check avro.fromAvro(serialize);
     test:assertEquals(colors, deserialize);
@@ -177,7 +177,7 @@ public isolated function testArraysInRecordsWithInvalidSchema() returns error? {
         colors: ["maroon", "dark red", "light red"]
     };
 
-    Avro avroProducer = check new (schema);
+    Schema avroProducer = check new (schema);
     byte[] serialize = check avroProducer.toAvro(colors);
 
     string schema2 = string `
@@ -190,7 +190,7 @@ public isolated function testArraysInRecordsWithInvalidSchema() returns error? {
             {"name": "colors", "type": {"type": "array", "items": "int"}}
         ]
     }`;
-    Avro avroConsumer = check new (schema2);
+    Schema avroConsumer = check new (schema2);
     Color|Error deserialize = avroConsumer.fromAvro(serialize);
     test:assertTrue(deserialize is error);
 }
@@ -213,7 +213,7 @@ public isolated function testRecords() returns error? {
         subject: "geology"
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(student);
     Student deserialize = check avro.fromAvro(serialize);
     test:assertEquals(student, deserialize);
@@ -237,7 +237,7 @@ public isolated function testRecordsWithDifferentTypeOfFields() returns error? {
         age: 52
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(student);
     Person deserialize = check avro.fromAvro(encode);
     test:assertEquals(student, deserialize);
@@ -261,7 +261,7 @@ public isolated function testRecordsWithUnionTypes() returns error? {
         credits: ()
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(course);
     Course deserialize = check avro.fromAvro(serialize);
     test:assertEquals(course, deserialize);
@@ -279,7 +279,7 @@ public isolated function testArrays() returns error? {
 
     string[] colors = ["red", "green", "blue"];
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(colors);
     string[] deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, colors);
@@ -287,7 +287,6 @@ public isolated function testArrays() returns error? {
 
 @test:Config {}
 public isolated function testIntValue() returns error? {
-
     string schema = string `
         {
             "type": "int",
@@ -297,7 +296,7 @@ public isolated function testIntValue() returns error? {
 
     int value = 5;
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(value);
     int deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, value);
@@ -305,7 +304,6 @@ public isolated function testIntValue() returns error? {
 
 @test:Config {}
 public isolated function testFloatValue() returns error? {
-
     string schema = string `
         {
             "type": "float",
@@ -315,7 +313,7 @@ public isolated function testFloatValue() returns error? {
 
     float value = 5.5;
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(value);
     float deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, value);
@@ -323,7 +321,6 @@ public isolated function testFloatValue() returns error? {
 
 @test:Config {}
 public isolated function testDoubleValue() returns error? {
-
     string schema = string `
         {
             "type": "double",
@@ -333,7 +330,7 @@ public isolated function testDoubleValue() returns error? {
 
     float value = 5.5595;
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(value);
     float deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, value);
@@ -341,7 +338,6 @@ public isolated function testDoubleValue() returns error? {
 
 @test:Config {}
 public isolated function testLongValue() returns error? {
-
     string schema = string `
         {
             "type": "long",
@@ -350,8 +346,7 @@ public isolated function testLongValue() returns error? {
         }`;
 
     int value = 555950000000000000;
-
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(value);
     int deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, value);
@@ -361,7 +356,6 @@ public isolated function testLongValue() returns error? {
     groups: ["primitive"]
 }
 public isolated function testStringValue() returns error? {
-
     string schema = string `
         {
             "type": "string",
@@ -370,8 +364,7 @@ public isolated function testStringValue() returns error? {
         }`;
 
     string value = "test";
-
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(value);
     string deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, value);
@@ -379,7 +372,6 @@ public isolated function testStringValue() returns error? {
 
 @test:Config {}
 public isolated function testBoolean() returns error? {
-
     string schema = string `
         {
             "type": "boolean",
@@ -388,8 +380,7 @@ public isolated function testBoolean() returns error? {
         }`;
 
     boolean value = true;
-
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(value);
     boolean deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, value);
@@ -397,7 +388,6 @@ public isolated function testBoolean() returns error? {
 
 @test:Config {}
 public isolated function testNullValues() returns error? {
-
     string schema = string `
         {
             "type": "null",
@@ -405,7 +395,7 @@ public isolated function testNullValues() returns error? {
             "namespace": "data"
         }`;
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(());
     () deserializeJson = check avro.fromAvro(encode);
     test:assertEquals(deserializeJson, ());
@@ -413,7 +403,6 @@ public isolated function testNullValues() returns error? {
 
 @test:Config {}
 public isolated function testNullValuesWithNonNullData() returns error? {
-
     string schema = string `
         {
             "type": "null",
@@ -421,14 +410,13 @@ public isolated function testNullValuesWithNonNullData() returns error? {
             "namespace": "data"
         }`;
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[]|error encode = avro.toAvro("string");
     test:assertTrue(encode is error);
 }
 
 @test:Config {}
 public isolated function testFixed() returns error? {
-
     string schema = string `
         {
             "type": "fixed",
@@ -438,36 +426,11 @@ public isolated function testFixed() returns error? {
 
     byte[] value = "u00ffffffffffffx".toBytes();
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(value);
     byte[] deserialize = check avro.fromAvro(encode);
     test:assertEquals(deserialize, value);
 }
-
-// @test:Config{
-//     groups: ["byte2"]
-// }
-// public isolated function testRecordsWithByteString() returns error? {
-//     string schema = string `
-//         {
-//             "type": "record",
-//             "name": "ExampleRecord",
-//             "fields": [
-//                 {"name": "name", "type": "string"},
-//                 {"name": "bytez", "type": "bytes"}
-//             ]
-//         }`;
-
-//     BytesRec student = {
-//         name: "Liam",
-//         bytez: "data".toBytes()
-//     };
-
-//     Avro avro = check new(schema);
-//     byte[] serialize = check avro.toAvro(student);
-//     BytesRec deserialize = check avro.fromAvro(serialize);
-//     test:assertEquals(student, deserialize);
-// }
 
 @test:Config {}
 public function testDbSchemaWithRecords() returns error? {
@@ -490,7 +453,7 @@ public function testDbSchemaWithRecords() returns error? {
         databaseName: "my-db"
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(changeKey);
     SchemaChangeKey deserialize = check avro.fromAvro(serialize);
     test:assertEquals(changeKey, deserialize);
@@ -565,7 +528,7 @@ public function testComplexDbSchema() returns error? {
         }
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(envelope);
     Envelope deserialize = check avro.fromAvro(serialize);
     test:assertEquals(envelope, deserialize);
@@ -689,9 +652,8 @@ public function testComplexDbSchemaWithNestedRecords() returns error? {
         MessageSource: "MessageSource"
     };
 
-    Avro avro = check new (schema);
+    Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(envelope2);
     Envelope2 deserialize = check avro.fromAvro(serialize);
     test:assertEquals(envelope2, deserialize);
 }
-
