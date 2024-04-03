@@ -17,10 +17,10 @@
  */
 
 plugins {
-    id "com.github.spotbugs" version "${githubSpotbugsVersion}"
+    id "com.github.spotbugs" version "${spotbugsPluginVersion}"
     id "com.github.johnrengelman.shadow" version "${githubShadowVersion}"
-    id "de.undercouch.download" version "${undercouchDownloadVersion}"
-    id "net.researchgate.release" version "${researchgateReleaseVersion}"
+    id "de.undercouch.download" version "${downloadPluginVersion}"
+    id "net.researchgate.release" version "${releasePluginVersion}"
 }
 
 allprojects {
