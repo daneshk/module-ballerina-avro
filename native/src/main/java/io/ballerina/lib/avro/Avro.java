@@ -70,7 +70,7 @@ public final class Avro {
     public static Object fromAvro(BObject schemaObject, BArray payload, BTypedesc typeParam) {
         Schema schema = (Schema) schemaObject.getNativeData(AVRO_SCHEMA);
         byte[] avroBytes = payload.getByteArray();
-        if (Objects.equals(schema.getType(), Schema.Type.FIXED)) {
+        if (Schema.Type.FIXED.equals(schema.getType())) {
             return ValueUtils.convert(ValueCreator.createArrayValue(avroBytes), typeParam.getDescribingType());
         }
         JsonNode deserializedJsonString;
@@ -86,10 +86,9 @@ public final class Avro {
 
     private static Object generateJsonObject(Object data, Schema schema,
                                              ObjectMapper objectMapper) throws JsonProcessingException {
-        if (Objects.equals(schema.getType(), Schema.Type.NULL) || Objects.equals(schema.getType(), Schema.Type.FIXED)) {
+        if (Schema.Type.NULL.equals(schema.getType()) || Schema.Type.FIXED.equals(schema.getType())) {
             return data;
-        } else if (Objects.equals(schema.getType(), Schema.Type.STRING) ||
-                Objects.equals(schema.getType(), Schema.Type.ENUM)) {
+        } else if (Schema.Type.STRING.equals(schema.getType()) || Schema.Type.ENUM.equals(schema.getType())) {
             return objectMapper.readValue("\"" + data + "\"", Object.class);
         }
         Object jsonString = JsonUtils.parse(StringUtils.getJsonString(data));

@@ -28,6 +28,10 @@ public class Schema {
         self.generateSchema(schema);
     }
 
+    isolated function generateSchema(string schema) = @java:Method {
+        'class: "io.ballerina.lib.avro.Avro"
+    } external;
+
     # Serializes the given data according to the Avro format.
     #
     # avro:Schema schema = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`); \
@@ -51,10 +55,6 @@ public class Schema {
     # + return - A deserialized data with the given type or else an `avro:Error`
     public isolated function fromAvro(byte[] encodedMessage, typedesc<anydata> T = <>)
         returns T|Error = @java:Method {
-        'class: "io.ballerina.lib.avro.Avro"
-    } external;
-
-    isolated function generateSchema(string schema) = @java:Method {
         'class: "io.ballerina.lib.avro.Avro"
     } external;
 }
