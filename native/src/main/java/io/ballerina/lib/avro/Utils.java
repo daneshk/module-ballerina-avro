@@ -35,7 +35,7 @@ public class Utils {
     public static final String DESERIALIZATION_ERROR = "Unable to deserialize the byte value";
 
     public static BError createError(String message, Throwable throwable) {
-        BError cause = throwable == null ? null : ErrorCreator.createError(throwable);
+        BError cause = ErrorCreator.createError(throwable);
         return ErrorCreator.createError(getModule(), ERROR_TYPE, StringUtils.fromString(message), cause, null);
     }
 }
