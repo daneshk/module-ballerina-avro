@@ -26,7 +26,7 @@ import io.ballerina.runtime.api.Module;
  *
  * @since 0.1.0
  */
-public class ModuleUtils {
+public final class ModuleUtils {
 
     private ModuleUtils() {}
 

@@ -20,7 +20,7 @@ public class Schema {
 
     # Generates a schema for a given data type.
     #
-    # avro:Avro avro = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
+    # avro:Schema schema = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
     #
     # + schema - The Avro schema
     # + return - An `avro:Error` if the schema is not valid or else `()`
@@ -30,9 +30,9 @@ public class Schema {
 
     # Serializes the given data according to the Avro format.
     #
-    # avro:Avro avro = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`); \
+    # avro:Schema schema = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`); \
     # int value = 5; \
-    # byte[] serializeData = check avro.toAvro(value);
+    # byte[] serializedData = check avro.toAvro(value);
     #
     # + data - The data to be serialized
     # + return - A `byte` array of the serialized data or else an `avro:Error`
@@ -42,8 +42,9 @@ public class Schema {
 
     # Deserializes the given Avro encoded message to the given data type.
     #
+    # avro:Schema schema = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`); \
     # byte[] data = // Avro encoded message ; \
-    # int deserializeData = check avro.fromAvro(data);
+    # int deserializedData = check schema.fromAvro(data);
     #
     # + encodedMessage - The Avro encoded message
     # + T - Default parameter use to infer the user specified type

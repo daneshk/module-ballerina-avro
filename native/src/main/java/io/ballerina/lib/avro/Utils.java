@@ -24,7 +24,7 @@ import io.ballerina.runtime.api.values.BError;
 
 import static io.ballerina.lib.avro.ModuleUtils.getModule;
 
-public class Utils {
+public final class Utils {
 
     private Utils() {
     }

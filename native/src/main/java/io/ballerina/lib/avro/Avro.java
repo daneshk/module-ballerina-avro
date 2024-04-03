@@ -40,7 +40,9 @@ import static io.ballerina.lib.avro.Utils.AVRO_SCHEMA;
 import static io.ballerina.lib.avro.Utils.DESERIALIZATION_ERROR;
 import static io.ballerina.lib.avro.Utils.JSON_PROCESSING_ERROR;
 
-public class Avro {
+public final class Avro {
+
+    private Avro() {}
 
     public static void generateSchema(BObject schemaObject, BString schema) {
         Schema.Parser parser = new Schema.Parser();
@@ -84,16 +86,13 @@ public class Avro {
 
     private static Object generateJsonObject(Object data, Schema schema,
                                              ObjectMapper objectMapper) throws JsonProcessingException {
-        Object jsonObject;
         if (Objects.equals(schema.getType(), Schema.Type.NULL) || Objects.equals(schema.getType(), Schema.Type.FIXED)) {
-            jsonObject = data;
+            return data;
         } else if (Objects.equals(schema.getType(), Schema.Type.STRING) ||
-                   Objects.equals(schema.getType(), Schema.Type.ENUM)) {
-            jsonObject = objectMapper.readValue("\"" + data + "\"", Object.class);
-        } else {
-            Object jsonString = JsonUtils.parse(StringUtils.getJsonString(data));
-            jsonObject = objectMapper.readValue(jsonString.toString(), Object.class);
+                Objects.equals(schema.getType(), Schema.Type.ENUM)) {
+            return objectMapper.readValue("\"" + data + "\"", Object.class);
         }
-        return jsonObject;
+        Object jsonString = JsonUtils.parse(StringUtils.getJsonString(data));
+        return objectMapper.readValue(jsonString.toString(), Object.class);
     }
 }
