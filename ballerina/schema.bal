@@ -22,7 +22,8 @@ public class Schema {
     #
     # avro:Schema schema = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
     #
-    # + schema - The Avro schema
+    # + schema - The Avro schema string
+
     # + return - An `avro:Error` if the schema is not valid or else `()`
     public isolated function init(string schema) returns Error? {
         self.generateSchema(schema);
