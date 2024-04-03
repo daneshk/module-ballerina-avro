@@ -19,7 +19,7 @@ The Client is will take the Avro schema in string format. And will return an err
 A `Client` can be defined using the string value of an Avro schema as shown below:
 
 ```ballerina
-avro:Avro avro = check new("avro-schema-string");
+avro:Schema avro = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
 ```
 
 ### APIs associated with Avro
@@ -35,7 +35,6 @@ Serializes the given data according to the Avro format.
 import ballerina/avro;
 
 public function main() returns error? {
-    avro:Avro avro = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
     int value = 5;
     byte[] serializeData = check avro.toAvro(value);
 }

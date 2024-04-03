@@ -29,12 +29,10 @@ public class Utils {
     private Utils() {
     }
 
-    public static final String ERROR_TYPE = "Error";
     public static final String AVRO_SCHEMA = "avroSchema";
-
+    public static final String ERROR_TYPE = "Error";
     public static final String JSON_PROCESSING_ERROR = "JSON processing error";
     public static final String DESERIALIZATION_ERROR = "Unable to deserialize the byte value";
-
 
     public static BError createError(String message, Throwable throwable) {
         BError cause = throwable == null ? null : ErrorCreator.createError(throwable);
