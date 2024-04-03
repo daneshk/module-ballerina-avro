@@ -4,14 +4,14 @@ Avro is an open-source data serialization system that enables efficient binary s
 
 The Ballerina Avro module provides the capability to efficiently serialize and deserialize data using Avro schemas.
 
-### Client
+### Schema
 
-The Client is will take the Avro schema in string format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize and deserilize data and the data should be in the correct format.
+`Schema` is will take the Avro schema in string format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize and deserilize data and the data should be in the correct format.
 
-A `Client` can be defined using the string value of an Avro schema as shown below:
+A `Schema` can be defined using the string value of an Avro schema as shown below:
 
 ```ballerina
-avro:Schema avro = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
+avro:Schema schema = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
 ```
 
 ### APIs associated with Avro
@@ -19,7 +19,7 @@ avro:Schema avro = check new(string `{"type": "int", "name" : "intValue", "names
 - **toAvro**: Serializes the given data according to the Avro format.
 - **fromAvro**: Deserializes the given Avro encoded message to the given data type.
 
-#### `toAvro()` API
+#### `toAvro`
 
 Serializes the given data according to the Avro format.
 
@@ -28,11 +28,11 @@ import ballerina/avro;
 
 public function main() returns error? {
     int value = 5;
-    byte[] serializeData = check avro.toAvro(value);
+    byte[] serializeData = check schema.toAvro(value);
 }
 ```
 
-#### `fromAvro()` API
+#### `fromAvro`
 
 Deserializes the given Avro encoded message to the given data type.
 
@@ -41,6 +41,6 @@ import ballerina/avro;
 
 public function main() returns error? {
     byte[] data = // Avro encoded message ;
-    int deserializeData = check avro.fromAvro(data);
+    int deserializeData = check schema.fromAvro(data);
 }
 ```
