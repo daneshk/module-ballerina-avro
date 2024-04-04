@@ -37,10 +37,12 @@ rootProject.name = 'module-ballerina-avro'
 include ':checkstyle'
 include ':avro-native'
 include ':avro-ballerina'
+include ':avro-examples'
 
 project(':checkstyle').projectDir = file("build-config${File.separator}checkstyle")
 project(':avro-native').projectDir = file('native')
 project(':avro-ballerina').projectDir = file('ballerina')
+project(':avro-examples').projectDir = file('examples')
 
 gradleEnterprise {
     buildScan {

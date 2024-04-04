@@ -93,4 +93,5 @@ release {
 task build {
     dependsOn('avro-native:build')
     dependsOn('avro-ballerina:build')
+    dependsOn('avro-examples:build')
 }
