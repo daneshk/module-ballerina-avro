@@ -51,11 +51,11 @@ public class Schema {
     # byte[] data = // Avro encoded message ; \
     # int deserializedData = check schema.fromAvro(data);
     #
-    # + encodedMessage - The Avro encoded message
-    # + T - Default parameter use to infer the user specified type
+    # + data - The Avro serialized data
+    # + targetType - Default parameter use to infer the user specified type
     # + return - A deserialized data with the given type or else an `avro:Error`
-    public isolated function fromAvro(byte[] encodedMessage, typedesc<anydata> T = <>)
-        returns T|Error = @java:Method {
+    public isolated function fromAvro(byte[] data, typedesc<anydata> targetType = <>)
+        returns targetType|Error = @java:Method {
         'class: "io.ballerina.lib.avro.Avro"
     } external;
 }
