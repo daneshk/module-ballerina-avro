@@ -31,7 +31,7 @@ The conforming implementation of the specification is released and included in t
     * 4.1 [The `fromAvro` API](#41-the-fromavro-api)
         * 4.1.1 [API parameters](#411-api-parameters)
             * 4.1.1.1 [The `data` parameter](#4111-the-data-parameter)
-            * 4.1.1.2 [The `targetRecordName` parameter](#4112-the-targettype-parameter)
+            * 4.1.1.2 [The `targetType` parameter](#4112-the-targettype-parameter)
         * 4.1.2 [Return type](#412-return-type)
 5. [The `avro:Error` type](#5-the-avroerror-type)
 
