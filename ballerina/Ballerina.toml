@@ -16,7 +16,7 @@ observabilityIncluded = true
 graalvmCompatible = true
 
 [[platform.java17.dependency]]
-groupId = "io.ballerina.stdlib"
+groupId = "io.ballerina.lib"
 artifactId = "avro-native"
 version = "0.1.0"
 path = "../native/build/libs/avro-native-0.1.0-SNAPSHOT.jar"
