@@ -125,6 +125,7 @@ test.dependsOn ":${packageName}-native:build"
 
 build.dependsOn "generatePomFileForMavenPublication"
 build.dependsOn updateTomlFiles
+test.dependsOn updateTomlFiles
 build.dependsOn ":${packageName}-native:build"
 
 publishToMavenLocal.dependsOn build
