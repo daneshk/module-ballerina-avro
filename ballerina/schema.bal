@@ -20,7 +20,9 @@ public class Schema {
 
     # Generates a schema for a given data type.
     #
+    # ```ballerina
     # avro:Schema schema = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
+    # ```
     #
     # + schema - The Avro schema string
 
