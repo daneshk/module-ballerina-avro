@@ -1,0 +1,506 @@
+{
+    "connect.name": "PROD_VIPDB.VIPDB.dbo.CorePlayerInformation_Staging01.Envelope",
+    "connect.version": 1,
+    "fields": [
+        {
+        "default": null,
+        "name": "before",
+        "type": [
+            "null",
+            {
+            "connect.name": "PROD_VIPDB.VIPDB.dbo.CorePlayerInformation_Staging01.Value",
+            "fields": [
+                {
+                "name": "CorePlayerID",
+                "type": "int"
+                },
+                {
+                "default": null,
+                "name": "AccountNumber",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "LastName",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "FirstName",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "MiddleName",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "Gender",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "Language",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "Discreet",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+                },
+                {
+                "default": null,
+                "name": "Deceased",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+                },
+                {
+                "default": null,
+                "name": "IsBanned",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+                },
+                {
+                "default": null,
+                "name": "EmailAddress",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "IsVerified",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+                },
+                {
+                "default": null,
+                "name": "EmailStatus",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "MobilePhone",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "HomePhone",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "HomeStreetAddress",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "HomeCity",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "HomeState",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "HomePostalCode",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "HomeCountry",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "AltStreetAddress",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "AltCity",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "AltState",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "AltCountry",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "DateOfBirth",
+                "type": [
+                    "null",
+                    {
+                    "connect.name": "io.debezium.time.Timestamp",
+                    "connect.version": 1,
+                    "type": "long"
+                    }
+                ]
+                },
+                {
+                "default": null,
+                "name": "EnrollDate",
+                "type": [
+                    "null",
+                    {
+                    "connect.name": "io.debezium.time.Timestamp",
+                    "connect.version": 1,
+                    "type": "long"
+                    }
+                ]
+                },
+                {
+                "default": null,
+                "name": "PredomPropertyId",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "AccountType",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "InsertDtm",
+                "type": [
+                    "null",
+                    {
+                    "connect.name": "io.debezium.time.Timestamp",
+                    "connect.version": 1,
+                    "type": "long"
+                    }
+                ]
+                },
+                {
+                "default": null,
+                "name": "AltPostalCode",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "BatchID",
+                "type": [
+                    "null",
+                    "int"
+                ]
+                },
+                {
+                "default": null,
+                "name": "GlobalRank",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "GlobalValuationScore",
+                "type": [
+                    "null",
+                    "double"
+                ]
+                },
+                {
+                "default": null,
+                "name": "PlayerType",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "AccountStatus",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "RegistrationSource",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "BannedReason",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "TierCode",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "TierName",
+                "type": [
+                    "null",
+                    "string"
+                ]
+                },
+                {
+                "default": null,
+                "name": "TierEndDate",
+                "type": [
+                    "null",
+                    {
+                    "connect.name": "io.debezium.time.Timestamp",
+                    "connect.version": 1,
+                    "type": "long"
+                    }
+                ]
+                },
+                {
+                "default": null,
+                "name": "VIPFlag",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+                }
+            ],
+            "name": "Value",
+            "type": "record"
+            }
+        ]
+        },
+        {
+        "default": null,
+        "name": "after",
+        "type": [
+            "null",
+            "Value"
+        ]
+        },
+        {
+        "name": "source",
+        "type": {
+            "connect.name": "io.debezium.connector.sqlserver.Source",
+            "fields": [
+            {
+                "name": "version",
+                "type": "string"
+            },
+            {
+                "name": "connector",
+                "type": "string"
+            },
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "ts_ms",
+                "type": "long"
+            },
+            {
+                "default": "false",
+                "name": "snapshot",
+                "type": [
+                {
+                    "connect.default": "false",
+                    "connect.name": "io.debezium.data.Enum",
+                    "connect.parameters": {
+                    "allowed": "true,last,false,incremental"
+                    },
+                    "connect.version": 1,
+                    "type": "string"
+                },
+                "null"
+                ]
+            },
+            {
+                "name": "db",
+                "type": "string"
+            },
+            {
+                "default": null,
+                "name": "sequence",
+                "type": [
+                "null",
+                "string"
+                ]
+            },
+            {
+                "name": "schema",
+                "type": "string"
+            },
+            {
+                "name": "table",
+                "type": "string"
+            },
+            {
+                "default": null,
+                "name": "change_lsn",
+                "type": [
+                "null",
+                "string"
+                ]
+            },
+            {
+                "default": null,
+                "name": "commit_lsn",
+                "type": [
+                "null",
+                "string"
+                ]
+            },
+            {
+                "default": null,
+                "name": "event_serial_no",
+                "type": [
+                "null",
+                "long"
+                ]
+            }
+            ],
+            "name": "Source",
+            "namespace": "io.debezium.connector.sqlserver",
+            "type": "record"
+        }
+        },
+        {
+        "name": "op",
+        "type": "string"
+        },
+        {
+        "default": null,
+        "name": "ts_ms",
+        "type": [
+            "null",
+            "long"
+        ]
+        },
+        {
+        "default": null,
+        "name": "transaction",
+        "type": [
+            "null",
+            {
+            "connect.name": "event.block",
+            "connect.version": 1,
+            "fields": [
+                {
+                "name": "id",
+                "type": "string"
+                },
+                {
+                "name": "total_order",
+                "type": "long"
+                },
+                {
+                "name": "data_collection_order",
+                "type": "long"
+                }
+            ],
+            "name": "block",
+            "namespace": "event",
+            "type": "record"
+            }
+        ]
+        },
+        {
+        "default": null,
+        "name": "MessageSource",
+        "type": [
+            "null",
+            "string"
+        ]
+        }
+    ],
+    "name": "Envelope",
+    "namespace": "PROD_VIPDB.VIPDB.dbo.CorePlayerInformation_Staging01",
+    "type": "record"
+}
