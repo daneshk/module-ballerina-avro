@@ -1,6 +1,6 @@
 # Ballerina Avro Module
 
-[![Build](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml)
+[![Build](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml)
 [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-avro/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-avro)
 [![Trivy](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/trivy-scan.yml)
 [![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml)
@@ -12,7 +12,7 @@ Avro is an open-source data serialization system that enables efficient binary s
 
 The Ballerina Avro module provides the capability to efficiently serialize and deserialize data using Avro schemas.
 
-### Schema
+## Schema
 
 `Schema` is will take the Avro schema in string format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize and deserilize data and the data should be in the correct format.
 
@@ -22,12 +22,12 @@ A `Schema` can be defined using the string value of an Avro schema as shown belo
 avro:Schema schema = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
 ```
 
-### APIs associated with Avro
+## APIs associated with Avro
 
 - **toAvro**: Serializes the given data according to the Avro format.
 - **fromAvro**: Deserializes the given Avro encoded message to the given data type.
 
-#### `toAvro`
+### `toAvro`
 
 Serializes the given data according to the Avro format.
 
@@ -40,7 +40,7 @@ public function main() returns error? {
 }
 ```
 
-#### `fromAvro`
+### `fromAvro`
 
 Deserializes the given Avro encoded message to the given data type.
 
