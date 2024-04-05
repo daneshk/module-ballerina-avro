@@ -1,6 +1,6 @@
 # Ballerina Avro Module
 
-[![Build](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml)
+[![Build](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml)
 [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-avro/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-avro)
 [![Trivy](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/trivy-scan.yml)
 [![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml)
