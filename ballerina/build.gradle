@@ -54,7 +54,6 @@ ballerina {
 
 configurations {
     externalJars
-    ballerinaStdLibs
 }
 
 dependencies {
@@ -125,6 +124,7 @@ updateTomlFiles.dependsOn copyStdlibs
 test.dependsOn ":${packageName}-native:build"
 
 build.dependsOn "generatePomFileForMavenPublication"
+build.dependsOn updateTomlFiles
 build.dependsOn ":${packageName}-native:build"
 
 publishToMavenLocal.dependsOn build
