@@ -54,10 +54,10 @@ ballerina {
 
 configurations {
     externalJars
+    ballerinaStdLibs
 }
 
 dependencies {
-
     jbalTools("org.ballerinalang:jballerina-tools:${ballerinaLangVersion}") {
         transitive = false
     }
