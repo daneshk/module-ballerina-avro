@@ -25,7 +25,6 @@ public class Schema {
     # ```
     #
     # + schema - The Avro schema string
-
     # + return - An `avro:Error` if the schema is not valid or else `()`
     public isolated function init(string schema) returns Error? {
         self.generateSchema(schema);
