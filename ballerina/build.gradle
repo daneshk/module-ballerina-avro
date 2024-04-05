@@ -60,7 +60,7 @@ dependencies {
     jbalTools("org.ballerinalang:jballerina-tools:${ballerinaLangVersion}") {
         transitive = false
     }
-    externalJars(group: 'org.apache.avro', name: 'avro', version: '1.11.3') {
+    externalJars(group: 'org.apache.avro', name: 'avro', version: "${avroVersion}") {
         transitive = false
     }
     externalJars(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${jacksonVersion}") {
@@ -124,8 +124,6 @@ updateTomlFiles.dependsOn copyStdlibs
 test.dependsOn ":${packageName}-native:build"
 
 build.dependsOn "generatePomFileForMavenPublication"
-build.dependsOn updateTomlFiles
-test.dependsOn updateTomlFiles
 build.dependsOn ":${packageName}-native:build"
 
 publishToMavenLocal.dependsOn build
