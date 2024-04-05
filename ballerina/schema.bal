@@ -35,9 +35,11 @@ public class Schema {
 
     # Serializes the given data according to the Avro format.
     #
-    # avro:Schema schema = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`); \
-    # int value = 5; \
+    # ```ballerina
+    # avro:Schema schema = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`);
+    # int value = 5;
     # byte[] serializedData = check avro.toAvro(value);
+    # ```
     #
     # + data - The data to be serialized
     # + return - A `byte` array of the serialized data or else an `avro:Error`
@@ -47,9 +49,11 @@ public class Schema {
 
     # Deserializes the given Avro encoded message to the given data type.
     #
-    # avro:Schema schema = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`); \
-    # byte[] data = // Avro encoded message ; \
+    # ```ballerina
+    # avro:Schema schema = check new(string `{"type": "int", "name" : "data", "namespace": "example.avro" }`);
+    # byte[] data = // Avro encoded message ;
     # int deserializedData = check schema.fromAvro(data);
+    # ```
     #
     # + data - The Avro serialized data
     # + targetType - Default parameter use to infer the user specified type
