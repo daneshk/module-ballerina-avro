@@ -24,11 +24,7 @@ def ballerinaDist = "${project.rootDir}/target/ballerina-runtime"
 def examples = ["order-processing-system"]
 def graalvmFlag = ""
 
-dependencies {
-    implementation group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
-}
-
-clean {
+tasks.register('clean') {
     examples.forEach { example ->
         delete "${projectDir}/${example}/target"
         delete "${projectDir}/${example}/Dependencies.toml"
@@ -85,7 +81,14 @@ task buildExamples {
     }
 }
 
+task build {
+    dependsOn buildExamples
+
+}
+
+task test {
+    dependsOn testExamples
+}
+
 buildExamples.dependsOn ":avro-ballerina:build"
 testExamples.dependsOn ":avro-ballerina:build"
-test.dependsOn testExamples
-build.dependsOn buildExamples
