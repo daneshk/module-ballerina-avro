@@ -6,7 +6,6 @@
 [![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-avro.svg)](https://github.com/ballerina-platform/module-ballerina-avro/commits/master)
 [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/avro.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Favro)
-[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-avro/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-avro)
 
 Avro is an open-source data serialization system that enables efficient binary serialization and deserialization. It allows users to define schemas for structured data, providing better representation and fast serialization/deserialization. Avro's schema evolution capabilities ensure compatibility and flexibility in evolving data systems.
 
