@@ -4,14 +4,14 @@ Avro is an open-source data serialization system that enables efficient binary s
 
 The Ballerina Avro module provides the capability to efficiently serialize and deserialize data using Avro schemas.
 
-### Schema
+## Schema
 
-`Schema` is will take the Avro schema in string format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize and deserilize data and the data should be in the correct format.
+The `Schema` instance takes an Avro schema in `string` format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize data into bytes using the defined schema and deserialize the bytes back to the correct data type based on the schema.
 
-A `Schema` can be defined using the string value of an Avro schema as shown below:
+A `Schema` can be defined using the `string` value of an Avro schema as shown below.
 
 ```ballerina
-avro:Schema schema = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
+avro:Schema schema = check new(string `{"type": "int", "namespace": "example.data" }`);
 ```
 
 ### APIs associated with Avro

@@ -1,12 +1,11 @@
 # Ballerina Avro Module
 
 [![Build](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-timestamped-master.yml)
-[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-avro/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-avro)
+[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-avro/branch/main/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-avro)
 [![Trivy](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/trivy-scan.yml)
 [![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-avro/actions/workflows/build-with-bal-test-graalvm.yml)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-avro.svg)](https://github.com/ballerina-platform/module-ballerina-avro/commits/master)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-avro.svg)](https://github.com/ballerina-platform/module-ballerina-avro/commits/main)
 [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/avro.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Favro)
-[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-avro/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-avro)
 
 Avro is an open-source data serialization system that enables efficient binary serialization and deserialization. It allows users to define schemas for structured data, providing better representation and fast serialization/deserialization. Avro's schema evolution capabilities ensure compatibility and flexibility in evolving data systems.
 
@@ -14,12 +13,12 @@ The Ballerina Avro module provides the capability to efficiently serialize and d
 
 ## Schema
 
-`Schema` is will take the Avro schema in string format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize and deserilize data and the data should be in the correct format.
+The `Schema` instance takes an Avro schema in `string` format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize data into bytes using the defined schema and deserialize the bytes back to the correct data type based on the schema.
 
-A `Schema` can be defined using the string value of an Avro schema as shown below:
+A `Schema` can be defined using the `string` value of an Avro schema as shown below.
 
 ```ballerina
-avro:Schema schema = check new(string `{"type": "int", "name" : "intValue", "namespace": "data" }`);
+avro:Schema schema = check new(string `{"type": "int", "namespace": "example.data" }`);
 ```
 
 ## APIs associated with Avro
