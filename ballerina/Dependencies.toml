@@ -10,7 +10,7 @@ distribution-version = "2201.8.6"
 [[package]]
 org = "ballerina"
 name = "avro"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
