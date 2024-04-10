@@ -13,7 +13,7 @@ The Ballerina Avro module provides the capability to efficiently serialize and d
 
 ## Schema
 
-The `Schema` instance takes an Avro schema in `string` format. And will return an error if the schema is not a valid Avro schema. The client can be used to serialize data into bytes using the defined schema and deserialize the bytes back to the correct data type based on the schema.
+The `Schema` instance accepts an Avro schema in `string` format. If the provided schema is not valid according to Avro, an error is returned. The client can be used to serialize data into bytes using the defined schema and deserialize the bytes back to the correct data type based on the schema.
 
 A `Schema` can be defined using the `string` value of an Avro schema as shown below.
 
