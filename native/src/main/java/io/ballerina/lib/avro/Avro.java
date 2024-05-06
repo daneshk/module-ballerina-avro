@@ -18,27 +18,34 @@
 
 package io.ballerina.lib.avro;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.avro.AvroMapper;
-import com.fasterxml.jackson.dataformat.avro.AvroSchema;
+import io.ballerina.lib.avro.deserialize.DeserializeFactory;
+import io.ballerina.lib.avro.deserialize.Deserializer;
+import io.ballerina.lib.avro.serialize.MessageFactory;
+import io.ballerina.lib.avro.serialize.Serializer;
+import io.ballerina.lib.avro.visitor.DeserializeVisitor;
+import io.ballerina.lib.avro.visitor.SerializeVisitor;
 import io.ballerina.runtime.api.creators.ValueCreator;
-import io.ballerina.runtime.api.utils.JsonUtils;
-import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.utils.ValueUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.EncoderFactory;
 
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 import static io.ballerina.lib.avro.Utils.AVRO_SCHEMA;
 import static io.ballerina.lib.avro.Utils.DESERIALIZATION_ERROR;
-import static io.ballerina.lib.avro.Utils.JSON_PROCESSING_ERROR;
+import static io.ballerina.lib.avro.Utils.SERIALIZATION_ERROR;
+import static io.ballerina.lib.avro.Utils.createError;
 
 public final class Avro {
 
@@ -52,18 +59,18 @@ public final class Avro {
 
     public static Object toAvro(BObject schemaObject, Object data) {
         Schema schema = (Schema) schemaObject.getNativeData(AVRO_SCHEMA);
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Object jsonObject = generateJsonObject(data, schema, objectMapper);
-            if (jsonObject == null) {
-                return ValueCreator.createArrayValue(new byte[]{0, 0});
-            } else if (Objects.equals(schema.getType(), Schema.Type.FIXED)) {
-                return ValueCreator.createArrayValue(((BArray) jsonObject).getByteArray());
-            }
-            byte[] avroBytes = (new AvroMapper()).writer(new AvroSchema(schema)).writeValueAsBytes(jsonObject);
-            return ValueCreator.createArrayValue(avroBytes);
-        } catch (JsonProcessingException e) {
-            return Utils.createError(JSON_PROCESSING_ERROR, e);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            SerializeVisitor serializeVisitor = new SerializeVisitor();
+            Serializer serializer = MessageFactory.createMessage(schema);
+            Object avroData = Objects.requireNonNull(serializer).generateMessage(serializeVisitor, data);
+            DatumWriter<Object> writer = new GenericDatumWriter<>(schema);
+            BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(outputStream, null);
+            writer.write(avroData, encoder);
+            encoder.flush();
+            byte[] bytes = outputStream.toByteArray();
+            return ValueCreator.createArrayValue(bytes);
+        } catch (Exception e) {
+            return Utils.createError(SERIALIZATION_ERROR, e);
         }
     }
 
