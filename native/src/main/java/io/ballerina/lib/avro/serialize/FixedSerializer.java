@@ -18,21 +18,17 @@
 
 package io.ballerina.lib.avro.serialize;
 
+import io.ballerina.lib.avro.visitor.SerializeVisitor;
 import org.apache.avro.Schema;
 
-public class MessageFactory {
+public class FixedSerializer extends Serializer {
 
-    public static Serializer createMessage(Schema schema) {
-        return switch (schema.getType()) {
-            case NULL -> new NullSerializer();
-            case STRING -> new StringSerializer(schema);
-            case ARRAY -> new ArraySerializer(schema);
-            case FIXED -> new FixedSerializer(schema);
-            case ENUM -> new EnumSerializer(schema);
-            case MAP -> new MapSerializer(schema);
-            case RECORD -> new RecordSerializer(schema);
-            case BYTES -> new ByteSerializer();
-            default -> new GenericSerializer();
-        };
+    public FixedSerializer(Schema schema) {
+        super(schema);
+    }
+
+    @Override
+    public Object generateMessage(SerializeVisitor serializeVisitor, Object data) {
+        return serializeVisitor.visitFixed(data, getSchema());
     }
 }

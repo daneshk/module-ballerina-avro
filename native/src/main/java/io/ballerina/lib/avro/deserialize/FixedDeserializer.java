@@ -16,23 +16,15 @@
  * under the License.
  */
 
-package io.ballerina.lib.avro.serialize;
+package io.ballerina.lib.avro.deserialize;
 
+import io.ballerina.lib.avro.visitor.DeserializeVisitor;
 import org.apache.avro.Schema;
 
-public class MessageFactory {
+public class FixedDeserializer extends Deserializer {
 
-    public static Serializer createMessage(Schema schema) {
-        return switch (schema.getType()) {
-            case NULL -> new NullSerializer();
-            case STRING -> new StringSerializer(schema);
-            case ARRAY -> new ArraySerializer(schema);
-            case FIXED -> new FixedSerializer(schema);
-            case ENUM -> new EnumSerializer(schema);
-            case MAP -> new MapSerializer(schema);
-            case RECORD -> new RecordSerializer(schema);
-            case BYTES -> new ByteSerializer();
-            default -> new GenericSerializer();
-        };
+    @Override
+    public Object fromAvroMessage(DeserializeVisitor visitor, Object data, Schema schema) {
+        return visitor.visitFixed(data);
     }
 }
