@@ -76,29 +76,15 @@ public final class Avro {
 
     public static Object fromAvro(BObject schemaObject, BArray payload, BTypedesc typeParam) {
         Schema schema = (Schema) schemaObject.getNativeData(AVRO_SCHEMA);
-        byte[] avroBytes = payload.getByteArray();
-        if (Schema.Type.FIXED.equals(schema.getType())) {
-            return ValueUtils.convert(ValueCreator.createArrayValue(avroBytes), typeParam.getDescribingType());
-        }
-        JsonNode deserializedJsonString;
+        DatumReader<Object> datumReader = new GenericDatumReader<>(schema);
+        BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(payload.getBytes(), null);
         try {
-            AvroMapper mapper = new AvroMapper();
-            deserializedJsonString = mapper.readerFor(Object.class).with(new AvroSchema(schema)).readTree(avroBytes);
-        } catch (IOException e) {
-            return Utils.createError(DESERIALIZATION_ERROR, e);
+            Object data = datumReader.read(payload, decoder);
+            DeserializeVisitor deserializeVisitor = new DeserializeVisitor();
+            Deserializer deserializer = DeserializeFactory.generateDeserializer(schema, typeParam.getDescribingType());
+            return Objects.requireNonNull(deserializer).fromAvroMessage(deserializeVisitor, data, schema);
+        } catch (Exception e) {
+            return createError(DESERIALIZATION_ERROR, e);
         }
-        Object jsonObject = JsonUtils.parse(deserializedJsonString.toPrettyString());
-        return ValueUtils.convert(jsonObject, typeParam.getDescribingType());
-    }
-
-    private static Object generateJsonObject(Object data, Schema schema,
-                                             ObjectMapper objectMapper) throws JsonProcessingException {
-        if (Schema.Type.NULL.equals(schema.getType()) || Schema.Type.FIXED.equals(schema.getType())) {
-            return data;
-        } else if (Schema.Type.STRING.equals(schema.getType()) || Schema.Type.ENUM.equals(schema.getType())) {
-            return objectMapper.readValue("\"" + data + "\"", Object.class);
-        }
-        Object jsonString = JsonUtils.parse(StringUtils.getJsonString(data));
-        return objectMapper.readValue(jsonString.toString(), Object.class);
     }
 }
