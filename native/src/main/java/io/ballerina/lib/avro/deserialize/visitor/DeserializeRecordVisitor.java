@@ -16,7 +16,6 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 
 import java.nio.ByteBuffer;
-import java.util.Map;
 
 import static io.ballerina.lib.avro.Utils.getMutableType;
 import static io.ballerina.lib.avro.deserialize.visitor.UnionRecordUtils.visitUnionRecords;
@@ -69,7 +68,7 @@ public class DeserializeRecordVisitor extends DeserializeVisitor {
                                  Schema.Field field, Object fieldData) throws Exception {
         Type mapType = extractMapType(avroRecord.getType());
         MapDeserializer mapDeserializer = new MapDeserializer(field.schema(), mapType);
-        Object fieldValue = mapDeserializer.visit(this, (Map<String, Object>) fieldData);
+        Object fieldValue = mapDeserializer.visit(this, fieldData);
         avroRecord.put(StringUtils.fromString(field.name()), fieldValue);
     }
 

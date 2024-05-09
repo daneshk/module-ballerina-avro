@@ -4,6 +4,7 @@ import io.ballerina.lib.avro.deserialize.visitor.DeserializeVisitor;
 import org.apache.avro.generic.GenericData;
 
 public class ByteDeserializer extends Deserializer {
+
     @Override
     public Object visit(DeserializeVisitor visitor, Object data) throws Exception {
         return visitor.visitBytes(data);
