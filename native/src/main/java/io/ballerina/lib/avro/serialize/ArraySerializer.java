@@ -18,7 +18,7 @@
 
 package io.ballerina.lib.avro.serialize;
 
-import io.ballerina.lib.avro.visitor.SerializeVisitor;
+import io.ballerina.lib.avro.serialize.visitor.SerializeVisitor;
 import io.ballerina.runtime.api.values.BArray;
 import org.apache.avro.Schema;
 
@@ -29,7 +29,7 @@ public class ArraySerializer extends Serializer {
     }
 
     @Override
-    public Object generateMessage(SerializeVisitor serializeVisitor, Object data) throws Exception {
-        return serializeVisitor.visitArray((BArray) data, getSchema());
+    public Object convert(SerializeVisitor serializeVisitor, Object data) {
+        return serializeVisitor.visit(this, (BArray) data);
     }
 }

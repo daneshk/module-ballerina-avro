@@ -18,7 +18,7 @@
 
 package io.ballerina.lib.avro.serialize;
 
-import io.ballerina.lib.avro.visitor.SerializeVisitor;
+import io.ballerina.lib.avro.serialize.visitor.SerializeVisitor;
 import org.apache.avro.Schema;
 
 public class StringSerializer extends Serializer {
@@ -28,7 +28,7 @@ public class StringSerializer extends Serializer {
     }
 
     @Override
-    public Object generateMessage(SerializeVisitor serializeVisitor, Object data) {
+    public Object convert(SerializeVisitor serializeVisitor, Object data) {
         return serializeVisitor.visitString(data);
     }
 }

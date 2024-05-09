@@ -18,12 +18,17 @@
 
 package io.ballerina.lib.avro.serialize;
 
-import io.ballerina.lib.avro.visitor.SerializeVisitor;
+import io.ballerina.lib.avro.serialize.visitor.SerializeVisitor;
+import org.apache.avro.Schema;
 
 public class GenericSerializer extends Serializer {
 
+    public GenericSerializer(Schema schema) {
+        super(schema);
+    }
+
     @Override
-    public Object generateMessage(SerializeVisitor serializeVisitor, Object data) {
-        return data;
+    public Object convert(SerializeVisitor serializeVisitor, Object data) {
+        return serializeVisitor.visit(this, data);
     }
 }
