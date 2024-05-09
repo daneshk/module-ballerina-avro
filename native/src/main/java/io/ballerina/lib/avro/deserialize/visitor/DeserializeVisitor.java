@@ -51,13 +51,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.ballerina.lib.avro.Utils.ARRAY_TYPE;
-import static io.ballerina.lib.avro.Utils.BOOLEAN_TYPE;
-import static io.ballerina.lib.avro.Utils.FLOAT_TYPE;
-import static io.ballerina.lib.avro.Utils.INTEGER_TYPE;
-import static io.ballerina.lib.avro.Utils.RECORD_TYPE;
-import static io.ballerina.lib.avro.Utils.REFERENCE_TYPE;
-import static io.ballerina.lib.avro.Utils.STRING_TYPE;
 import static io.ballerina.lib.avro.Utils.getMutableType;
 import static io.ballerina.lib.avro.deserialize.visitor.RecordUtils.processArrayField;
 import static io.ballerina.lib.avro.deserialize.visitor.RecordUtils.processBytesField;
@@ -188,22 +181,22 @@ public class DeserializeVisitor implements IDeserializeVisitor {
         Type type = unionDeserializer.getType();
         Schema schema = unionDeserializer.getSchema();
         switch (((ArrayType) type).getElementType().getTag()) {
-            case STRING_TYPE -> {
+            case TypeTags.STRING_TAG -> {
                 return visitStringArray(data);
             }
-            case FLOAT_TYPE -> {
+            case TypeTags.FLOAT_TAG -> {
                 return visitDoubleArray(data);
             }
-            case BOOLEAN_TYPE -> {
+            case TypeTags.BOOLEAN_TAG -> {
                 return visitBooleanArray(data);
             }
-            case INTEGER_TYPE -> {
+            case TypeTags.INT_TAG -> {
                 return visitIntegerArray(data, schema);
             }
-            case RECORD_TYPE -> {
+            case TypeTags.RECORD_TYPE_TAG -> {
                 return visitRecordArray(data, type, schema);
             }
-            case ARRAY_TYPE -> {
+            case TypeTags.ARRAY_TAG -> {
                 return visitUnionArray(data, (ArrayType) type, schema);
             }
             default -> {
@@ -234,14 +227,14 @@ public class DeserializeVisitor implements IDeserializeVisitor {
         Type type = recordDeserializer.getType();
         Schema schema = recordDeserializer.getSchema();
         switch (type.getTag()) {
-            case ARRAY_TYPE -> {
+            case TypeTags.ARRAY_TAG -> {
                 for (Object datum : data) {
                     Type fieldType = ((ArrayType) type).getElementType().getCachedReferredType();
                     RecordDeserializer recordDes = new RecordDeserializer(schema.getElementType(), fieldType);
                     recordList.add(recordDes.visit(this, (GenericRecord) datum));
                 }
             }
-            case REFERENCE_TYPE -> {
+            case TypeTags.TYPE_REFERENCED_TYPE_TAG -> {
                 for (Object datum : data) {
                     Type fieldType = ((ReferenceType) type).getReferredType();
                     RecordDeserializer recordDes = new RecordDeserializer(schema.getElementType(), fieldType);
@@ -249,15 +242,11 @@ public class DeserializeVisitor implements IDeserializeVisitor {
                 }
             }
         }
-        assert type instanceof ArrayType;
         return ValueCreator.createArrayValue(recordList.toArray(new Object[data.size()]), (ArrayType) type);
     }
 
     private BMap<BString, Object> createAvroRecord(Type type) {
-        if (type instanceof IntersectionType) {
-            type = getMutableType((IntersectionType) type);
-        }
-        return ValueCreator.createRecordValue((RecordType) type);
+        return ValueCreator.createRecordValue((RecordType) getMutableType(type));
     }
 
     private void processMaps(BMap<BString, Object> avroRecord, Schema schema,
@@ -405,7 +394,6 @@ public class DeserializeVisitor implements IDeserializeVisitor {
 
     public static Type extractMapType(Type type) throws Exception {
         Type mapType = type;
-        assert type instanceof RecordType;
         if (type.getTag() != TypeTags.RECORD_TYPE_TAG) {
             throw new Exception("Type is not a record type.");
         }
@@ -445,7 +433,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
                     case TypeTags.RECORD_TYPE_TAG ->
                             recType = (RecordType) fieldType;
                     case TypeTags.INTERSECTION_TAG -> {
-                        Type getType = getMutableType((IntersectionType) fieldType);
+                        Type getType = getMutableType(fieldType);
                         if (getType.getTag() == TypeTags.RECORD_TYPE_TAG) {
                             recType = (RecordType) getType;
                         }

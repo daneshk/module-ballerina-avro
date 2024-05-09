@@ -38,35 +38,31 @@ public final class Utils {
     public static final String ERROR_TYPE = "Error";
     public static final String SERIALIZATION_ERROR = "Avro serialization error";
     public static final String DESERIALIZATION_ERROR = "Avro deserialization error";
-    public static final int STRING_TYPE = 5;
-    public static final int ARRAY_TYPE = 32;
-    public static final int MAP_TYPE = 27;
-    public static final int INTERSECTION_TYPE = 34;
-    public static final int REFERENCE_TYPE = 53;
-    public static final int RECORD_TYPE = 24;
-    public static final int INTEGER_TYPE = 1;
-    public static final int FLOAT_TYPE = 3;
-    public static final int BOOLEAN_TYPE = 6;
 
     public static BError createError(String message, Throwable throwable) {
         BError cause = ErrorCreator.createError(throwable);
         return ErrorCreator.createError(getModule(), ERROR_TYPE, StringUtils.fromString(message), cause, null);
     }
 
-    public static Type getMutableType(IntersectionType intersectionType) {
-        for (Type type : intersectionType.getConstituentTypes()) {
-            Type referredType = TypeUtils.getImpliedType(type);
-            if (referredType.getTag() == TypeTags.UNION_TAG) {
-                for (Type elementType : ((UnionType) referredType).getMemberTypes()) {
-                    if (elementType.getTag() == TypeTags.MAP_TAG) {
-                        return elementType;
+    public static Type getMutableType(Type dataType) {
+        if (dataType.getTag() == TypeTags.INTERSECTION_TAG) {
+            IntersectionType intersectionType = (IntersectionType) dataType;
+            for (Type type : intersectionType.getConstituentTypes()) {
+                Type referredType = TypeUtils.getImpliedType(type);
+                if (referredType.getTag() == TypeTags.UNION_TAG) {
+                    for (Type elementType : ((UnionType) referredType).getMemberTypes()) {
+                        if (elementType.getTag() == TypeTags.MAP_TAG) {
+                            return elementType;
+                        }
                     }
                 }
+                if (TypeUtils.getImpliedType(intersectionType.getEffectiveType()).getTag() == referredType.getTag()) {
+                    return referredType;
+                }
             }
-            if (TypeUtils.getImpliedType(intersectionType.getEffectiveType()).getTag() == referredType.getTag()) {
-                return referredType;
-            }
+        } else {
+            return dataType;
         }
-        throw new IllegalStateException("Unsupported intersection type found: " + intersectionType);
+        throw new IllegalStateException("Unsupported intersection type found.");
     }
 }

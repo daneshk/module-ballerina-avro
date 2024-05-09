@@ -28,6 +28,7 @@ import io.ballerina.lib.avro.serialize.Serializer;
 import io.ballerina.lib.avro.serialize.UnionSerializer;
 import io.ballerina.lib.avro.serialize.visitor.array.ArrayVisitorFactory;
 import io.ballerina.lib.avro.serialize.visitor.array.IArrayVisitor;
+import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
@@ -43,13 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import static io.ballerina.lib.avro.Utils.ARRAY_TYPE;
-import static io.ballerina.lib.avro.Utils.FLOAT_TYPE;
-import static io.ballerina.lib.avro.Utils.INTEGER_TYPE;
-import static io.ballerina.lib.avro.Utils.MAP_TYPE;
-import static io.ballerina.lib.avro.Utils.RECORD_TYPE;
-import static io.ballerina.lib.avro.Utils.STRING_TYPE;
 
 public class SerializeVisitor implements ISerializeVisitor {
 
@@ -166,37 +160,24 @@ public class SerializeVisitor implements ISerializeVisitor {
         Schema fieldSchema = unionSerializer.getSchema();
         Type typeName = TypeUtils.getType(data);
         switch (typeName.getTag()) {
-            case STRING_TYPE -> {
+            case TypeTags.STRING_TAG -> {
                 return fieldSchema.getTypes().stream()
                         .filter(type -> type.getType().equals(Schema.Type.ENUM))
                         .findFirst()
                         .map(type -> visit(new EnumSerializer(type), data))
                         .orElse(visit(new PrimitiveDeserializer(fieldSchema), data.toString()));
             }
-            case ARRAY_TYPE -> {
-                for (Schema schema : fieldSchema.getTypes()) {
-                    switch (schema.getType()) {
-                        case BYTES -> {
-                            return new PrimitiveDeserializer(schema).convert(this, data);
-                        }
-                        case FIXED -> {
-                            return new FixedSerializer(schema).convert(this, data);
-                        }
-                        case ARRAY -> {
-                            return new ArraySerializer(schema).convert(this, data);
-                        }
-                    }
-                }
-                return new ArraySerializer(fieldSchema).convert(this, data);
+            case TypeTags.ARRAY_TAG -> {
+                return visitUnionArrays(data, fieldSchema);
             }
-            case MAP_TYPE -> {
+            case TypeTags.MAP_TAG -> {
                 return new MapSerializer(fieldSchema).convert(this, data);
             }
-            case RECORD_TYPE -> {
-                return new RecordSerializer(getRecordSchema(Schema.Type.RECORD, fieldSchema.getTypes()))
-                        .convert(this, data);
+            case TypeTags.RECORD_TYPE_TAG -> {
+                return new RecordSerializer(getRecordSchema(Schema.Type.RECORD,
+                                            fieldSchema.getTypes())).convert(this, data);
             }
-            case INTEGER_TYPE -> {
+            case TypeTags.INT_TAG -> {
                 return fieldSchema.getTypes().stream()
                         .filter(schema -> schema.getType().equals(Schema.Type.INT))
                         .findFirst()
@@ -204,18 +185,34 @@ public class SerializeVisitor implements ISerializeVisitor {
                         .orElse(data);
 
             }
-            case FLOAT_TYPE -> {
+            case TypeTags.FLOAT_TAG -> {
                 return fieldSchema.getTypes().stream()
                         .filter(schema -> schema.getType().equals(Schema.Type.FLOAT))
                         .findFirst()
                         .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
                         .orElse(data);
-
             }
             default -> {
                 return data;
             }
         }
+    }
+
+    private Object visitUnionArrays(Object data, Schema fieldSchema) {
+        for (Schema schema : fieldSchema.getTypes()) {
+            switch (schema.getType()) {
+                case BYTES -> {
+                    return new PrimitiveDeserializer(schema).convert(this, data);
+                }
+                case FIXED -> {
+                    return new FixedSerializer(schema).convert(this, data);
+                }
+                case ARRAY -> {
+                    return new ArraySerializer(schema).convert(this, data);
+                }
+            }
+        }
+        return new ArraySerializer(fieldSchema).convert(this, data);
     }
 
     public static Schema getRecordSchema(Schema.Type givenType, List<Schema> schemas) {

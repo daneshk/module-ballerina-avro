@@ -5,7 +5,6 @@ import io.ballerina.lib.avro.deserialize.MapDeserializer;
 import io.ballerina.lib.avro.deserialize.RecordDeserializer;
 import io.ballerina.lib.avro.deserialize.StringDeserializer;
 import io.ballerina.runtime.api.creators.ValueCreator;
-import io.ballerina.runtime.api.types.IntersectionType;
 import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
@@ -26,7 +25,7 @@ public class DeserializeRecordVisitor extends DeserializeVisitor {
         Type originalType = recordDeserializer.getType();
         Type type = recordDeserializer.getType();
         Schema schema = recordDeserializer.getSchema();
-        BMap<BString, Object> avroRecord = createAvroRecord(type);
+        BMap<BString, Object> avroRecord = ValueCreator.createRecordValue((RecordType) getMutableType(type));
         for (Schema.Field field : schema.getFields()) {
             Object fieldData = rec.get(field.name());
             switch (field.schema().getType()) {
@@ -55,13 +54,6 @@ public class DeserializeRecordVisitor extends DeserializeVisitor {
             avroRecord.freezeDirect();
         }
         return avroRecord;
-    }
-
-    private BMap<BString, Object> createAvroRecord(Type type) {
-        if (type instanceof IntersectionType) {
-            type = getMutableType((IntersectionType) type);
-        }
-        return ValueCreator.createRecordValue((RecordType) type);
     }
 
     private void processMapField(BMap<BString, Object> avroRecord,
