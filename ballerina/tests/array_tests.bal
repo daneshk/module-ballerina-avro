@@ -59,6 +59,31 @@ public isolated function testStringArrays() returns error? {
 @test:Config {
     groups: ["array", "string"]
 }
+public isolated function testArrayOfStringArrays() returns error? {
+    string schema = string `
+        {
+            "type": "array",
+            "name" : "stringArray", 
+            "namespace": "data", 
+            "items": {
+                "type": "array",
+                "name" : "strings", 
+                "namespace": "data", 
+                "items": "string"
+            }
+        }`;
+
+    string[][] colors = [["red", "green", "blue"]];
+
+    Schema avro = check new (schema);
+    byte[] encode = check avro.toAvro(colors);
+    string[][] deserializeJson = check avro.fromAvro(encode);
+    test:assertEquals(deserializeJson, colors);
+}
+
+@test:Config {
+    groups: ["array", "string", "enn"]
+}
 public isolated function testEnumArrays() returns error? {
     string schema = string `
         {

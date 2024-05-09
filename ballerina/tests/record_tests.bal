@@ -211,6 +211,65 @@ public isolated function testArraysInRecordsWithInvalidSchema() returns error? {
 }
 
 @test:Config {
+    groups: ["record", "union", "pm"]
+}
+public isolated function testRecordsWithStringRecordUnionType() returns error? {
+    string schema = string `
+        {
+            "type": "record",
+            "name": "Course",
+            "namespace": "example.avro",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": ["string", "null"]
+                },
+                {
+                    "name": "value",
+                    "type": "float"
+                },
+                {
+                    "name": "credits",
+                    "type": ["null", "int"]
+                },
+                {
+                    "name": "student",
+                    "type": [
+                        "null", 
+                        {
+                            "type": "record",
+                            "name": "Student",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": ["string", "null"]
+                                },
+                                {
+                                    "name": "subject",
+                                    "type": ["string", "null"]
+                                }
+                            ]
+                        }, 
+                        "string"
+                    ]
+                }
+            ]
+        }`;
+
+    MultipleUnionRecord course = {
+        name: "data",
+        value: 0.0,
+        credits: 5,
+        student: string `{name: "Jon", subject: "geo"}adsk`
+    };
+
+    Schema avro = check new (schema);
+    byte[] serialize = check avro.toAvro(course);
+    MultipleUnionRecord deserialize = check avro.fromAvro(serialize);
+    test:assertEquals(deserialize, course);
+}
+
+@test:Config {
     groups: ["record", "union"]
 }
 public isolated function testRecordsWithUnionTypes() returns error? {
@@ -494,7 +553,7 @@ public isolated function testOptionalMultipleFieldsInRecords() returns error? {
                 "type": ["null", "boolean"]
             },
             {
-                "name": "maps",
+                "name": "map",
                 "type": [
                     "null", 
                     {

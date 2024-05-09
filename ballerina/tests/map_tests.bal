@@ -17,7 +17,7 @@
 import ballerina/test;
 
 @test:Config {
-    groups: ["maps", "bytes"]
+    groups: ["map", "bytes"]
 }
 public isolated function testMapsWithBytes() returns error? {
     string schema = string `
@@ -35,7 +35,7 @@ public isolated function testMapsWithBytes() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "fixed"]
+    groups: ["map", "fixed"]
 }
 public isolated function testMapsWithFixed() returns error? {
     string schema = string `
@@ -57,7 +57,7 @@ public isolated function testMapsWithFixed() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "fixed"]
+    groups: ["map", "fixed"]
 }
 public isolated function testMapsOfFixedMaps() returns error? {
     string schema = string `
@@ -87,7 +87,7 @@ public isolated function testMapsOfFixedMaps() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "record"]
+    groups: ["map", "record"]
 }
 public isolated function testMapsWithRecords() returns error? {
     string schema = string `
@@ -138,7 +138,7 @@ public isolated function testMapsWithRecords() returns error? {
 }
 
 @test:Config {
-    groups: ["maps"]
+    groups: ["map"]
 }
 public isolated function testMapsWithInt() returns error? {
     string schema = string `
@@ -157,7 +157,7 @@ public isolated function testMapsWithInt() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "enum"]
+    groups: ["map", "enum", "lk"]
 }
 public isolated function testMapsWithEnum() returns error? {
     string schema = string `
@@ -180,7 +180,7 @@ public isolated function testMapsWithEnum() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "enum", "array"]
+    groups: ["map", "enum", "array"]
 }
 public isolated function testMapsWithEnumArrays() returns error? {
     string schema = string `
@@ -208,7 +208,7 @@ public isolated function testMapsWithEnumArrays() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "float"]
+    groups: ["map", "float"]
 }
 public isolated function testMapsWithFloat() returns error? {
     string schema = string `
@@ -227,7 +227,7 @@ public isolated function testMapsWithFloat() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "double"]
+    groups: ["map", "double"]
 }
 public isolated function testMapsWithDouble() returns error? {
     string schema = string `
@@ -246,7 +246,7 @@ public isolated function testMapsWithDouble() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "double", "array"]
+    groups: ["map", "double", "array"]
 }
 public isolated function testMapsWithDoubleArray() returns error? {
     string schema = string `
@@ -270,7 +270,7 @@ public isolated function testMapsWithDoubleArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "long"]
+    groups: ["map", "long"]
 }
 public isolated function testMapsWithLong() returns error? {
     string schema = string `
@@ -289,7 +289,7 @@ public isolated function testMapsWithLong() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "string"]
+    groups: ["map", "string"]
 }
 public isolated function testMapsWithStrings() returns error? {
     string schema = string `
@@ -308,7 +308,25 @@ public isolated function testMapsWithStrings() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "boolean"]
+    groups: ["map", "errors"]
+}
+public isolated function testMapsWithUnionTypes() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": ["string", "int"],
+            "default": {}
+        }`;
+
+    map<int|string> colors = {"red": "2", "green": "435", "blue": "2034723"};
+
+    Schema avro = check new (schema);
+    byte[]|Error encode = avro.toAvro(colors);
+    test:assertTrue(encode is Error);
+}
+
+@test:Config {
+    groups: ["map", "boolean", "ssq"]
 }
 public isolated function testMapsWithBoolean() returns error? {
     string schema = string `
@@ -327,7 +345,7 @@ public isolated function testMapsWithBoolean() returns error? {
 }
 
 @test:Config {
-    groups: ["maps"]
+    groups: ["map"]
 }
 public isolated function testMapsWithMaps() returns error? {
     string schema = string `
@@ -353,7 +371,7 @@ public isolated function testMapsWithMaps() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "k"]
+    groups: ["map", "k"]
 }
 public isolated function testMapsWithNestedMaps() returns error? {
     string schema = string `
@@ -382,7 +400,7 @@ public isolated function testMapsWithNestedMaps() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "long"]
+    groups: ["map", "long", "qwe"]
 }
 public isolated function testMapsWithLongArray() returns error? {
     string schema = string `
@@ -404,7 +422,7 @@ public isolated function testMapsWithLongArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "int", "az"]
+    groups: ["map", "int", "az"]
 }
 public isolated function testMapsWithIntArray() returns error? {
     string schema = string `
@@ -426,7 +444,7 @@ public isolated function testMapsWithIntArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "float"]
+    groups: ["map", "float"]
 }
 public isolated function testMapsWithFloatArray() returns error? {
     string schema = string `
@@ -439,7 +457,6 @@ public isolated function testMapsWithFloatArray() returns error? {
             "default": {}
         }`;
 
-    // 207.234345
     map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
 
     Schema avro = check new (schema);
@@ -449,7 +466,7 @@ public isolated function testMapsWithFloatArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "string"]
+    groups: ["map", "string"]
 }
 public isolated function testMapsWithStringArray() returns error? {
     string schema = string `
@@ -471,7 +488,117 @@ public isolated function testMapsWithStringArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "bytes"]
+    groups: ["map", "string", "null", "union", "sbs"]
+}
+public isolated function testMapsWithUnionArray() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": {
+                "type": "array",
+                "items": ["string", "null"]
+            },
+            "default": {}
+        }`;
+
+    map<string[]> colors = {"red": ["252", "122", "41"], "green": ["235", "163", "23"], "blue": ["207", "123"]};
+
+    Schema avro = check new (schema);
+    byte[] encode = check avro.toAvro(colors);
+    map<string[]> deserialize = check avro.fromAvro(encode);
+    test:assertEquals(deserialize, colors);
+}
+
+@test:Config {
+    groups: ["map", "int", "null", "union"]
+}
+public isolated function testMapsWithUnionIntArray() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": {
+                "type": "array",
+                "items": ["int", "null"]
+            },
+            "default": {}
+        }`;
+
+    map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
+
+    Schema avro = check new (schema);
+    byte[] encode = check avro.toAvro(colors);
+    map<int[]> deserialize = check avro.fromAvro(encode);
+    test:assertEquals(deserialize, colors);
+}
+
+@test:Config {
+    groups: ["map", "long", "null", "union", "sxs"]
+}
+public isolated function testMapsWithUnionLongArray() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": {
+                "type": "array",
+                "items": ["long", "null"]
+            },
+            "default": {}
+        }`;
+
+    map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
+
+    Schema avro = check new (schema);
+    byte[] encode = check avro.toAvro(colors);
+    map<int[]> deserialize = check avro.fromAvro(encode);
+    test:assertEquals(deserialize, colors);
+}
+
+@test:Config {
+    groups: ["map", "float", "null", "union", "sss"]
+}
+public isolated function testMapsWithUnionFloatArray() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": {
+                "type": "array",
+                "items": ["float", "null"]
+            },
+            "default": {}
+        }`;
+
+    map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
+
+    Schema avro = check new (schema);
+    byte[] encode = check avro.toAvro(colors);
+    map<float[]> deserialize = check avro.fromAvro(encode);
+    test:assertEquals(deserialize, colors);
+}
+
+@test:Config {
+    groups: ["map", "float", "null", "union"]
+}
+public isolated function testMapsWithUnionDoubleArray() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": {
+                "type": "array",
+                "items": ["double", "null"]
+            },
+            "default": {}
+        }`;
+
+    map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
+
+    Schema avro = check new (schema);
+    byte[] encode = check avro.toAvro(colors);
+    map<float[]> deserialize = check avro.fromAvro(encode);
+    test:assertEquals(deserialize, colors);
+}
+
+@test:Config {
+    groups: ["map", "bytes"]
 }
 public isolated function testMapsWithBytesArray() returns error? {
     string schema = string `
@@ -493,7 +620,7 @@ public isolated function testMapsWithBytesArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "bytes"]
+    groups: ["map", "bytes"]
 }
 public isolated function testMapsWithFixedArray() returns error? {
     string schema = string `
@@ -519,7 +646,7 @@ public isolated function testMapsWithFixedArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "boolean"]
+    groups: ["map", "boolean"]
 }
 public isolated function testMapsWithBooleanArray() returns error? {
     string schema = string `
@@ -541,7 +668,7 @@ public isolated function testMapsWithBooleanArray() returns error? {
 }
 
 @test:Config {
-    groups: ["maps", "record"]
+    groups: ["map", "record", "gg"]
 }
 public isolated function testMapsWithRecordArray() returns error? {
     string schema = string `
@@ -550,52 +677,85 @@ public isolated function testMapsWithRecordArray() returns error? {
             "values": {
                 "type": "array",
                 "items": {
-                    "type": "record",
-                    "name": "Instructor",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "type": ["null", "string"]
-                        },
-                        {
-                            "name": "student",
-                            "type": ["null", {
-                                "type": "record",
-                                "name": "Student",
-                                "fields": [
-                                    {
-                                        "name": "name",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "name": "subject",
-                                        "type": "string"
-                                    }
-                                ]
-                            }]
-                        }
-                    ]
+                    "type": "array",
+                    "items": {
+                        "type": "record",
+                        "name": "Instructor",
+                        "fields": [
+                            {
+                                "name": "name",
+                                "type": ["null", "string"]
+                            },
+                            {
+                                "name": "student",
+                                "type": ["null", {
+                                    "type": "record",
+                                    "name": "Student",
+                                    "fields": [
+                                        {
+                                            "name": "name",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "subject",
+                                            "type": "string"
+                                        }
+                                    ]
+                                }]
+                            }
+                        ]
+                    }
                 }
             },
             "default": {}
         }`;
 
-        
-
-    map<Instructor[]> instructors = {
-        "john": [{name: "John", student: {name: "Alice", subject: "Math"}}, {name: "John", student: {name: "Alice", subject: "Math"}}],
-        "doe": [{name: "Doe", student: {name: "Bob", subject: "Science"}}, {name: "Doe", student: {name: "Bob", subject: "Science"}}],
-        "jane": [{name: "Jane", student: {name: "Charlie", subject: "English"}}, {name: "Jane", student: {name: "Charlie", subject: "English"}}]
+    map<Instructor[][]> instructors = {
+        "john": [[{name: "John", student: {name: "Alice", subject: "Math"}}, {name: "John", student: {name: "Alice", subject: "Math"}}]],
+        "doe": [[{name: "Doe", student: {name: "Bob", subject: "Science"}}, {name: "Doe", student: {name: "Bob", subject: "Science"}}]],
+        "jane": [[{name: "Jane", student: {name: "Charlie", subject: "English"}}, {name: "Jane", student: {name: "Charlie", subject: "English"}}]]
     };
 
     Schema avro = check new (schema);
     byte[] encode = check avro.toAvro(instructors);
-    map<Instructor[]> deserialize = check avro.fromAvro(encode);
+    map<Instructor[][]> deserialize = check avro.fromAvro(encode);
     test:assertEquals(instructors, deserialize);
 }
 
 @test:Config {
-    groups: ["maps", "record"]
+    groups: ["map", "record"]
+}
+public isolated function testArrayOfStringArrayMaps() returns error? {
+    string schema = string `
+    {
+        "type": "map",
+        "values": {
+            "type": "array",
+            "name" : "stringArray", 
+            "namespace": "data", 
+            "items": {
+                "type": "array",
+                "name" : "strings", 
+                "namespace": "data", 
+                "items": "string"
+            }
+        }
+    }`;
+
+    map<string[][]> colors = {
+        "red": [["red", "green", "blue"], ["red", "green", "blue"], ["red", "green", "blue"]],
+        "green": [["red", "green", "blue"], ["red", "green", "blue"], ["red", "green", "blue"]],
+        "blue": [["red", "green", "blue"], ["red", "green", "blue"], ["red", "green", "blue"]]
+    };
+
+    Schema avro = check new (schema);
+    byte[] encode = check avro.toAvro(colors);
+    map<string[][]> deserializeJson = check avro.fromAvro(encode);
+    test:assertEquals(deserializeJson, colors);
+}
+
+@test:Config {
+    groups: ["map", "record"]
 }
 public isolated function testMapsWithNestedRecordMaps() returns error? {
     string schema = string `
@@ -672,7 +832,7 @@ public isolated function testMapsWithNestedRecordMaps() returns error? {
 
 
 @test:Config {
-    groups: ["maps", "record", "wx"]
+    groups: ["map", "record"]
 }
 public isolated function testMapsWithNestedRecordArrayMaps() returns error? {
     string schema = string `

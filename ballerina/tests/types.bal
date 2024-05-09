@@ -46,7 +46,7 @@ public type Course record {
 
 public type Instructor record {
     string? name;
-    Student? student;
+    Student? & readonly student;
 };
 
 public type Lecturer record {
@@ -106,6 +106,13 @@ type UnionRecord record {
     int? credits;
     float value;
     StudentRecord? student;
+};
+
+type MultipleUnionRecord record {
+    string? name;
+    int? credits;
+    float value;
+    string|StudentRecord? student;
 };
 
 type StudentRecord record {

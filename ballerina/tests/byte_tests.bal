@@ -82,7 +82,7 @@ public isolated function testBytes() returns error? {
 }
 
 @test:Config {
-    groups: ["record", "maps", "bytes"]
+    groups: ["record", "map", "bytes"]
 }
 public isolated function testNestedRecordsWithBytes() returns error? {
     string schema = string `
