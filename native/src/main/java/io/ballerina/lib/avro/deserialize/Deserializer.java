@@ -30,18 +30,16 @@ public abstract class Deserializer {
     private final Type type;
 
     public Deserializer() {
-        this.schema = null;
-        this.type = null;
+        this(null);
     }
 
     public Deserializer(Type type) {
-        this.schema = null;
-        this.type = TypeUtils.getReferredType(type);
+        this(type, null);
     }
 
-    public Deserializer(Schema schema, Type type) {
-        this.schema = new Schema.Parser().parse(schema.toString());
-        this.type = TypeUtils.getReferredType(type);
+    public Deserializer(Type type, Schema schema) {
+        this.schema = schema == null ? null : new Schema.Parser().parse(schema.toString());
+        this.type = type == null ? null : TypeUtils.getReferredType(type);
     }
 
     public Schema getSchema() {

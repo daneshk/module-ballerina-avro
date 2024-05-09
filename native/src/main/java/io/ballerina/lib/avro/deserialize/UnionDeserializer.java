@@ -8,7 +8,7 @@ import org.apache.avro.generic.GenericData;
 public class UnionDeserializer extends Deserializer {
 
     public UnionDeserializer(Schema schema, Type type) {
-        super(schema, type);
+        super(type, schema);
     }
 
     @Override

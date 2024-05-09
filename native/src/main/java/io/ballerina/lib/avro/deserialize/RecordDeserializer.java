@@ -27,7 +27,7 @@ import org.apache.avro.generic.GenericRecord;
 public class RecordDeserializer extends Deserializer {
 
     public RecordDeserializer(Schema schema, Type type) {
-        super(schema, type);
+        super(type, schema);
     }
 
     @Override

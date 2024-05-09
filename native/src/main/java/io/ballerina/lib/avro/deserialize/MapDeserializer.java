@@ -28,7 +28,7 @@ import java.util.Map;
 public class MapDeserializer extends Deserializer {
 
     public MapDeserializer(Schema schema, Type type) {
-        super(schema, type);
+        super(type, schema);
     }
 
     @Override
