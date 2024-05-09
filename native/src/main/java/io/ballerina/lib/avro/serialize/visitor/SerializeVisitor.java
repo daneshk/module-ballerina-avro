@@ -21,8 +21,8 @@ package io.ballerina.lib.avro.serialize.visitor;
 import io.ballerina.lib.avro.serialize.ArraySerializer;
 import io.ballerina.lib.avro.serialize.EnumSerializer;
 import io.ballerina.lib.avro.serialize.FixedSerializer;
-import io.ballerina.lib.avro.serialize.GenericSerializer;
 import io.ballerina.lib.avro.serialize.MapSerializer;
+import io.ballerina.lib.avro.serialize.PrimitiveDeserializer;
 import io.ballerina.lib.avro.serialize.RecordSerializer;
 import io.ballerina.lib.avro.serialize.Serializer;
 import io.ballerina.lib.avro.serialize.UnionSerializer;
@@ -56,7 +56,7 @@ public class SerializeVisitor implements ISerializeVisitor {
     public Serializer createSerializer(Schema schema) {
         return switch (schema.getValueType().getType()) {
             case INT, LONG, FLOAT, DOUBLE, BOOLEAN, STRING, BYTES ->
-                    new GenericSerializer(schema.getValueType());
+                    new PrimitiveDeserializer(schema.getValueType());
             case RECORD ->
                     new RecordSerializer(schema.getValueType());
             case MAP ->
@@ -101,13 +101,13 @@ public class SerializeVisitor implements ISerializeVisitor {
             case UNION ->
                     new UnionSerializer(schema).convert(this, fieldData);
             default ->
-                    new GenericSerializer(schema).convert(this, fieldData);
+                    new PrimitiveDeserializer(schema).convert(this, fieldData);
         };
     }
 
     @Override
-    public Object visit(GenericSerializer genericSerializer, Object data) {
-        switch (genericSerializer.getSchema().getType()) {
+    public Object visit(PrimitiveDeserializer primitiveDeserializer, Object data) {
+        switch (primitiveDeserializer.getSchema().getType()) {
             case INT -> {
                 return ((Long) data).intValue();
             }
@@ -171,13 +171,13 @@ public class SerializeVisitor implements ISerializeVisitor {
                         .filter(type -> type.getType().equals(Schema.Type.ENUM))
                         .findFirst()
                         .map(type -> visit(new EnumSerializer(type), data))
-                        .orElse(visit(new GenericSerializer(fieldSchema), data.toString()));
+                        .orElse(visit(new PrimitiveDeserializer(fieldSchema), data.toString()));
             }
             case ARRAY_TYPE -> {
                 for (Schema schema : fieldSchema.getTypes()) {
                     switch (schema.getType()) {
                         case BYTES -> {
-                            return new GenericSerializer(schema).convert(this, data);
+                            return new PrimitiveDeserializer(schema).convert(this, data);
                         }
                         case FIXED -> {
                             return new FixedSerializer(schema).convert(this, data);
@@ -200,7 +200,7 @@ public class SerializeVisitor implements ISerializeVisitor {
                 return fieldSchema.getTypes().stream()
                         .filter(schema -> schema.getType().equals(Schema.Type.INT))
                         .findFirst()
-                        .map(schema -> new GenericSerializer(schema).convert(this, data))
+                        .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
                         .orElse(data);
 
             }
@@ -208,7 +208,7 @@ public class SerializeVisitor implements ISerializeVisitor {
                 return fieldSchema.getTypes().stream()
                         .filter(schema -> schema.getType().equals(Schema.Type.FLOAT))
                         .findFirst()
-                        .map(schema -> new GenericSerializer(schema).convert(this, data))
+                        .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
                         .orElse(data);
 
             }

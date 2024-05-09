@@ -21,7 +21,7 @@ package io.ballerina.lib.avro.serialize.visitor;
 import io.ballerina.lib.avro.serialize.ArraySerializer;
 import io.ballerina.lib.avro.serialize.EnumSerializer;
 import io.ballerina.lib.avro.serialize.FixedSerializer;
-import io.ballerina.lib.avro.serialize.GenericSerializer;
+import io.ballerina.lib.avro.serialize.PrimitiveDeserializer;
 import io.ballerina.lib.avro.serialize.RecordSerializer;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
@@ -35,5 +35,5 @@ public interface ISerializeVisitor {
     GenericData.Array<Object> visit(ArraySerializer arraySerializer, BArray data);
     Object visit(EnumSerializer enumSerializer, Object data);
     GenericData.Fixed visit(FixedSerializer fixedSerializer, Object data);
-    Object visit(GenericSerializer genericSerializer, Object data);
+    Object visit(PrimitiveDeserializer primitiveDeserializer, Object data);
 }

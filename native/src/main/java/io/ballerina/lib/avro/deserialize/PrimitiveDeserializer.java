@@ -23,9 +23,9 @@ import io.ballerina.runtime.api.types.Type;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
-public class GenericDeserializer extends Deserializer {
+public class PrimitiveDeserializer extends Deserializer {
 
-    public GenericDeserializer(Schema schema, Type type) {
+    public PrimitiveDeserializer(Schema schema, Type type) {
         super(schema, type);
     }
 

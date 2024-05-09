@@ -33,7 +33,7 @@ public class DeserializeFactory {
             case MAP -> new MapDeserializer(schema, type);
             case RECORD -> new RecordDeserializer(schema, type);
             case BYTES -> new ByteDeserializer();
-            default -> new GenericDeserializer(schema, type);
+            default -> new PrimitiveDeserializer(schema, type);
         };
     }
 }

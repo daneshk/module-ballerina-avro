@@ -16,44 +16,36 @@ public class PrimitiveArrayVisitor implements IArrayVisitor {
                 : schema.getType();
 
         switch (type) {
-            case STRING -> {
-                array.addAll(Arrays.asList(data.getStringArray()));
-                return array;
-            }
+            case STRING ->
+                    array.addAll(Arrays.asList(data.getStringArray()));
             case INT -> {
                 for (long obj: data.getIntArray()) {
                     array.add(((Long) obj).intValue());
                 }
-                return array;
             }
             case LONG -> {
                 for (Object obj: data.getIntArray()) {
                     array.add(obj);
                 }
-                return array;
             }
             case FLOAT -> {
                 for (Double obj: data.getFloatArray()) {
                     array.add(obj.floatValue());
                 }
-                return array;
             }
             case DOUBLE -> {
                 for (Object obj: data.getFloatArray()) {
                     array.add(obj);
                 }
-                return array;
             }
             case BOOLEAN -> {
                 for (Object obj: data.getBooleanArray()) {
                     array.add(obj);
                 }
-                return array;
             }
-            default -> {
-                return visitBytes(data, array);
-            }
+            default -> visitBytes(data, array);
         }
+        return array;
     }
 
 

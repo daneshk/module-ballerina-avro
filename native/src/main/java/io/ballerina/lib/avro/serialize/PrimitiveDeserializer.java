@@ -21,9 +21,9 @@ package io.ballerina.lib.avro.serialize;
 import io.ballerina.lib.avro.serialize.visitor.SerializeVisitor;
 import org.apache.avro.Schema;
 
-public class GenericSerializer extends Serializer {
+public class PrimitiveDeserializer extends Serializer {
 
-    public GenericSerializer(Schema schema) {
+    public PrimitiveDeserializer(Schema schema) {
         super(schema);
     }
 
