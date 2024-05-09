@@ -18,10 +18,11 @@
 
 package io.ballerina.lib.avro.deserialize;
 
-import io.ballerina.lib.avro.visitor.DeserializeVisitor;
+import io.ballerina.lib.avro.deserialize.visitor.DeserializeVisitor;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 
 public abstract class Deserializer {
 
@@ -43,13 +44,14 @@ public abstract class Deserializer {
         this.type = TypeUtils.getReferredType(type);
     }
 
-    protected Schema getSchema() {
-        return schema;
+    public Schema getSchema() {
+        return new Schema.Parser().parse(schema.toString());
     }
 
-    protected Type getType() {
-        return type;
+    public Type getType() {
+        return TypeUtils.getReferredType(type);
     }
 
-    public abstract Object fromAvroMessage(DeserializeVisitor visitor, Object data, Schema schema) throws Exception;
+    public abstract Object fromAvro(DeserializeVisitor visitor, Object data) throws Exception;
+    public abstract Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception;
 }

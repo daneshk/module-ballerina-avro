@@ -18,16 +18,21 @@
 
 package io.ballerina.lib.avro.deserialize;
 
-import io.ballerina.lib.avro.visitor.DeserializeVisitor;
-import org.apache.avro.Schema;
+import io.ballerina.lib.avro.deserialize.visitor.DeserializeVisitor;
+import org.apache.avro.generic.GenericData;
 
 public class NullDeserializer extends Deserializer {
 
     @Override
-    public Object fromAvroMessage(DeserializeVisitor visitor, Object data, Schema schema) throws Exception {
+    public Object fromAvro(DeserializeVisitor visitor, Object data) throws Exception {
         if (data != null) {
             throw new Exception("The value does not match with the null schema");
         }
+        return null;
+    }
+
+    @Override
+    public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
         return null;
     }
 }

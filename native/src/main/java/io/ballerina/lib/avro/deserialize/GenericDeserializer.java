@@ -18,13 +18,24 @@
 
 package io.ballerina.lib.avro.deserialize;
 
-import io.ballerina.lib.avro.visitor.DeserializeVisitor;
+import io.ballerina.lib.avro.deserialize.visitor.DeserializeVisitor;
+import io.ballerina.runtime.api.types.Type;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 
 public class GenericDeserializer extends Deserializer {
 
+    public GenericDeserializer(Schema schema, Type type) {
+        super(schema, type);
+    }
+
     @Override
-    public Object fromAvroMessage(DeserializeVisitor visitor, Object data, Schema schema) {
+    public Object fromAvro(DeserializeVisitor visitor, Object data) {
         return data;
+    }
+
+    @Override
+    public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
+        return visitor.visit(this, data);
     }
 }
