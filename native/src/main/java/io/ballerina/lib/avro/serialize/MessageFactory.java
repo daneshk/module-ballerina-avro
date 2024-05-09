@@ -32,7 +32,7 @@ public class MessageFactory {
             case MAP -> new MapSerializer(schema);
             case RECORD -> new RecordSerializer(schema);
             case BYTES -> new ByteSerializer();
-            default -> new GenericSerializer();
+            default -> new GenericSerializer(schema);
         };
     }
 }
