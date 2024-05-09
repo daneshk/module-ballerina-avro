@@ -161,11 +161,7 @@ public class SerializeVisitor implements ISerializeVisitor {
         Type typeName = TypeUtils.getType(data);
         switch (typeName.getTag()) {
             case TypeTags.STRING_TAG -> {
-                return fieldSchema.getTypes().stream()
-                        .filter(type -> type.getType().equals(Schema.Type.ENUM))
-                        .findFirst()
-                        .map(type -> visit(new EnumSerializer(type), data))
-                        .orElse(visit(new PrimitiveDeserializer(fieldSchema), data.toString()));
+                return visitiUnionStrings(data, fieldSchema);
             }
             case TypeTags.ARRAY_TAG -> {
                 return visitUnionArrays(data, fieldSchema);
@@ -174,28 +170,43 @@ public class SerializeVisitor implements ISerializeVisitor {
                 return new MapSerializer(fieldSchema).convert(this, data);
             }
             case TypeTags.RECORD_TYPE_TAG -> {
-                return new RecordSerializer(getRecordSchema(Schema.Type.RECORD,
-                                            fieldSchema.getTypes())).convert(this, data);
+                Schema schema = getRecordSchema(Schema.Type.RECORD, fieldSchema.getTypes());
+                return new RecordSerializer(schema).convert(this, data);
             }
             case TypeTags.INT_TAG -> {
-                return fieldSchema.getTypes().stream()
-                        .filter(schema -> schema.getType().equals(Schema.Type.INT))
-                        .findFirst()
-                        .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
-                        .orElse(data);
-
+                return visitUnionIntegers(data, fieldSchema);
             }
             case TypeTags.FLOAT_TAG -> {
-                return fieldSchema.getTypes().stream()
-                        .filter(schema -> schema.getType().equals(Schema.Type.FLOAT))
-                        .findFirst()
-                        .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
-                        .orElse(data);
+                return visitUnionFloats(data, fieldSchema);
             }
             default -> {
                 return data;
             }
         }
+    }
+
+    private Object visitUnionFloats(Object data, Schema fieldSchema) {
+        return fieldSchema.getTypes().stream()
+                .filter(schema -> schema.getType().equals(Schema.Type.FLOAT))
+                .findFirst()
+                .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
+                .orElse(data);
+    }
+
+    private Object visitUnionIntegers(Object data, Schema fieldSchema) {
+        return fieldSchema.getTypes().stream()
+                .filter(schema -> schema.getType().equals(Schema.Type.INT))
+                .findFirst()
+                .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
+                .orElse(data);
+    }
+
+    private Object visitiUnionStrings(Object data, Schema fieldSchema) {
+        return fieldSchema.getTypes().stream()
+                .filter(type -> type.getType().equals(Schema.Type.ENUM))
+                .findFirst()
+                .map(type -> visit(new EnumSerializer(type), data))
+                .orElse(visit(new PrimitiveDeserializer(fieldSchema), data.toString()));
     }
 
     private Object visitUnionArrays(Object data, Schema fieldSchema) {
