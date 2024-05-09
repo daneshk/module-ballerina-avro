@@ -31,16 +31,11 @@ public class RecordDeserializer extends Deserializer {
     }
 
     @Override
-    public Object fromAvro(DeserializeVisitor visitor, Object data) throws Exception {
+    public Object visit(DeserializeVisitor visitor, Object data) throws Exception {
         return visitor.visit(this, (GenericRecord) data);
     }
 
-    @Override
     public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
-        return visitor.visit(this, data);
-    }
-
-    public Object visit(DeserializeVisitor visitor, GenericRecord data) throws Exception {
         return visitor.visit(this, data);
     }
 }

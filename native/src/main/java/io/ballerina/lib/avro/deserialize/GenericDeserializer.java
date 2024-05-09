@@ -30,8 +30,8 @@ public class GenericDeserializer extends Deserializer {
     }
 
     @Override
-    public Object fromAvro(DeserializeVisitor visitor, Object data) {
-        return data;
+    public Object visit(DeserializeVisitor visitor, Object data) {
+        return visitor.visit(this, data);
     }
 
     @Override

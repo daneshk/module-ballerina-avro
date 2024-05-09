@@ -11,7 +11,7 @@ public class EnumDeserializer extends Deserializer {
     }
 
     @Override
-    public Object fromAvro(DeserializeVisitor visitor, Object data) {
+    public Object visit(DeserializeVisitor visitor, Object data) {
         return visitor.visit(this, (GenericData.Array<Object>) data);
     }
 
@@ -19,5 +19,4 @@ public class EnumDeserializer extends Deserializer {
     public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
         return visitor.visit(this, data);
     }
-
 }

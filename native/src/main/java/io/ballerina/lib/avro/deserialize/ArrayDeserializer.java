@@ -30,7 +30,7 @@ public class ArrayDeserializer extends Deserializer {
     }
 
     @Override
-    public Object fromAvro(DeserializeVisitor visitor, Object data) throws Exception {
+    public Object visit(DeserializeVisitor visitor, Object data) throws Exception {
         return visitor.visit(this, (GenericData.Array<Object>) data);
     }
 

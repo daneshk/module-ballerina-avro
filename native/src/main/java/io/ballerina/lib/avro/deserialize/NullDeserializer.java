@@ -24,14 +24,13 @@ import org.apache.avro.generic.GenericData;
 public class NullDeserializer extends Deserializer {
 
     @Override
-    public Object fromAvro(DeserializeVisitor visitor, Object data) throws Exception {
+    public Object visit(DeserializeVisitor visitor, Object data) throws Exception {
         if (data != null) {
             throw new Exception("The value does not match with the null schema");
         }
         return null;
     }
 
-    @Override
     public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
         return null;
     }

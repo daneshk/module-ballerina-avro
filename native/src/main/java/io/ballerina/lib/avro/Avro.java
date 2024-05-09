@@ -81,7 +81,7 @@ public final class Avro {
             Object data = datumReader.read(payload, decoder);
             DeserializeVisitor deserializeVisitor = new DeserializeVisitor();
             Deserializer deserializer = DeserializeFactory.generateDeserializer(schema, typeParam.getDescribingType());
-            return Objects.requireNonNull(deserializer).fromAvro(deserializeVisitor, data);
+            return Objects.requireNonNull(deserializer).visit(deserializeVisitor, data);
         } catch (Exception e) {
             return createError(DESERIALIZATION_ERROR, e);
         }

@@ -75,7 +75,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
             case RECORD ->
                     new RecordDeserializer(schema, type);
             case FIXED ->
-                    new FixedDeserializer(type);
+                    new FixedDeserializer(schema, type);
             default ->
                     new GenericDeserializer(schema, type);
         };
@@ -149,27 +149,32 @@ public class DeserializeVisitor implements IDeserializeVisitor {
         return (BMap<BString, Object>) ValueUtils.convert(avroRecord, type);
     }
 
-    public Object visit(GenericDeserializer genericDeserializer, GenericData.Array<Object> data) {
+    public Object visit(GenericDeserializer genericDeserializer, Object data) {
         Schema schema = genericDeserializer.getSchema();
-        switch (schema.getElementType().getType()) {
-            case STRING -> {
-                return visitStringArray(data);
+        if (schema.getType().equals(Schema.Type.ARRAY)) {
+            GenericData.Array<Object> array = (GenericData.Array<Object>) data;
+            switch (schema.getElementType().getType()) {
+                case STRING -> {
+                    return visitStringArray(array);
+                }
+                case INT -> {
+                    return visitIntArray(array);
+                }
+                case LONG -> {
+                    return visitLongArray(array);
+                }
+                case FLOAT, DOUBLE -> {
+                    return visitDoubleArray(array);
+                }
+                case BOOLEAN -> {
+                    return visitBooleanArray(array);
+                }
+                default -> {
+                    return visitBytesArray(array, genericDeserializer.getType());
+                }
             }
-            case INT -> {
-                return visitIntArray(data);
-            }
-            case LONG -> {
-                return visitLongArray(data);
-            }
-            case FLOAT, DOUBLE -> {
-                return visitDoubleArray(data);
-            }
-            case BOOLEAN -> {
-                return visitBooleanArray(data);
-            }
-            default -> {
-                return visitBytesArray(data, genericDeserializer.getType());
-            }
+        } else {
+            return data;
         }
     }
 
@@ -319,6 +324,20 @@ public class DeserializeVisitor implements IDeserializeVisitor {
             enums[i] = visitString(data.get(i));
         }
         return ValueCreator.createArrayValue(enums, (ArrayType) enumDeserializer.getType());
+    }
+
+    public Object visit(FixedDeserializer fixedDeserializer, Object data) {
+        if (fixedDeserializer.getSchema().getType().equals(Schema.Type.ARRAY)) {
+            GenericData.Array<Object> array = (GenericData.Array<Object>) data;
+            Type type = fixedDeserializer.getType();
+            List<BArray> values = new ArrayList<>();
+            for (Object datum : array) {
+                values.add(visitFixed(datum));
+            }
+            return ValueCreator.createArrayValue(values.toArray(new BArray[array.size()]), (ArrayType) type);
+        } else {
+            return visitFixed(data);
+        }
     }
 
     public BArray visit(FixedDeserializer fixedDeserializer, GenericData.Array<Object> data) {

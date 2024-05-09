@@ -24,16 +24,11 @@ import org.apache.avro.generic.GenericData;
 public class StringDeserializer extends Deserializer {
 
     @Override
-    public Object fromAvro(DeserializeVisitor visitor, Object data) {
+    public Object visit(DeserializeVisitor visitor, Object data) {
         return visitor.visitString(data);
     }
 
-    @Override
     public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
         return null;
-    }
-
-    public Object visit(DeserializeVisitor visitor, Object data) throws Exception {
-        return visitor.visitString(data);
     }
 }
