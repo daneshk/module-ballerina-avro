@@ -18,9 +18,9 @@
 
 package io.ballerina.lib.avro;
 
+import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.types.IntersectionType;
-import io.ballerina.runtime.api.types.MapType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.UnionType;
 import io.ballerina.runtime.api.utils.StringUtils;
@@ -56,9 +56,9 @@ public final class Utils {
     public static Type getMutableType(IntersectionType intersectionType) {
         for (Type type : intersectionType.getConstituentTypes()) {
             Type referredType = TypeUtils.getImpliedType(type);
-            if (referredType instanceof UnionType) {
+            if (referredType.getTag() == TypeTags.UNION_TAG) {
                 for (Type elementType : ((UnionType) referredType).getMemberTypes()) {
-                    if (elementType instanceof MapType) {
+                    if (elementType.getTag() == TypeTags.MAP_TAG) {
                         return elementType;
                     }
                 }
