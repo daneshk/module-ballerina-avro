@@ -38,12 +38,15 @@ public final class Utils {
     public static final String ERROR_TYPE = "Error";
     public static final String SERIALIZATION_ERROR = "Avro serialization error";
     public static final String DESERIALIZATION_ERROR = "Avro deserialization error";
-    public static final String STRING_TYPE = "BStringType";
-    public static final String ARRAY_TYPE = "BArrayType";
-    public static final String MAP_TYPE = "BMapType";
-    public static final String RECORD_TYPE = "BRecordType";
-    public static final String INTEGER_TYPE = "BIntegerType";
-    public static final String FLOAT_TYPE = "BFloatType";
+    public static final int STRING_TYPE = 5;
+    public static final int ARRAY_TYPE = 32;
+    public static final int MAP_TYPE = 27;
+    public static final int INTERSECTION_TYPE = 34;
+    public static final int REFERENCE_TYPE = 53;
+    public static final int RECORD_TYPE = 24;
+    public static final int INTEGER_TYPE = 1;
+    public static final int FLOAT_TYPE = 3;
+    public static final int BOOLEAN_TYPE = 6;
 
     public static BError createError(String message, Throwable throwable) {
         BError cause = ErrorCreator.createError(throwable);
