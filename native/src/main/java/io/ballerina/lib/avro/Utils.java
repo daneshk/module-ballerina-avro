@@ -45,23 +45,22 @@ public final class Utils {
     }
 
     public static Type getMutableType(Type dataType) {
-        if (dataType.getTag() == TypeTags.INTERSECTION_TAG) {
-            IntersectionType intersectionType = (IntersectionType) dataType;
-            for (Type type : intersectionType.getConstituentTypes()) {
-                Type referredType = TypeUtils.getImpliedType(type);
-                if (referredType.getTag() == TypeTags.UNION_TAG) {
-                    for (Type elementType : ((UnionType) referredType).getMemberTypes()) {
-                        if (elementType.getTag() == TypeTags.MAP_TAG) {
-                            return elementType;
-                        }
+        if (dataType.getTag() != TypeTags.INTERSECTION_TAG) {
+            return dataType;
+        }
+        IntersectionType intersectionType = (IntersectionType) dataType;
+        for (Type type : intersectionType.getConstituentTypes()) {
+            Type referredType = TypeUtils.getImpliedType(type);
+            if (referredType.getTag() == TypeTags.UNION_TAG) {
+                for (Type elementType : ((UnionType) referredType).getMemberTypes()) {
+                    if (elementType.getTag() != TypeTags.NULL_TAG) {
+                        return elementType;
                     }
                 }
-                if (TypeUtils.getImpliedType(intersectionType.getEffectiveType()).getTag() == referredType.getTag()) {
-                    return referredType;
-                }
             }
-        } else {
-            return dataType;
+            if (TypeUtils.getImpliedType(intersectionType.getEffectiveType()).getTag() == referredType.getTag()) {
+                return referredType;
+            }
         }
         throw new IllegalStateException("Unsupported intersection type found.");
     }

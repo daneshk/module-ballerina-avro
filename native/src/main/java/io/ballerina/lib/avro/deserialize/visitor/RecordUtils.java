@@ -48,8 +48,8 @@ public class RecordUtils {
     }
 
     public static void processArrayField(BMap<BString, Object> avroRecord,
-                                   Schema.Field field, Object fieldData) throws Exception {
-        ArrayDeserializer arrayDes = new ArrayDeserializer(field.schema(), avroRecord.getType());
+                                         Schema.Field field, Object fieldData, Type type) throws Exception {
+        ArrayDeserializer arrayDes = new ArrayDeserializer(field.schema(), type);
         Object fieldValue = arrayDes.visit(new DeserializeVisitor(), (GenericData.Array<Object>) fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }
