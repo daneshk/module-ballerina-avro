@@ -29,7 +29,7 @@ public class DeserializeFactory {
             case FLOAT, DOUBLE -> new DoubleDeserializer();
             case STRING, ENUM -> new StringDeserializer();
             case ARRAY -> new ArrayDeserializer(schema, type);
-            case FIXED -> new FixedDeserializer(type);
+            case FIXED -> new FixedDeserializer(schema, type);
             case MAP -> new MapDeserializer(schema, type);
             case RECORD -> new RecordDeserializer(schema, type);
             case BYTES -> new ByteDeserializer();
