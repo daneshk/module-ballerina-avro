@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/test;
+import ballerina/io;
 
 @test:Config{
     groups: ["record", "bytes"]
@@ -37,8 +38,8 @@ public isolated function testRecordsWithBytes() returns error? {
     };
 
     Schema avro = check new(schema);
-    byte[] encode = check avro.toAvro(student);
-    Student1 deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(student);
+    Student1 deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, student);
 }
 
@@ -57,9 +58,9 @@ public isolated function testArraysWithBytes() returns error? {
     byte[][] numbers = ["22.4".toBytes(), "556.84350".toBytes(), "78.0327".toBytes()];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(numbers);
-    byte[][] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, numbers);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    byte[][] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
 }
 
 @test:Config {
@@ -76,46 +77,17 @@ public isolated function testBytes() returns error? {
     byte[] value = "5".toBytes();
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    byte[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, value);
+    byte[] encodedValue = check avro.toAvro(value);
+    byte[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
     groups: ["record", "map", "bytes"]
 }
 public isolated function testNestedRecordsWithBytes() returns error? {
-    string schema = string `
-    {
-        "type": "record",
-        "name": "Lecturer4",
-        "fields": [
-            {
-                "name": "name",
-                "type": {
-                    "type": "map",
-                    "values": "int"
-                }
-            },
-            {
-                "name": "byteData",
-                "type": "bytes"
-            },
-            {
-                "name": "instructor",
-                "type": {
-                    "type": "record",
-                    "name": "ByteRecord",
-                    "fields": [
-                        {
-                            "name": "byteData",
-                            "type": "bytes"
-                        }
-                    ]
-                }
-            }
-        ]
-    }`;
+    string jsonFileName = string `tests/resources/schema_bytes.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Lecturer4 lecturer4 = {
         name: {

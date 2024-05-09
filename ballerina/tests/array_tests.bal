@@ -31,9 +31,29 @@ public isolated function testIntArrays() returns error? {
     int[] numbers = [22, 556, 78];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(numbers);
-    int[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, numbers);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    int[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
+}
+
+@test:Config {
+    groups: ["array", "int", "qqq"]
+}
+public isolated function testReadOnlyIntArrays() returns error? {
+    string schema = string `
+        {
+            "type": "array",
+            "name" : "integers", 
+            "namespace": "data", 
+            "items": "int"
+        }`;
+
+    int[] & readonly numbers = [22, 556, 78];
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    int[] & readonly deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
 }
 
 @test:Config {
@@ -51,9 +71,29 @@ public isolated function testStringArrays() returns error? {
     string[] colors = ["red", "green", "blue"];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    string[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, colors);
+    byte[] encodedValue = check avro.toAvro(colors);
+    string[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, colors);
+}
+
+@test:Config {
+    groups: ["array", "string"]
+}
+public isolated function testReadOnlyStringArrays() returns error? {
+    string schema = string `
+        {
+            "type": "array",
+            "name" : "stringArray", 
+            "namespace": "data", 
+            "items": "string"
+        }`;
+
+    string[] & readonly colors = ["red", "green", "blue"];
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(colors);
+    string[] & readonly deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, colors);
 }
 
 @test:Config {
@@ -76,9 +116,34 @@ public isolated function testArrayOfStringArrays() returns error? {
     string[][] colors = [["red", "green", "blue"]];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    string[][] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, colors);
+    byte[] encodedValue = check avro.toAvro(colors);
+    string[][] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, colors);
+}
+
+@test:Config {
+    groups: ["array", "string", "mn"]
+}
+public isolated function testReadOnlyArrayOfStringArrays() returns error? {
+    string schema = string `
+        {
+            "type": "array",
+            "name" : "stringArray", 
+            "namespace": "data", 
+            "items": {
+                "type": "array",
+                "name" : "strings", 
+                "namespace": "data", 
+                "items": "string"
+            }
+        }`;
+
+    string[][] & readonly colors = [["red", "green", "blue"]];
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(colors);
+    string[][] & readonly deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, colors);
 }
 
 @test:Config {
@@ -100,9 +165,9 @@ public isolated function testEnumArrays() returns error? {
     Numbers[] colors = ["ONE", "TWO", "THREE"];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    Numbers[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, colors);
+    byte[] encodedValue = check avro.toAvro(colors);
+    Numbers[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, colors);
 }
 
 @test:Config {
@@ -129,9 +194,9 @@ public isolated function testArrayOfEnumArrays() returns error? {
     Numbers[][] colors = [["ONE", "TWO", "THREE"], ["ONE", "TWO", "THREE"]];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    Numbers[][] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, colors);
+    byte[] encodedValue = check avro.toAvro(colors);
+    Numbers[][] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, colors);
 }
 
 @test:Config {
@@ -149,9 +214,9 @@ public isolated function testFloatArrays() returns error? {
     float[] numbers = [22.4, 556.84350, 78.0327];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(numbers);
-    float[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, numbers);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    float[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
 }
 
 @test:Config {
@@ -169,9 +234,9 @@ public isolated function testDoubleArrays() returns error? {
     float[] numbers = [22.439475948, 556.843549485340, 78.032985693457];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(numbers);
-    float[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, numbers);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    float[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
 }
 
 @test:Config {
@@ -189,9 +254,9 @@ public isolated function testLongArrays() returns error? {
     int[] numbers = [223432, 55423326, 7823423];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(numbers);
-    int[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, numbers);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    int[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
 }
 
 @test:Config {
@@ -209,8 +274,8 @@ public isolated function testInvalidDecimalArrays() returns error? {
     decimal[] numbers = [22.439475948, 556.843549485340, 78.032985693457];
 
     Schema avro = check new (schema);
-    byte[]|Error encode = avro.toAvro(numbers);
-    test:assertTrue(encode is Error);
+    byte[]|Error encodedValue = avro.toAvro(numbers);
+    test:assertTrue(encodedValue is Error);
 }
 
 @test:Config {
@@ -228,9 +293,9 @@ public isolated function testBooleanArrays() returns error? {
     boolean[] numbers = [true, true, false];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(numbers);
-    boolean[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, numbers);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    boolean[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
 }
 
 @test:Config {
@@ -247,8 +312,8 @@ public isolated function testArraysWithAnydata() returns error? {
 
     anydata numbers = ["22.4".toBytes(), "556.84350", 78.0327];
     Schema avro = check new (schema);
-    byte[]|Error encode = avro.toAvro(numbers);
-    test:assertTrue(encode is Error);
+    byte[]|Error encodedValue = avro.toAvro(numbers);
+    test:assertTrue(encodedValue is Error);
 }
 
 @test:Config {
@@ -270,9 +335,9 @@ public isolated function testArraysWithFixed() returns error? {
     byte[][] numbers = ["22".toBytes(), "55".toBytes(), "78".toBytes()];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(numbers);
-    byte[][] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, numbers);
+    byte[] encodedValue = check avro.toAvro(numbers);
+    byte[][] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, numbers);
 }
 
 @test:Config {
@@ -309,9 +374,48 @@ public isolated function testRecordsInArrays() returns error? {
     }];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(students);
-    Student[] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, students);
+    byte[] encodedValue = check avro.toAvro(students);
+    Student[] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, students);
+}
+
+@test:Config {
+    groups: ["record", "array"]
+}
+public isolated function testRecordsInReadOnlyArrays() returns error? {
+    string schema = string `
+        {
+            "type": "array",
+            "name" : "recordArray", 
+            "namespace": "data", 
+            "items": {
+                "type": "record",
+                "name": "Student",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": ["string", "null"]
+                    },
+                    {
+                        "name": "subject",
+                        "type": ["string", "null"]
+                    }
+                ]
+            }
+        }`;
+
+    Student[] & readonly students = [{
+        name: "Liam",
+        subject: "geology"
+    }, {
+        name: "John",
+        subject: "math"
+    }];
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(students);
+    Student[] & readonly deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, students);
 }
 
 @test:Config {
@@ -357,7 +461,55 @@ public isolated function testRecordArraysInArrays() returns error? {
     }]];
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(students);
-    Student[][] deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, students);
+    byte[] encodedValue = check avro.toAvro(students);
+    Student[][] deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, students);
+}
+
+@test:Config {
+    groups: ["record", "array"]
+}
+public isolated function testRecordArraysInReadOnlyArrays() returns error? {
+    string schema = string `
+        {
+            "type": "array",
+            "name" : "recordArray", 
+            "namespace": "data", 
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "record",
+                    "name": "Student",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": ["string", "null"]
+                        },
+                        {
+                            "name": "subject",
+                            "type": ["string", "null"]
+                        }
+                    ]
+                }
+            }
+        }`;
+
+    Student[][] & readonly students = [[{
+        name: "Liam",
+        subject: "geology"
+    }, {
+        name: "John",
+        subject: "math"
+    }], [{
+        name: "Liam",
+        subject: "geology"
+    }, {
+        name: "John",
+        subject: "math"
+    }]];
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(students);
+    Student[][] & readonly deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, students);
 }

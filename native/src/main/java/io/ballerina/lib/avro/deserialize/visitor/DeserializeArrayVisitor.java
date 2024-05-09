@@ -18,26 +18,35 @@
 
 package io.ballerina.lib.avro.deserialize.visitor;
 
+import io.ballerina.lib.avro.Utils;
 import io.ballerina.lib.avro.deserialize.ArrayDeserializer;
 import io.ballerina.lib.avro.deserialize.Deserializer;
+import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.values.BArray;
 import org.apache.avro.generic.GenericData;
 
 public class DeserializeArrayVisitor extends DeserializeVisitor {
 
     public Object visit(ArrayDeserializer arrayDeserializer, GenericData.Array<Object> data) throws Exception {
         Object[] objects = new Object[data.size()];
-        Type arrayType = ((ArrayType) arrayDeserializer.getType()).getElementType();
+        boolean isReadOnly = arrayDeserializer.getType().getTag() == TypeTags.INTERSECTION_TAG;
+        Type elementType = ((ArrayType) Utils.getMutableType(arrayDeserializer.getType())).getElementType();
         int index = 0;
         for (Object element : data) {
             GenericData.Array<Object> dataArray = (GenericData.Array<Object>) element;
-            Type arrType = arrayType instanceof ArrayType ? arrayType : arrayDeserializer.getType();
+            Type arrType = elementType.getTag() == TypeTags.ARRAY_TAG ? elementType : arrayDeserializer.getType();
             objects[index++] = visitNestedArray(new ArrayDeserializer(arrayDeserializer.getSchema().getElementType(),
                     arrType), dataArray);
         }
-        return ValueCreator.createArrayValue(objects, (ArrayType) arrayDeserializer.getType());
+        BArray arrayValue = ValueCreator
+                .createArrayValue(objects, (ArrayType) Utils.getMutableType(arrayDeserializer.getType()));
+        if (isReadOnly) {
+            arrayValue.freezeDirect();
+        }
+        return arrayValue;
     }
 
     public Object visitNestedArray(ArrayDeserializer arrayDeserializer,

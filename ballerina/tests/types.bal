@@ -125,6 +125,11 @@ public type Color record {
     string[] colors;
 };
 
+type Color1 record {
+    string name;
+    byte[] colors;
+};
+
 public type FixedRec record {
     byte[] fixed_field;
     string other_field;

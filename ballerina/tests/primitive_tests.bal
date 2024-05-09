@@ -30,9 +30,9 @@ public isolated function testIntValue() returns error? {
     int value = 5;
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    int deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, value);
+    byte[] encodedValue = check avro.toAvro(value);
+    int deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
@@ -49,9 +49,9 @@ public isolated function testFloatValue() returns error? {
     float value = 5.5;
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    float deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, value);
+    byte[] encodedValue = check avro.toAvro(value);
+    float deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
@@ -68,9 +68,9 @@ public isolated function testDoubleValue() returns error? {
     float value = 5.5595;
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    float deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, value);
+    byte[] encodedValue = check avro.toAvro(value);
+    float deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
@@ -86,9 +86,9 @@ public isolated function testLongValue() returns error? {
 
     int value = 555950000000000000;
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    int deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, value);
+    byte[] encodedValue = check avro.toAvro(value);
+    int deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
@@ -104,9 +104,9 @@ public isolated function testStringValue() returns error? {
 
     string value = "test";
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    string deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, value);
+    byte[] encodedValue = check avro.toAvro(value);
+    string deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
@@ -122,9 +122,9 @@ public isolated function testBoolean() returns error? {
 
     boolean value = true;
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    boolean deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, value);
+    byte[] encodedValue = check avro.toAvro(value);
+    boolean deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
@@ -139,9 +139,9 @@ public isolated function testNullValues() returns error? {
         }`;
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(());
-    () deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, ());
+    byte[] encodedValue = check avro.toAvro(());
+    () deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, ());
 }
 
 @test:Config {
@@ -156,6 +156,6 @@ public isolated function testNullValuesWithNonNullData() returns error? {
         }`;
 
     Schema avro = check new (schema);
-    byte[]|error encode = avro.toAvro("string");
-    test:assertTrue(encode is error);
+    byte[]|error encodedValue = avro.toAvro("string");
+    test:assertTrue(encodedValue is error);
 }

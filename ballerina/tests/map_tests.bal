@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/test;
+import ballerina/io;
 
 @test:Config {
     groups: ["map", "bytes"]
@@ -29,8 +30,8 @@ public isolated function testMapsWithBytes() returns error? {
 
     map<byte[]> colors = {"red": "0".toBytes(), "green": "1".toBytes(), "blue": "2".toBytes()};
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<byte[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<byte[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -51,8 +52,8 @@ public isolated function testMapsWithFixed() returns error? {
 
     map<byte[]> colors = {"red": "0".toBytes(), "green": "1".toBytes(), "blue": "2".toBytes()};
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<byte[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<byte[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -81,49 +82,93 @@ public isolated function testMapsOfFixedMaps() returns error? {
         "blue": {"r": "0".toBytes(), "g": "1".toBytes(), "b": "2".toBytes()}
     };
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<map<byte[]>> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<map<byte[]>> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
+}
+
+@test:Config {
+    groups: ["map", "record", "kkk"]
+}
+public isolated function testReadOnlyMapsWithReadOnlyRecords() returns error? {
+    string jsonFileName = string `tests/resources/schema_map.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
+
+    map<Instructor & readonly> & readonly instructors = {
+        "john": {name: "John", student: {name: "Alice", subject: "Math"}},
+        "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
+        "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(instructors);
+    map<Instructor & readonly> & readonly deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(instructors, deserialize);
+}
+
+@test:Config {
+    groups: ["map", "record", "kkk"]
+}
+public isolated function testMapsWithRecordsWithReadOnly() returns error? {
+    string jsonFileName = string `tests/resources/schema_map_2.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
+
+    map<Instructor> & readonly instructors = {
+        "john": {name: "John", student: {name: "Alice", subject: "Math"}},
+        "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
+        "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(instructors);
+    map<Instructor> & readonly deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(instructors, deserialize);
+}
+
+@test:Config {
+    groups: ["map", "record"]
+}
+public isolated function testMapsWithReadOnlyRecordsWithReadOnly() returns error? {
+    string jsonFileName = string `tests/resources/schema_map_3.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
+        
+    map<Instructor & readonly> & readonly instructors = {
+        "john": {name: "John", student: {name: "Alice", subject: "Math"}},
+        "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
+        "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(instructors);
+    map<Instructor & readonly> & readonly deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(instructors, deserialize);
+}
+
+@test:Config {
+    groups: ["map", "record"]
+}
+public isolated function testMapsWithReadOnlyRecords() returns error? {
+    string jsonFileName = string `tests/resources/schema_map_4.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
+
+    map<Instructor & readonly> instructors = {
+        "john": {name: "John", student: {name: "Alice", subject: "Math"}},
+        "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
+        "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(instructors);
+    map<Instructor & readonly> deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(instructors, deserialize);
 }
 
 @test:Config {
     groups: ["map", "record"]
 }
 public isolated function testMapsWithRecords() returns error? {
-    string schema = string `
-        {
-            "type": "map",
-            "values": {
-                "type": "record",
-                "name": "Instructor",
-                "fields": [
-                    {
-                        "name": "name",
-                        "type": ["null", "string"]
-                    },
-                    {
-                        "name": "student",
-                        "type": ["null", {
-                            "type": "record",
-                            "name": "Student",
-                            "fields": [
-                                {
-                                    "name": "name",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "subject",
-                                    "type": "string"
-                                }
-                            ]
-                        }]
-                    }
-                ]
-            },
-            "default": {}
-        }`;
-
-        
+    string jsonFileName = string `tests/resources/schema_map_5.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     map<Instructor> instructors = {
         "john": {name: "John", student: {name: "Alice", subject: "Math"}},
@@ -132,8 +177,8 @@ public isolated function testMapsWithRecords() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(instructors);
-    map<Instructor> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(instructors);
+    map<Instructor> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(instructors, deserialize);
 }
 
@@ -151,8 +196,8 @@ public isolated function testMapsWithInt() returns error? {
     map<int> colors = {"red": 0, "green": 1, "blue": 2};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<int> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<int> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -174,8 +219,8 @@ public isolated function testMapsWithEnum() returns error? {
     map<Numbers> colors = {"red": "ONE", "green": "TWO", "blue": "THREE"};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<Numbers> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<Numbers> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -202,8 +247,8 @@ public isolated function testMapsWithEnumArrays() returns error? {
     map<Numbers[]> colors = {"red": ["ONE", "TWO", "THREE"], "green": ["ONE", "TWO", "THREE"], "blue": ["ONE", "TWO", "THREE"]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<Numbers[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<Numbers[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -221,8 +266,8 @@ public isolated function testMapsWithFloat() returns error? {
     map<float> colors = {"red": 2.3453, "green": 435.563, "blue": 20347.23};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<float> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<float> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -240,8 +285,8 @@ public isolated function testMapsWithDouble() returns error? {
     map<float> colors = {"red": 2.3453, "green": 435.563, "blue": 20347.23};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<float> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<float> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -264,8 +309,8 @@ public isolated function testMapsWithDoubleArray() returns error? {
     map<float[]> colors = {"red": [2.3434253, 435.56433, 20347.22343], "green": [2.3452343, 435.56343, 20347.2423], "blue": [2.3453243, 435.56243, 20347.22343]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<float[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<float[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -283,8 +328,8 @@ public isolated function testMapsWithLong() returns error? {
     map<int> colors = {"red": 2, "green": 435, "blue": 2034723};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<int> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<int> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -302,8 +347,8 @@ public isolated function testMapsWithStrings() returns error? {
     map<string> colors = {"red": "2", "green": "435", "blue": "2034723"};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<string> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<string> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -321,8 +366,8 @@ public isolated function testMapsWithUnionTypes() returns error? {
     map<int|string> colors = {"red": "2", "green": "435", "blue": "2034723"};
 
     Schema avro = check new (schema);
-    byte[]|Error encode = avro.toAvro(colors);
-    test:assertTrue(encode is Error);
+    byte[]|Error encodedValue = avro.toAvro(colors);
+    test:assertTrue(encodedValue is Error);
 }
 
 @test:Config {
@@ -339,8 +384,27 @@ public isolated function testMapsWithBoolean() returns error? {
     map<boolean> colors = {"red": true, "green": false, "blue": false};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<boolean> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<boolean> deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(colors, deserialize);
+}
+
+@test:Config {
+    groups: ["map", "boolean", "ssq"]
+}
+public isolated function testMapsWithBooleanWithReadOnlyValues() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": "boolean",
+            "default": {}
+        }`;
+
+    map<boolean> & readonly colors = {"red": true, "green": false, "blue": false};
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<boolean> & readonly deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -365,8 +429,37 @@ public isolated function testMapsWithMaps() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<map<int>> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<map<int>> deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(colors, deserialize);
+}
+
+@test:Config {
+    groups: ["map", "k"]
+}
+public isolated function testMapsWithNestedMapsWithReadOnlyValues() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": {
+                "type": "map",
+                "values": {
+                    "type": "map",
+                    "values": "int"
+                }
+            },
+            "default": {}
+        }`;
+
+    map<map<map<int>>> & readonly colors = {
+        "red": {"r": {"r": 2, "g": 3, "b": 4}, "g": {"r": 5, "g": 6, "b": 7}, "b": {"r": 8, "g": 9, "b": 10}},
+        "green": {"r": {"r": 2, "g": 3, "b": 4}, "g": {"r": 5, "g": 6, "b": 7}, "b": {"r": 8, "g": 9, "b": 10}},
+        "blue": {"r": {"r": 2, "g": 3, "b": 4}, "g": {"r": 5, "g": 6, "b": 7}, "b": {"r": 8, "g": 9, "b": 10}}
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<map<map<int>>> & readonly deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -394,8 +487,8 @@ public isolated function testMapsWithNestedMaps() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<map<map<int>>> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<map<map<int>>> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(colors, deserialize);
 }
 
@@ -416,8 +509,8 @@ public isolated function testMapsWithLongArray() returns error? {
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<int[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<int[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -438,8 +531,30 @@ public isolated function testMapsWithIntArray() returns error? {
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<int[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<int[]> deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserialize, colors);
+}
+
+@test:Config {
+    groups: ["map", "int", "az"]
+}
+public isolated function testMapsWithIntArrayWithReadOnlyValues() returns error? {
+    string schema = string `
+        {
+            "type": "map",
+            "values": {
+                "type": "array",
+                "items": "int"
+            },
+            "default": {}
+        }`;
+
+    map<int[]> & readonly colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<int[]> & readonly deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -460,8 +575,8 @@ public isolated function testMapsWithFloatArray() returns error? {
     map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<float[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<float[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -482,8 +597,8 @@ public isolated function testMapsWithStringArray() returns error? {
     map<string[]> colors = {"red": ["252", "122", "41"], "green": ["235", "163", "23"], "blue": ["207", "123"]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<string[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<string[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -504,8 +619,8 @@ public isolated function testMapsWithUnionArray() returns error? {
     map<string[]> colors = {"red": ["252", "122", "41"], "green": ["235", "163", "23"], "blue": ["207", "123"]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<string[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<string[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -526,8 +641,8 @@ public isolated function testMapsWithUnionIntArray() returns error? {
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<int[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<int[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -548,8 +663,8 @@ public isolated function testMapsWithUnionLongArray() returns error? {
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<int[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<int[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -570,8 +685,8 @@ public isolated function testMapsWithUnionFloatArray() returns error? {
     map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<float[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<float[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -592,8 +707,8 @@ public isolated function testMapsWithUnionDoubleArray() returns error? {
     map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<float[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<float[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -614,8 +729,8 @@ public isolated function testMapsWithBytesArray() returns error? {
     map<byte[][]> colors = {"red": ["252".toBytes(), "122".toBytes(), "41".toBytes()], "green": ["235".toBytes(), "163".toBytes(), "23".toBytes()], "blue": ["207".toBytes(), "123".toBytes()]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<byte[][]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<byte[][]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -640,8 +755,8 @@ public isolated function testMapsWithFixedArray() returns error? {
     map<byte[][]> colors = {"red": ["252".toBytes(), "122".toBytes(), "411".toBytes()], "green": ["235".toBytes(), "163".toBytes(), "213".toBytes()], "blue": ["207".toBytes(), "123".toBytes()]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<byte[][]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<byte[][]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
 
@@ -662,15 +777,70 @@ public isolated function testMapsWithBooleanArray() returns error? {
     map<boolean[]> colors = {"red": [true, false, true], "green": [false, true, false], "blue": [true, false]};
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<boolean[]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<boolean[]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(deserialize, colors);
 }
+
+// @test:Config {
+//     groups: ["map", "record", "ggg"]
+// }
+// public isolated function testMapsWithRecordArray() returns error? {
+//     string schema = string `
+//         {
+//             "type": "map",
+//             "values": {
+//                 "type": "array",
+//                 "items": {
+//                     "type": "array",
+//                     "items": {
+//                         "type": "record",
+//                         "name": "Instructor",
+//                         "fields": [
+//                             {
+//                                 "name": "name",
+//                                 "type": ["null", "string"]
+//                             },
+//                             {
+//                                 "name": "student",
+//                                 "type": ["null", {
+//                                     "type": "record",
+//                                     "name": "Student",
+//                                     "fields": [
+//                                         {
+//                                             "name": "name",
+//                                             "type": "string"
+//                                         },
+//                                         {
+//                                             "name": "subject",
+//                                             "type": "string"
+//                                         }
+//                                     ]
+//                                 }]
+//                             }
+//                         ]
+//                     }
+//                 }
+//             },
+//             "default": {}
+//         }`;
+
+//     map<Instructor[]> instructors = {
+//         "john": [{name: "John", student: {name: "Alice", subject: "Math"}}, {name: "John", student: {name: "Alice", subject: "Math"}}],
+//         "doe": [{name: "Doe", student: {name: "Bob", subject: "Science"}}, {name: "Doe", student: {name: "Bob", subject: "Science"}}],
+//         "jane": [{name: "Jane", student: {name: "Charlie", subject: "English"}}, {name: "Jane", student: {name: "Charlie", subject: "English"}}]
+//     };
+
+//     Schema avro = check new (schema);
+//     byte[] encodedValue = check avro.toAvro(instructors);
+//     map<Instructor[]> deserialize = check avro.fromAvro(encodedValue);
+//     test:assertEquals(instructors, deserialize);
+// }
 
 @test:Config {
     groups: ["map", "record", "gg"]
 }
-public isolated function testMapsWithRecordArray() returns error? {
+public isolated function testMapsWithArrayOfRecordArray() returns error? {
     string schema = string `
         {
             "type": "map",
@@ -717,8 +887,8 @@ public isolated function testMapsWithRecordArray() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(instructors);
-    map<Instructor[][]> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(instructors);
+    map<Instructor[][]> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(instructors, deserialize);
 }
 
@@ -749,9 +919,9 @@ public isolated function testArrayOfStringArrayMaps() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(colors);
-    map<string[][]> deserializeJson = check avro.fromAvro(encode);
-    test:assertEquals(deserializeJson, colors);
+    byte[] encodedValue = check avro.toAvro(colors);
+    map<string[][]> deserializedValue = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserializedValue, colors);
 }
 
 @test:Config {
@@ -825,11 +995,10 @@ public isolated function testMapsWithNestedRecordMaps() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(lecturers);
-    map<map<Lecturer>> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(lecturers);
+    map<map<Lecturer>> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(lecturers, deserialize);
 }
-
 
 @test:Config {
     groups: ["map", "record"]
@@ -897,7 +1066,151 @@ public isolated function testMapsWithNestedRecordArrayMaps() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(lecturers);
-    map<map<Lecturer[]>> deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(lecturers);
+    map<map<Lecturer[]>> deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(lecturers, deserialize);
 }
+
+@test:Config {
+    groups: ["map", "record"]
+}
+public isolated function testMapsWithNestedRecordArrayReadOnlyMaps() returns error? {
+    string schema = string `
+    {
+        "type": "map",
+        "values": {
+            "type": "map",
+            "values": {
+                "type": "array",
+                "items": {
+                    "type": "record",
+                    "name": "Lecturer",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": ["null", "string"]
+                        },
+                        {
+                            "name": "instructor",
+                            "type": ["null", {
+                                "type": "record",
+                                "name": "Instructor",
+                                "fields": [
+                                    {
+                                        "name": "name",
+                                        "type": ["null", "string"]
+                                    },
+                                    {
+                                        "name": "student",
+                                        "type": ["null", {
+                                            "type": "record",
+                                            "name": "Student",
+                                            "fields": [
+                                                {
+                                                    "name": "name",
+                                                    "type": ["null", "string"]
+                                                },
+                                                {
+                                                    "name": "subject",
+                                                    "type": ["null", "string"]
+                                                }
+                                            ]
+                                        }]
+                                    }
+                                ]
+                            }]
+                        }
+                    ]
+                }
+            }
+        }
+    }`;
+
+
+    Lecturer[] lecs = [{name: "John", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}},
+                            {name: "Doe", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}}];
+
+    map<Lecturer[]> mapValue = {"r": lecs, "g": lecs, "b": lecs};
+    map<map<Lecturer[]>> & readonly lecturers = {
+        "john": mapValue.cloneReadOnly(),
+        "doe": mapValue.cloneReadOnly(),
+        "jane": mapValue.cloneReadOnly()
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(lecturers);
+    map<map<Lecturer[]>> & readonly deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(lecturers, deserialize);
+}
+
+// @test:Config {
+//     groups: ["map", "record"]
+// }
+// public isolated function testMapsWithReadOnlyRecordArrayReadOnlyMaps() returns error? {
+//     string schema = string `
+//     {
+//         "type": "map",
+//         "values": {
+//             "type": "map",
+//             "values": {
+//                 "type": "array",
+//                 "items": {
+//                     "type": "record",
+//                     "name": "Lecturer",
+//                     "fields": [
+//                         {
+//                             "name": "name",
+//                             "type": ["null", "string"]
+//                         },
+//                         {
+//                             "name": "instructor",
+//                             "type": ["null", {
+//                                 "type": "record",
+//                                 "name": "Instructor",
+//                                 "fields": [
+//                                     {
+//                                         "name": "name",
+//                                         "type": ["null", "string"]
+//                                     },
+//                                     {
+//                                         "name": "student",
+//                                         "type": ["null", {
+//                                             "type": "record",
+//                                             "name": "Student",
+//                                             "fields": [
+//                                                 {
+//                                                     "name": "name",
+//                                                     "type": ["null", "string"]
+//                                                 },
+//                                                 {
+//                                                     "name": "subject",
+//                                                     "type": ["null", "string"]
+//                                                 }
+//                                             ]
+//                                         }]
+//                                     }
+//                                 ]
+//                             }]
+//                         }
+//                     ]
+//                 }
+//             }
+//         }
+//     }`;
+
+
+//     Lecturer[] & readonly lecs = [{name: "John", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}},
+//                             {name: "Doe", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}}];
+
+//     map<Lecturer[] & readonly> mapValue = {"r": lecs, "g": lecs, "b": lecs};
+//     map<map<Lecturer[] & readonly>> lecturers = {
+//         "john": mapValue,
+//         "doe": mapValue,
+//         "jane": mapValue
+//     };
+
+//     Schema avro = check new (schema);
+//     byte[] encodedValue = check avro.toAvro(lecturers);
+//     map<map<Lecturer[] & readonly>> deserialize = check avro.fromAvro(encodedValue);
+//     test:assertEquals(lecturers, deserialize);
+// }

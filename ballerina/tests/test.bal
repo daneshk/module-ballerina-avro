@@ -17,6 +17,213 @@
 import ballerina/io;
 import ballerina/test;
 
+public type UnionEnumRecord record {
+    string|Numbers? field1;
+};
+
+public type UnionFixedRecord record {
+    string|byte[]? field1;
+};
+
+public type UnionRec record {
+    string|UnionEnumRecord? field1;
+};
+
+public type ReadOnlyRec readonly & record {
+    string|UnionEnumRecord? & readonly field1;
+};
+
+@test:Config {
+    groups: ["enum", "union"]
+}
+public isolated function testUnionEnums() returns error? {
+    string schema = string `
+        {
+            "type": "record",
+            "name": "ExampleRecord",
+            "fields": [
+                {
+                    "name": "field1", 
+                    "type": ["string", {
+                        "type": "enum",
+                        "name": "Numbers",
+                        "symbols": ["ONE", "TWO"]
+                    }]
+                }
+            ]
+        }`;
+
+    UnionEnumRecord number = {
+        field1: ONE
+    };
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(number);
+    UnionEnumRecord deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(number, deserialize);
+}
+
+@test:Config {
+    groups: ["fixed", "union"]
+}
+public isolated function testUnionFixed() returns error? {
+    string schema = string `
+        {
+            "type": "record",
+            "name": "ExampleRecord",
+            "fields": [
+                {
+                    "name": "field1", 
+                    "type": [
+                        "string", 
+                        {
+                            "type": "fixed",
+                            "name": "Fixed",
+                            "size": 2
+                        }
+                    ]
+                }
+            ]
+        }`;
+
+    UnionFixedRecord number = {
+        field1: "ON".toBytes()
+    };
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(number);
+    UnionFixedRecord deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(number, deserialize);
+}
+
+@test:Config {
+    groups: ["fixed", "union"]
+}
+public isolated function testUnionFixeWithReadOnlyValues() returns error? {
+    string schema = string `
+        {
+            "type": "record",
+            "name": "ExampleRecord",
+            "fields": [
+                {
+                    "name": "field1", 
+                    "type": [
+                        "string", 
+                        {
+                            "type": "fixed",
+                            "name": "Fixed",
+                            "size": 2
+                        }
+                    ]
+                }
+            ]
+        }`;
+
+    UnionFixedRecord & readonly number = {
+        field1: "ON".toBytes().cloneReadOnly()
+    };
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(number);
+    UnionFixedRecord & readonly deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(number, deserialize);
+}
+
+@test:Config {
+    groups: ["fixed", "union"]
+}
+public isolated function testUnionsWithRecordsAndStrings() returns error? {
+    string schema = string `
+        {
+            "type": "record",
+            "name": "UnionRec",
+            "fields": [
+                {
+                    "name": "field1",
+                    "type": [
+                        "null",
+                        "string",
+                        {
+                            "type": "record",
+                            "name": "UnionEnumRecord",
+                            "fields": [
+                                {
+                                    "name": "field1",
+                                    "type": [
+                                        "null", 
+                                        "string", 
+                                        {
+                                            "type": "enum",
+                                            "name": "Numbers",
+                                            "symbols": ["ONE", "TWO"]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }`;
+
+    UnionRec number = {
+        field1: {
+            field1: "ONE"
+        }
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(number);
+    UnionRec deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(number, deserialize);
+}
+
+@test:Config {
+    groups: ["fixed", "union"]
+}
+public isolated function testUnionsWithReadOnlyRecords() returns error? {
+    string schema = string `
+        {
+            "type": "record",
+            "name": "UnionRec",
+            "fields": [
+                {
+                    "name": "field1",
+                    "type": [
+                        "null",
+                        "string",
+                        {
+                            "type": "record",
+                            "name": "UnionEnumRecord",
+                            "fields": [
+                                {
+                                    "name": "field1",
+                                    "type": [
+                                        "null", 
+                                        "string", 
+                                        {
+                                            "type": "enum",
+                                            "name": "Numbers",
+                                            "symbols": ["ONE", "TWO"]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }`;
+
+    ReadOnlyRec number = {
+        field1: {
+            field1: "ONE".cloneReadOnly()
+        }
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(number);
+    ReadOnlyRec deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(number, deserialize);
+}
+
 @test:Config {
     groups: ["enum"]
 }
@@ -32,8 +239,28 @@ public isolated function testEnums() returns error? {
     Numbers number = "ONE";
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(number);
-    Numbers deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(number);
+    Numbers deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(number, deserialize);
+}
+
+@test:Config {
+    groups: ["enum"]
+}
+public isolated function testEnumsWithReadOnlyValues() returns error? {
+    string schema = string `
+        {
+            "type" : "enum",
+            "name" : "Numbers", 
+            "namespace": "data", 
+            "symbols" : [ "ONE", "TWO", "THREE", "FOUR" ]
+        }`;
+
+    Numbers & readonly number = "ONE";
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(number);
+    Numbers & readonly deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(number, deserialize);
 }
 
@@ -52,27 +279,8 @@ public isolated function testEnumsWithString() returns error? {
     string number = "FIVE";
 
     Schema avro = check new (schema);
-    byte[]|Error encode = avro.toAvro(number);
-    test:assertTrue(encode is Error);
-}
-
-@test:Config {
-    groups: ["fixed"]
-}
-public isolated function testFixed() returns error? {
-    string schema = string `
-        {
-            "type": "fixed",
-            "name": "name",
-            "size": 16
-        }`;
-
-    byte[] value = "u00ffffffffffffx".toBytes();
-
-    Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(value);
-    byte[] deserialize = check avro.fromAvro(encode);
-    test:assertEquals(deserialize, value);
+    byte[]|Error encodedValue = avro.toAvro(number);
+    test:assertTrue(encodedValue is Error);
 }
 
 @test:Config {
@@ -89,8 +297,27 @@ public isolated function testFixedWithInvalidSize() returns error? {
     byte[] value = "u00".toBytes();
 
     Schema avro = check new (schema);
-    byte[]|Error encode = avro.toAvro(value);
-    test:assertTrue(encode is Error);
+    byte[]|Error encodedValue = avro.toAvro(value);
+    test:assertTrue(encodedValue is Error);
+}
+
+@test:Config {
+    groups: ["fixed"]
+}
+public isolated function testFixed() returns error? {
+    string schema = string `
+        {
+            "type": "fixed",
+            "name": "name",
+            "size": 16
+        }`;
+
+    byte[] value = "u00ffffffffffffx".toBytes();
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(value);
+    byte[] deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(deserialize, value);
 }
 
 @test:Config {

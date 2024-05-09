@@ -63,8 +63,8 @@ public isolated function testRecordsWithDifferentTypeOfFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(student);
-    Person deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(student);
+    Person deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(student, deserialize);
 }
 
@@ -168,10 +168,31 @@ public isolated function testArraysInRecords() returns error? {
     test:assertEquals(colors, deserialize);
 }
 
-type Color1 record {
-    string name;
-    byte[] colors;
-};
+@test:Config {
+    groups: ["record", "array"]
+}
+public isolated function testArraysInReadOnlyRecords() returns error? {
+    string schema = string `
+        {
+            "namespace": "example.avro",
+            "type": "record",
+            "name": "Student",
+            "fields": [
+                {"name": "name", "type": "string"},
+                {"name": "colors", "type": {"type": "array", "items": "string"}}
+            ]
+        }`;
+
+    Color & readonly colors = {
+        name: "Red",
+        colors: ["maroon", "dark red", "light red"]
+    };
+
+    Schema avro = check new (schema);
+    byte[] serialize = check avro.toAvro(colors);
+    Color & readonly deserialize = check avro.fromAvro(serialize);
+    test:assertEquals(colors, deserialize);
+}
 
 @test:Config {
     groups: ["record", "errors"]
@@ -345,8 +366,8 @@ public isolated function testRecordsWithIntFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(student);
-    Person deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(student);
+    Person deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(student, deserialize);
 }
 
@@ -371,8 +392,8 @@ public isolated function testRecordsWithLongFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(student);
-    Person deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(student);
+    Person deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(student, deserialize);
 }
 
@@ -397,8 +418,8 @@ public isolated function testRecordsWithFloatFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(student);
-    Students deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(student);
+    Students deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(student, deserialize);
 }
 
@@ -423,8 +444,8 @@ public isolated function testRecordsWithDoubleFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(student);
-    Students deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(student);
+    Students deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(student, deserialize);
 }
 
@@ -449,8 +470,8 @@ public isolated function testRecordsWithBooleanFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encode = check avro.toAvro(student);
-    StudentRec deserialize = check avro.fromAvro(encode);
+    byte[] encodedValue = check avro.toAvro(student);
+    StudentRec deserialize = check avro.fromAvro(encodedValue);
     test:assertEquals(student, deserialize);
 }
 
