@@ -26,7 +26,7 @@ import org.apache.avro.generic.GenericRecord;
 
 public class RecordDeserializer extends Deserializer {
 
-    public RecordDeserializer(Schema schema, Type type) {
+    public RecordDeserializer(Type type, Schema schema) {
         super(type, schema);
     }
 

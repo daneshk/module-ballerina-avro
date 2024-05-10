@@ -65,17 +65,17 @@ public class DeserializeVisitor implements IDeserializeVisitor {
     public static Deserializer createDeserializer(Schema schema, Type type) {
         return switch (schema.getElementType().getType()) {
             case UNION ->
-                    new UnionDeserializer(schema, type);
+                    new UnionDeserializer(type, schema);
             case ARRAY ->
-                    new ArrayDeserializer(schema, type);
+                    new ArrayDeserializer(type, schema);
             case ENUM ->
-                    new EnumDeserializer(type);
+                    new EnumDeserializer(type, schema);
             case RECORD ->
-                    new RecordDeserializer(schema, type);
+                    new RecordDeserializer(type, schema);
             case FIXED ->
-                    new FixedDeserializer(schema, type);
+                    new FixedDeserializer(type, schema);
             default ->
-                    new PrimitiveDeserializer(schema, type);
+                    new PrimitiveDeserializer(type, schema);
         };
     }
 
@@ -212,14 +212,14 @@ public class DeserializeVisitor implements IDeserializeVisitor {
     }
 
     private BArray visitRecordArray(GenericData.Array<Object> data, Type type, Schema schema) throws Exception {
-        RecordDeserializer recordDeserializer = new RecordDeserializer(schema.getElementType(), type);
+        RecordDeserializer recordDeserializer = new RecordDeserializer(type, schema.getElementType());
         return (BArray) recordDeserializer.visit(this, data);
     }
 
     private BArray visitUnionArray(GenericData.Array<Object> data, ArrayType type, Schema schema) throws Exception {
         Object[] objects = new Object[data.size()];
         Type elementType = type.getElementType();
-        ArrayDeserializer arrayDeserializer = new ArrayDeserializer(schema.getElementType(), elementType);
+        ArrayDeserializer arrayDeserializer = new ArrayDeserializer(elementType, schema.getElementType());
         int index = 0;
         for (Object currentData : data) {
             Object deserializedObject = arrayDeserializer.visit(this, (GenericData.Array<Object>) currentData);
@@ -237,14 +237,14 @@ public class DeserializeVisitor implements IDeserializeVisitor {
             case TypeTags.ARRAY_TAG -> {
                 for (Object datum : data) {
                     Type fieldType = ((ArrayType) type).getElementType();
-                    RecordDeserializer recordDes = new RecordDeserializer(schema.getElementType(), fieldType);
+                    RecordDeserializer recordDes = new RecordDeserializer(fieldType, schema.getElementType());
                     recordList.add(recordDes.visit(this, datum));
                 }
             }
             case TypeTags.TYPE_REFERENCED_TYPE_TAG -> {
                 for (Object datum : data) {
                     Type fieldType = ((ReferenceType) type).getReferredType();
-                    RecordDeserializer recordDes = new RecordDeserializer(schema.getElementType(), fieldType);
+                    RecordDeserializer recordDes = new RecordDeserializer(fieldType, schema.getElementType());
                     recordList.add(recordDes.visit(this, (GenericRecord) datum));
                 }
             }
@@ -273,7 +273,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
     private void processMapRecord(BMap<BString, Object> avroRecord, Schema schema,
                                   MapType type, Object key, GenericRecord value) throws Exception {
         Type fieldType = type.getConstrainedType();
-        RecordDeserializer recordDes = new RecordDeserializer(schema.getValueType(), fieldType);
+        RecordDeserializer recordDes = new RecordDeserializer(fieldType, schema.getValueType());
         Object fieldValue = recordDes.visit(this, value);
         avroRecord.put(fromString(key.toString()), fieldValue);
     }
@@ -281,7 +281,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
     private void processMapArray(BMap<BString, Object> avroRecord, Schema schema,
                                  MapType type, Object key, GenericData.Array<Object> value) throws Exception {
         Type fieldType = type.getConstrainedType();
-        ArrayDeserializer arrayDeserializer = new ArrayDeserializer(schema.getValueType(), fieldType);
+        ArrayDeserializer arrayDeserializer = new ArrayDeserializer(fieldType, schema.getValueType());
         Object fieldValue = visit(arrayDeserializer, value);
         avroRecord.put(fromString(key.toString()), fieldValue);
     }

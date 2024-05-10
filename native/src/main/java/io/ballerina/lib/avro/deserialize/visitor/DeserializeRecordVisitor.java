@@ -84,7 +84,7 @@ public class DeserializeRecordVisitor extends DeserializeVisitor {
 
     private void processArrayField(BMap<BString, Object> avroRecord,
                                    Schema.Field field, Object fieldData) throws Exception {
-        ArrayDeserializer arrayDes = new ArrayDeserializer(field.schema(), avroRecord.getType());
+        ArrayDeserializer arrayDes = new ArrayDeserializer(avroRecord.getType(), field.schema());
         Object fieldValue = arrayDes.visit(this, (GenericData.Array<Object>) fieldData);
         avroRecord.put(StringUtils.fromString(field.name()), fieldValue);
     }
@@ -98,7 +98,7 @@ public class DeserializeRecordVisitor extends DeserializeVisitor {
     private void processRecordField(BMap<BString, Object> avroRecord,
                                     Schema.Field field, Object fieldData) throws Exception {
         Type recType = extractRecordType((RecordType) avroRecord.getType());
-        RecordDeserializer recordDes = new RecordDeserializer(field.schema(), recType);
+        RecordDeserializer recordDes = new RecordDeserializer(recType, field.schema());
         Object fieldValue = recordDes.visit(this, (GenericRecord) fieldData);
         avroRecord.put(StringUtils.fromString(field.name()), fieldValue);
     }

@@ -26,6 +26,7 @@ import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.values.BArray;
+import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
 public class DeserializeArrayVisitor extends DeserializeVisitor {
@@ -38,8 +39,8 @@ public class DeserializeArrayVisitor extends DeserializeVisitor {
         for (Object element : data) {
             GenericData.Array<Object> dataArray = (GenericData.Array<Object>) element;
             Type arrType = elementType.getTag() == TypeTags.ARRAY_TAG ? elementType : arrayDeserializer.getType();
-            objects[index++] = visitNestedArray(new ArrayDeserializer(arrayDeserializer.getSchema().getElementType(),
-                    arrType), dataArray);
+            Schema elementSchema = arrayDeserializer.getSchema().getElementType();
+            objects[index++] = visitNestedArray(new ArrayDeserializer(arrType, elementSchema), dataArray);
         }
         BArray arrayValue = ValueCreator
                 .createArrayValue(objects, (ArrayType) Utils.getMutableType(arrayDeserializer.getType()));

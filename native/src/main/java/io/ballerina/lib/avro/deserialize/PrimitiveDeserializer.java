@@ -25,7 +25,7 @@ import org.apache.avro.generic.GenericData;
 
 public class PrimitiveDeserializer extends Deserializer {
 
-    public PrimitiveDeserializer(Schema schema, Type type) {
+    public PrimitiveDeserializer(Type type, Schema schema) {
         super(type, schema);
     }
 

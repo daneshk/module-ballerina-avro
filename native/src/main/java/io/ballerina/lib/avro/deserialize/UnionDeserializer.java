@@ -25,7 +25,7 @@ import org.apache.avro.generic.GenericData;
 
 public class UnionDeserializer extends Deserializer {
 
-    public UnionDeserializer(Schema schema, Type type) {
+    public UnionDeserializer(Type type, Schema schema) {
         super(type, schema);
     }
 

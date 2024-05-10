@@ -49,7 +49,7 @@ public class RecordUtils {
 
     public static void processArrayField(BMap<BString, Object> avroRecord,
                                          Schema.Field field, Object fieldData, Type type) throws Exception {
-        ArrayDeserializer arrayDes = new ArrayDeserializer(field.schema(), type);
+        ArrayDeserializer arrayDes = new ArrayDeserializer(type, field.schema());
         Object fieldValue = arrayDes.visit(new DeserializeVisitor(), (GenericData.Array<Object>) fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }
@@ -63,7 +63,7 @@ public class RecordUtils {
     public static void processRecordField(BMap<BString, Object> avroRecord,
                                     Schema.Field field, Object fieldData) throws Exception {
         Type recType = extractRecordType((RecordType) avroRecord.getType());
-        RecordDeserializer recordDes = new RecordDeserializer(field.schema(), recType);
+        RecordDeserializer recordDes = new RecordDeserializer(recType, field.schema());
         Object fieldValue = recordDes.visit(new DeserializeVisitor(), fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }
