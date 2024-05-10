@@ -38,9 +38,9 @@ public isolated function testRecordsWithBytes() returns error? {
     };
 
     Schema avro = check new(schema);
-    byte[] encodedValue = check avro.toAvro(student);
-    Student1 deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(deserialize, student);
+    byte[] serializedValue = check avro.toAvro(student);
+    Student1 deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(deserializedValue, student);
 }
 
 @test:Config {
@@ -58,8 +58,8 @@ public isolated function testArraysWithBytes() returns error? {
     byte[][] numbers = ["22.4".toBytes(), "556.84350".toBytes(), "78.0327".toBytes()];
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(numbers);
-    byte[][] deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(numbers);
+    byte[][] deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, numbers);
 }
 
@@ -77,8 +77,8 @@ public isolated function testBytes() returns error? {
     byte[] value = "5".toBytes();
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    byte[] deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(value);
+    byte[] deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, value);
 }
 
@@ -103,7 +103,7 @@ public isolated function testNestedRecordsWithBytes() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(lecturer4);
-    Lecturer4 deserialize = check avro.fromAvro(serialize);
+    Lecturer4 deserializedValue = check avro.fromAvro(serialize);
     // deserialize.instructor.student.name = "Sam";
-    test:assertEquals(deserialize, lecturer4);
+    test:assertEquals(deserializedValue, lecturer4);
 }

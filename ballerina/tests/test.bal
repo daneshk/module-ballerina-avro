@@ -44,9 +44,9 @@ public isolated function testUnionEnums() returns error? {
         field1: ONE
     };
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(number);
-    UnionEnumRecord deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(number, deserialize);
+    byte[] serializedValue = check avro.toAvro(number);
+    UnionEnumRecord deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(number, deserializedValue);
 }
 
 @test:Config {
@@ -60,9 +60,9 @@ public isolated function testUnionFixed() returns error? {
         field1: "ON".toBytes()
     };
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(number);
-    UnionFixedRecord deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(number, deserialize);
+    byte[] serializedValue = check avro.toAvro(number);
+    UnionFixedRecord deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(number, deserializedValue);
 }
 
 @test:Config {
@@ -76,9 +76,9 @@ public isolated function testUnionFixeWithReadOnlyValues() returns error? {
         field1: "ON".toBytes().cloneReadOnly()
     };
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(number);
-    UnionFixedRecord & readonly deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(number, deserialize);
+    byte[] serializedValue = check avro.toAvro(number);
+    UnionFixedRecord & readonly deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(number, deserializedValue);
 }
 
 @test:Config {
@@ -95,9 +95,9 @@ public isolated function testUnionsWithRecordsAndStrings() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(number);
-    UnionRec deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(number, deserialize);
+    byte[] serializedValue = check avro.toAvro(number);
+    UnionRec deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(number, deserializedValue);
 }
 
 @test:Config {
@@ -114,9 +114,9 @@ public isolated function testUnionsWithReadOnlyRecords() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(number);
-    ReadOnlyRec deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(number, deserialize);
+    byte[] serializedValue = check avro.toAvro(number);
+    ReadOnlyRec deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(number, deserializedValue);
 }
 
 @test:Config {
@@ -134,9 +134,9 @@ public isolated function testEnums() returns error? {
     Numbers number = "ONE";
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(number);
-    Numbers deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(number, deserialize);
+    byte[] serializedValue = check avro.toAvro(number);
+    Numbers deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(number, deserializedValue);
 }
 
 @test:Config {
@@ -154,9 +154,9 @@ public isolated function testEnumsWithReadOnlyValues() returns error? {
     Numbers & readonly number = "ONE";
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(number);
-    Numbers & readonly deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(number, deserialize);
+    byte[] serializedValue = check avro.toAvro(number);
+    Numbers & readonly deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(number, deserializedValue);
 }
 
 @test:Config {
@@ -174,8 +174,8 @@ public isolated function testEnumsWithString() returns error? {
     string number = "FIVE";
 
     Schema avro = check new (schema);
-    byte[]|Error encodedValue = avro.toAvro(number);
-    test:assertTrue(encodedValue is Error);
+    byte[]|Error serializedValue = avro.toAvro(number);
+    test:assertTrue(serializedValue is Error);
 }
 
 @test:Config {
@@ -192,8 +192,8 @@ public isolated function testFixedWithInvalidSize() returns error? {
     byte[] value = "u00".toBytes();
 
     Schema avro = check new (schema);
-    byte[]|Error encodedValue = avro.toAvro(value);
-    test:assertTrue(encodedValue is Error);
+    byte[]|Error serializedValue = avro.toAvro(value);
+    test:assertTrue(serializedValue is Error);
 }
 
 @test:Config {
@@ -210,9 +210,9 @@ public isolated function testFixed() returns error? {
     byte[] value = "u00ffffffffffffx".toBytes();
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    byte[] deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(deserialize, value);
+    byte[] serializedValue = check avro.toAvro(value);
+    byte[] deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(deserializedValue, value);
 }
 
 @test:Config {
@@ -240,8 +240,8 @@ public function testDbSchemaWithRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(changeKey);
-    SchemaChangeKey deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(changeKey, deserialize);
+    SchemaChangeKey deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(changeKey, deserializedValue);
 
 }
 
@@ -316,8 +316,8 @@ public function testComplexDbSchema() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(envelope);
-    Envelope deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(deserialize, envelope);
+    Envelope deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(deserializedValue, envelope);
 }
 
 @test:Config {
@@ -441,6 +441,6 @@ public function testComplexDbSchemaWithNestedRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(envelope2);
-    Envelope2 deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(deserialize, envelope2);
+    Envelope2 deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(deserializedValue, envelope2);
 }

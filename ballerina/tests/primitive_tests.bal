@@ -30,8 +30,8 @@ public isolated function testIntValue() returns error? {
     int value = 5;
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    int deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(value);
+    int deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, value);
 }
 
@@ -49,8 +49,8 @@ public isolated function testFloatValue() returns error? {
     float value = 5.5;
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    float deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(value);
+    float deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, value);
 }
 
@@ -68,8 +68,8 @@ public isolated function testDoubleValue() returns error? {
     float value = 5.5595;
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    float deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(value);
+    float deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, value);
 }
 
@@ -86,8 +86,8 @@ public isolated function testLongValue() returns error? {
 
     int value = 555950000000000000;
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    int deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(value);
+    int deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, value);
 }
 
@@ -104,8 +104,8 @@ public isolated function testStringValue() returns error? {
 
     string value = "test";
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    string deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(value);
+    string deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, value);
 }
 
@@ -122,8 +122,8 @@ public isolated function testBoolean() returns error? {
 
     boolean value = true;
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(value);
-    boolean deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(value);
+    boolean deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, value);
 }
 
@@ -139,8 +139,8 @@ public isolated function testNullValues() returns error? {
         }`;
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(());
-    () deserializedValue = check avro.fromAvro(encodedValue);
+    byte[] serializedValue = check avro.toAvro(());
+    () deserializedValue = check avro.fromAvro(serializedValue);
     test:assertEquals(deserializedValue, ());
 }
 
@@ -156,6 +156,6 @@ public isolated function testNullValuesWithNonNullData() returns error? {
         }`;
 
     Schema avro = check new (schema);
-    byte[]|error encodedValue = avro.toAvro("string");
-    test:assertTrue(encodedValue is error);
+    byte[]|error serializedValue = avro.toAvro("string");
+    test:assertTrue(serializedValue is error);
 }

@@ -38,8 +38,8 @@ public isolated function testRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(student);
-    Student deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(student, deserialize);
+    Student deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(student, deserializedValue);
 }
 
 @test:Config {
@@ -63,9 +63,9 @@ public isolated function testRecordsWithDifferentTypeOfFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(student);
-    Person deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(student, deserialize);
+    byte[] serializedValue = check avro.toAvro(student);
+    Person deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(student, deserializedValue);
 }
 
 @test:Config {
@@ -137,9 +137,9 @@ public isolated function testNestedRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(lecturer);
-    Lecturer3 deserialize = check avro.fromAvro(serialize);
+    Lecturer3 deserializedValue = check avro.fromAvro(serialize);
     // deserialize.instructor.student.name = "Sam";
-    test:assertEquals(deserialize, lecturer);
+    test:assertEquals(deserializedValue, lecturer);
 }
 
 @test:Config {
@@ -164,8 +164,8 @@ public isolated function testArraysInRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(colors);
-    Color deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(colors, deserialize);
+    Color deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(colors, deserializedValue);
 }
 
 @test:Config {
@@ -190,8 +190,8 @@ public isolated function testArraysInReadOnlyRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(colors);
-    Color & readonly deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(colors, deserialize);
+    Color & readonly deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(colors, deserializedValue);
 }
 
 @test:Config {
@@ -227,8 +227,8 @@ public isolated function testArraysInRecordsWithInvalidSchema() returns error? {
         ]
     }`;
     Schema avroConsumer = check new (schema2);
-    Color1|Error deserialize = avroConsumer.fromAvro(serialize);
-    test:assertTrue(deserialize is Error);
+    Color1|Error deserializedValue = avroConsumer.fromAvro(serialize);
+    test:assertTrue(deserializedValue is Error);
 }
 
 @test:Config {
@@ -286,8 +286,8 @@ public isolated function testRecordsWithStringRecordUnionType() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(course);
-    MultipleUnionRecord deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(deserialize, course);
+    MultipleUnionRecord deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(deserializedValue, course);
 }
 
 @test:Config {
@@ -341,8 +341,8 @@ public isolated function testRecordsWithUnionTypes() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(course);
-    UnionRecord deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(deserialize, course);
+    UnionRecord deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(deserializedValue, course);
 }
 
 @test:Config {
@@ -366,9 +366,9 @@ public isolated function testRecordsWithIntFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(student);
-    Person deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(student, deserialize);
+    byte[] serializedValue = check avro.toAvro(student);
+    Person deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(student, deserializedValue);
 }
 
 @test:Config {
@@ -392,9 +392,9 @@ public isolated function testRecordsWithLongFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(student);
-    Person deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(student, deserialize);
+    byte[] serializedValue = check avro.toAvro(student);
+    Person deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(student, deserializedValue);
 }
 
 @test:Config {
@@ -418,9 +418,9 @@ public isolated function testRecordsWithFloatFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(student);
-    Students deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(student, deserialize);
+    byte[] serializedValue = check avro.toAvro(student);
+    Students deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(student, deserializedValue);
 }
 
 @test:Config {
@@ -444,9 +444,9 @@ public isolated function testRecordsWithDoubleFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(student);
-    Students deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(student, deserialize);
+    byte[] serializedValue = check avro.toAvro(student);
+    Students deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(student, deserializedValue);
 }
 
 @test:Config {
@@ -470,9 +470,9 @@ public isolated function testRecordsWithBooleanFields() returns error? {
     };
 
     Schema avro = check new (schema);
-    byte[] encodedValue = check avro.toAvro(student);
-    StudentRec deserialize = check avro.fromAvro(encodedValue);
-    test:assertEquals(student, deserialize);
+    byte[] serializedValue = check avro.toAvro(student);
+    StudentRec deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(student, deserializedValue);
 }
 
 @test:Config {
@@ -556,8 +556,8 @@ public isolated function testOptionalValuesInRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(lecturer5);
-    Lecturer5 deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(deserialize, lecturer5);
+    Lecturer5 deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(deserializedValue, lecturer5);
 }
 
 @test:Config {
@@ -689,6 +689,6 @@ public isolated function testOptionalMultipleFieldsInRecords() returns error? {
 
     Schema avro = check new (schema);
     byte[] serialize = check avro.toAvro(lecturer6);
-    Lecturer6 deserialize = check avro.fromAvro(serialize);
-    test:assertEquals(deserialize, lecturer6);
+    Lecturer6 deserializedValue = check avro.fromAvro(serialize);
+    test:assertEquals(deserializedValue, lecturer6);
 }
