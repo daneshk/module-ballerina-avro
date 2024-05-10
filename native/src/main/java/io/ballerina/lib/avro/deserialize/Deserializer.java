@@ -30,7 +30,7 @@ public abstract class Deserializer {
     private final Type type;
 
     public Deserializer() {
-        this(null);
+        this(null, null);
     }
 
     public Deserializer(Type type) {

@@ -22,7 +22,6 @@ import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.types.IntersectionType;
 import io.ballerina.runtime.api.types.Type;
-import io.ballerina.runtime.api.types.UnionType;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BError;
@@ -51,13 +50,6 @@ public final class Utils {
         IntersectionType intersectionType = (IntersectionType) dataType;
         for (Type type : intersectionType.getConstituentTypes()) {
             Type referredType = TypeUtils.getImpliedType(type);
-            if (referredType.getTag() == TypeTags.UNION_TAG) {
-                for (Type elementType : ((UnionType) referredType).getMemberTypes()) {
-                    if (elementType.getTag() != TypeTags.NULL_TAG) {
-                        return elementType;
-                    }
-                }
-            }
             if (TypeUtils.getImpliedType(intersectionType.getEffectiveType()).getTag() == referredType.getTag()) {
                 return referredType;
             }

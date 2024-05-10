@@ -18,10 +18,12 @@
 <FindBugsFilter>
     <Match>
         <Class name="io.ballerina.lib.avro.Utils" />
+        <!-- <Method name = "getMutableType" /> -->
         <Bug pattern="BC_UNCONFIRMED_CAST" />
     </Match>
     <Match>
         <Class name="io.ballerina.lib.avro.deserialize.visitor.DeserializeVisitor" />
+        <!-- <Method name = "visit" /> -->
         <Bug pattern="BC_UNCONFIRMED_CAST" />
     </Match>
 </FindBugsFilter>
