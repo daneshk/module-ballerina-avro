@@ -20,12 +20,13 @@ package io.ballerina.lib.avro.deserialize;
 
 import io.ballerina.lib.avro.deserialize.visitor.DeserializeVisitor;
 import io.ballerina.runtime.api.types.Type;
+import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
 public class EnumDeserializer extends Deserializer {
 
-    public EnumDeserializer(Type type) {
-        super(type);
+    public EnumDeserializer(Type type, Schema schema) {
+        super(type, schema);
     }
 
     @Override
