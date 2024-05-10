@@ -445,9 +445,8 @@ public class DeserializeVisitor implements IDeserializeVisitor {
                     case TypeTags.RECORD_TYPE_TAG ->
                             recType = (RecordType) fieldType;
                     case TypeTags.INTERSECTION_TAG -> {
-                        Type getType = getMutableType(fieldType);
-                        if (getType.getTag() == TypeTags.RECORD_TYPE_TAG) {
-                            recType = (RecordType) getType;
+                        if (getMutableType(fieldType).getTag() == TypeTags.RECORD_TYPE_TAG) {
+                            recType = (RecordType) getMutableType(fieldType);
                         }
                     }
                     default -> {
