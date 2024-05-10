@@ -1,0 +1,54 @@
+{
+    "type": "record",
+    "name": "Lecturer5",
+    "fields": [
+        {
+            "name": "name",
+            "type": [
+                "null", 
+                {
+                    "type": "map",
+                    "values": "int"
+                }
+            ]
+        },
+        {
+            "name": "bytes",
+            "type": ["null", "bytes"]
+        },
+        {
+            "name": "instructorClone",
+            "type": ["null", {
+                "type": "record",
+                "name": "Instructor",
+                "fields": [
+                {
+                    "name": "name",
+                    "type": ["null", "string"]
+                },
+                {
+                    "name": "student",
+                    "type": ["null", {
+                    "type": "record",
+                    "name": "Student",
+                    "fields": [
+                        {
+                        "name": "name",
+                        "type": "string"
+                        },
+                        {
+                        "name": "subject",
+                        "type": "string"
+                        }
+                    ]
+                    }]
+                }
+                ]
+            }]
+        },
+        {
+            "name": "instructors",
+            "type": ["null", "Instructor"]
+        }
+    ]
+}

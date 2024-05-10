@@ -29,10 +29,7 @@ public isolated function testMapsWithBytes() returns error? {
         }`;
 
     map<byte[]> colors = {"red": "0".toBytes(), "green": "1".toBytes(), "blue": "2".toBytes()};
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<byte[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(ByteArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -51,10 +48,7 @@ public isolated function testMapsWithFixed() returns error? {
         }`;
 
     map<byte[]> colors = {"red": "0".toBytes(), "green": "1".toBytes(), "blue": "2".toBytes()};
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<byte[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(ByteArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -81,10 +75,7 @@ public isolated function testMapsOfFixedMaps() returns error? {
         "green": {"r": "0".toBytes(), "g": "1".toBytes(), "b": "2".toBytes()},
         "blue": {"r": "0".toBytes(), "g": "1".toBytes(), "b": "2".toBytes()}
     };
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<map<byte[]>> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(MapOfByteArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -100,10 +91,7 @@ public isolated function testReadOnlyMapsWithReadOnlyRecords() returns error? {
         "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
     };
 
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(instructors);
-    map<Instructor & readonly> & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(instructors, deserializedValue);
+    return verifyOperation(ReadOnlyMapOfReadOnlyRecord, instructors, schema);
 }
 
 @test:Config {
@@ -118,11 +106,7 @@ public isolated function testMapsWithRecordsWithReadOnly() returns error? {
         "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
         "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(instructors);
-    map<Instructor> & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(instructors, deserializedValue);
+    return verifyOperation(ReadOnlyMapOfRecord, instructors, schema);
 }
 
 @test:Config {
@@ -137,11 +121,7 @@ public isolated function testMapsWithReadOnlyRecordsWithReadOnly() returns error
         "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
         "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(instructors);
-    map<Instructor & readonly> & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(instructors, deserializedValue);
+    return verifyOperation(ReadOnlyMapOfReadOnlyRecord, instructors, schema);
 }
 
 @test:Config {
@@ -156,11 +136,7 @@ public isolated function testMapsWithReadOnlyRecords() returns error? {
         "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
         "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(instructors);
-    map<Instructor & readonly> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(instructors, deserializedValue);
+    return verifyOperation(ReadOnlyMapOfRecord, instructors, schema);
 }
 
 @test:Config {
@@ -175,11 +151,7 @@ public isolated function testMapsWithRecords() returns error? {
         "doe": {name: "Doe", student: {name: "Bob", subject: "Science"}},
         "jane": {name: "Jane", student: {name: "Charlie", subject: "English"}}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(instructors);
-    map<Instructor> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(instructors, deserializedValue);
+    return verifyOperation(RecordMap, instructors, schema);
 }
 
 @test:Config {
@@ -194,15 +166,11 @@ public isolated function testMapsWithInt() returns error? {
         }`;
 
     map<int> colors = {"red": 0, "green": 1, "blue": 2};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<int> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(IntMap, colors, schema);
 }
 
 @test:Config {
-    groups: ["map", "enum", "lk"]
+    groups: ["map", "enum"]
 }
 public isolated function testMapsWithEnum() returns error? {
     string schema = string `
@@ -217,11 +185,7 @@ public isolated function testMapsWithEnum() returns error? {
         }`;
 
     map<Numbers> colors = {"red": "ONE", "green": "TWO", "blue": "THREE"};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<Numbers> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(EnumMap, colors, schema);
 }
 
 @test:Config {
@@ -245,11 +209,7 @@ public isolated function testMapsWithEnumArrays() returns error? {
         }`;
 
     map<Numbers[]> colors = {"red": ["ONE", "TWO", "THREE"], "green": ["ONE", "TWO", "THREE"], "blue": ["ONE", "TWO", "THREE"]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<Numbers[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(EnumArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -264,11 +224,7 @@ public isolated function testMapsWithFloat() returns error? {
         }`;
 
     map<float> colors = {"red": 2.3453, "green": 435.563, "blue": 20347.23};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<float> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(FloatMap, colors, schema);
 }
 
 @test:Config {
@@ -283,11 +239,7 @@ public isolated function testMapsWithDouble() returns error? {
         }`;
 
     map<float> colors = {"red": 2.3453, "green": 435.563, "blue": 20347.23};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<float> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(FloatMap, colors, schema);
 }
 
 @test:Config {
@@ -307,11 +259,7 @@ public isolated function testMapsWithDoubleArray() returns error? {
         }`;
 
     map<float[]> colors = {"red": [2.3434253, 435.56433, 20347.22343], "green": [2.3452343, 435.56343, 20347.2423], "blue": [2.3453243, 435.56243, 20347.22343]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<float[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(FloatArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -326,11 +274,7 @@ public isolated function testMapsWithLong() returns error? {
         }`;
 
     map<int> colors = {"red": 2, "green": 435, "blue": 2034723};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<int> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(IntMap, colors, schema);
 }
 
 @test:Config {
@@ -345,11 +289,7 @@ public isolated function testMapsWithStrings() returns error? {
         }`;
 
     map<string> colors = {"red": "2", "green": "435", "blue": "2034723"};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<string> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(StringMap, colors, schema);
 }
 
 @test:Config {
@@ -371,7 +311,7 @@ public isolated function testMapsWithUnionTypes() returns error? {
 }
 
 @test:Config {
-    groups: ["map", "boolean", "ssq"]
+    groups: ["map", "boolean"]
 }
 public isolated function testMapsWithBoolean() returns error? {
     string schema = string `
@@ -382,11 +322,7 @@ public isolated function testMapsWithBoolean() returns error? {
         }`;
 
     map<boolean> colors = {"red": true, "green": false, "blue": false};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<boolean> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(BooleanMap, colors, schema);
 }
 
 @test:Config {
@@ -401,11 +337,7 @@ public isolated function testMapsWithBooleanWithReadOnlyValues() returns error? 
         }`;
 
     map<boolean> & readonly colors = {"red": true, "green": false, "blue": false};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<boolean> & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(ReadOnlyBooleanMap, colors, schema);
 }
 
 @test:Config {
@@ -427,11 +359,7 @@ public isolated function testMapsWithMaps() returns error? {
         "green": {"r": 5, "g": 6, "b": 7},
         "blue": {"r": 8, "g": 9, "b": 10}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<map<int>> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(MapOfIntMap, colors, schema);
 }
 
 @test:Config {
@@ -456,11 +384,7 @@ public isolated function testMapsWithNestedMapsWithReadOnlyValues() returns erro
         "green": {"r": {"r": 2, "g": 3, "b": 4}, "g": {"r": 5, "g": 6, "b": 7}, "b": {"r": 8, "g": 9, "b": 10}},
         "blue": {"r": {"r": 2, "g": 3, "b": 4}, "g": {"r": 5, "g": 6, "b": 7}, "b": {"r": 8, "g": 9, "b": 10}}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<map<map<int>>> & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(ReadOnlyMapOfReadOnlyMap, colors, schema);
 }
 
 @test:Config {
@@ -485,11 +409,7 @@ public isolated function testMapsWithNestedMaps() returns error? {
         "green": {"r": {"r": 2, "g": 3, "b": 4}, "g": {"r": 5, "g": 6, "b": 7}, "b": {"r": 8, "g": 9, "b": 10}},
         "blue": {"r": {"r": 2, "g": 3, "b": 4}, "g": {"r": 5, "g": 6, "b": 7}, "b": {"r": 8, "g": 9, "b": 10}}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<map<map<int>>> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(MapOfMap, colors, schema);
 }
 
 @test:Config {
@@ -507,11 +427,7 @@ public isolated function testMapsWithLongArray() returns error? {
         }`;
 
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<int[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(IntArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -529,15 +445,11 @@ public isolated function testMapsWithIntArray() returns error? {
         }`;
 
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<int[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(IntArrayMap, colors, schema);
 }
 
 @test:Config {
-    groups: ["map", "int", "az"]
+    groups: ["map", "int"]
 }
 public isolated function testMapsWithIntArrayWithReadOnlyValues() returns error? {
     string schema = string `
@@ -551,11 +463,7 @@ public isolated function testMapsWithIntArrayWithReadOnlyValues() returns error?
         }`;
 
     map<int[]> & readonly colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<int[]> & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(ReadOnlyIntArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -573,11 +481,7 @@ public isolated function testMapsWithFloatArray() returns error? {
         }`;
 
     map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<float[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(FloatArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -595,11 +499,7 @@ public isolated function testMapsWithStringArray() returns error? {
         }`;
 
     map<string[]> colors = {"red": ["252", "122", "41"], "green": ["235", "163", "23"], "blue": ["207", "123"]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<string[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(StringArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -617,11 +517,7 @@ public isolated function testMapsWithUnionArray() returns error? {
         }`;
 
     map<string[]> colors = {"red": ["252", "122", "41"], "green": ["235", "163", "23"], "blue": ["207", "123"]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<string[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(StringArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -639,11 +535,7 @@ public isolated function testMapsWithUnionIntArray() returns error? {
         }`;
 
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<int[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(IntArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -661,11 +553,7 @@ public isolated function testMapsWithUnionLongArray() returns error? {
         }`;
 
     map<int[]> colors = {"red": [252, 122, 41], "green": [235, 163, 23], "blue": [207, 123]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<int[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(IntArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -683,11 +571,7 @@ public isolated function testMapsWithUnionFloatArray() returns error? {
         }`;
 
     map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<float[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(FloatArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -705,11 +589,7 @@ public isolated function testMapsWithUnionDoubleArray() returns error? {
         }`;
 
     map<float[]> colors = {"red": [252.32, 122.45, 41.342], "green": [235.321, 163.3, 23.324], "blue": [207.23434, 123.23]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<float[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(FloatArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -727,11 +607,7 @@ public isolated function testMapsWithBytesArray() returns error? {
         }`;
 
     map<byte[][]> colors = {"red": ["252".toBytes(), "122".toBytes(), "41".toBytes()], "green": ["235".toBytes(), "163".toBytes(), "23".toBytes()], "blue": ["207".toBytes(), "123".toBytes()]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<byte[][]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(ByteArrayArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -753,11 +629,7 @@ public isolated function testMapsWithFixedArray() returns error? {
         }`;
 
     map<byte[][]> colors = {"red": ["252".toBytes(), "122".toBytes(), "411".toBytes()], "green": ["235".toBytes(), "163".toBytes(), "213".toBytes()], "blue": ["207".toBytes(), "123".toBytes()]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<byte[][]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(ByteArrayArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -775,11 +647,7 @@ public isolated function testMapsWithBooleanArray() returns error? {
         }`;
 
     map<boolean[]> colors = {"red": [true, false, true], "green": [false, true, false], "blue": [true, false]};
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<boolean[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(BooleanArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -794,11 +662,7 @@ public isolated function testMapsWithArrayOfRecordArray() returns error? {
         "doe": [[{name: "Doe", student: {name: "Bob", subject: "Science"}}, {name: "Doe", student: {name: "Bob", subject: "Science"}}]],
         "jane": [[{name: "Jane", student: {name: "Charlie", subject: "English"}}, {name: "Jane", student: {name: "Charlie", subject: "English"}}]]
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(instructors);
-    map<Instructor[][]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(instructors, deserializedValue);
+    return verifyOperation(MapOfArrayOfRecordArray, instructors, schema);
 }
 
 @test:Config {
@@ -826,11 +690,7 @@ public isolated function testArrayOfStringArrayMaps() returns error? {
         "green": [["red", "green", "blue"], ["red", "green", "blue"], ["red", "green", "blue"]],
         "blue": [["red", "green", "blue"], ["red", "green", "blue"], ["red", "green", "blue"]]
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(colors);
-    map<string[][]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, colors);
+    return verifyOperation(StringArrayArrayMap, colors, schema);
 }
 
 @test:Config {
@@ -856,11 +716,7 @@ public isolated function testMapsWithNestedRecordMaps() returns error? {
         "doe": {"john": lec, "doe": lec},
         "jane": {"john": lec, "doe": lec}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(lecturers);
-    map<map<Lecturer>> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(lecturers, deserializedValue);
+    return verifyOperation(MapOfRecordMap, lecturers, schema);
 }
 
 @test:Config {
@@ -878,11 +734,7 @@ public isolated function testMapsWithNestedRecordArrayMaps() returns error? {
         "doe": {"r": lecs, "g": lecs, "b": lecs},
         "jane": {"r": lecs, "g": lecs, "b": lecs}
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(lecturers);
-    map<map<Lecturer[]>> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(lecturers, deserializedValue);
+    return verifyOperation(MapOfRecordArrayMap, lecturers, schema);
 }
 
 @test:Config {
@@ -897,11 +749,7 @@ public isolated function testMapsWithRecordArray() returns error? {
         "doe": [{name: "Doe", student: {name: "Bob", subject: "Science"}}, {name: "Doe", student: {name: "Bob", subject: "Science"}}],
         "jane": [{name: "Jane", student: {name: "Charlie", subject: "English"}}, {name: "Jane", student: {name: "Charlie", subject: "English"}}]
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(instructors);
-    map<Instructor[]> deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(instructors, deserializedValue);
+    return verifyOperation(MapOfRecordArray, instructors, schema);
 }
 
 @test:Config {
@@ -920,81 +768,5 @@ public isolated function testMapsWithNestedRecordArrayReadOnlyMaps() returns err
         "doe": mapValue.cloneReadOnly(),
         "jane": mapValue.cloneReadOnly()
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(lecturers);
-    map<map<Lecturer[]>> & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(lecturers, deserializedValue);
+    return verifyOperation(ReadOnlyMapOfRecordArray, lecturers, schema);
 }
-
-// @test:Config {
-//     groups: ["map", "record"]
-// }
-// public isolated function testMapsWithReadOnlyRecordArrayReadOnlyMaps() returns error? {
-//     string schema = string `
-//     {
-//         "type": "map",
-//         "values": {
-//             "type": "map",
-//             "values": {
-//                 "type": "array",
-//                 "items": {
-//                     "type": "record",
-//                     "name": "Lecturer",
-//                     "fields": [
-//                         {
-//                             "name": "name",
-//                             "type": ["null", "string"]
-//                         },
-//                         {
-//                             "name": "instructor",
-//                             "type": ["null", {
-//                                 "type": "record",
-//                                 "name": "Instructor",
-//                                 "fields": [
-//                                     {
-//                                         "name": "name",
-//                                         "type": ["null", "string"]
-//                                     },
-//                                     {
-//                                         "name": "student",
-//                                         "type": ["null", {
-//                                             "type": "record",
-//                                             "name": "Student",
-//                                             "fields": [
-//                                                 {
-//                                                     "name": "name",
-//                                                     "type": ["null", "string"]
-//                                                 },
-//                                                 {
-//                                                     "name": "subject",
-//                                                     "type": ["null", "string"]
-//                                                 }
-//                                             ]
-//                                         }]
-//                                     }
-//                                 ]
-//                             }]
-//                         }
-//                     ]
-//                 }
-//             }
-//         }
-//     }`;
-
-
-//     Lecturer[] & readonly lecs = [{name: "John", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}},
-//                             {name: "Doe", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}}];
-
-//     map<Lecturer[] & readonly> mapValue = {"r": lecs, "g": lecs, "b": lecs};
-//     map<map<Lecturer[] & readonly>> lecturers = {
-//         "john": mapValue,
-//         "doe": mapValue,
-//         "jane": mapValue
-//     };
-
-//     Schema avro = check new (schema);
-//     byte[] serializedValue = check avro.toAvro(lecturers);
-//     map<map<Lecturer[] & readonly>> deserializedValue = check avro.fromAvro(serializedValue);
-//     test:assertEquals(lecturers, deserializedValue);
-// }

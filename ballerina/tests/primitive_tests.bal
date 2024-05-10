@@ -28,11 +28,7 @@ public isolated function testIntValue() returns error? {
         }`;
 
     int value = 5;
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    int deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(int, value, schema);
 }
 
 @test:Config {
@@ -47,11 +43,7 @@ public isolated function testFloatValue() returns error? {
         }`;
 
     float value = 5.5;
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    float deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(float, value, schema);
 }
 
 @test:Config {
@@ -66,11 +58,7 @@ public isolated function testDoubleValue() returns error? {
         }`;
 
     float value = 5.5595;
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    float deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(float, value, schema);
 }
 
 @test:Config {
@@ -85,10 +73,7 @@ public isolated function testLongValue() returns error? {
         }`;
 
     int value = 555950000000000000;
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    int deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(int, value, schema);
 }
 
 @test:Config {
@@ -103,10 +88,7 @@ public isolated function testStringValue() returns error? {
         }`;
 
     string value = "test";
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    string deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(string, value, schema);
 }
 
 @test:Config {
@@ -121,10 +103,7 @@ public isolated function testBoolean() returns error? {
         }`;
 
     boolean value = true;
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    boolean deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(boolean, value, schema);
 }
 
 @test:Config {
@@ -137,11 +116,7 @@ public isolated function testNullValues() returns error? {
             "name" : "nullValue", 
             "namespace": "data"
         }`;
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(());
-    () deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, ());
+    return verifyOperation(NullType, (), schema);
 }
 
 @test:Config {

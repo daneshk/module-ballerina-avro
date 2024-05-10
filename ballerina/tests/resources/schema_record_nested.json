@@ -1,0 +1,49 @@
+{
+    "namespace": "example.avro",
+    "type": "record",
+    "name": "Lecturer",
+    "fields": [
+        {
+            "name": "name",
+            "type": {
+                "type": "map",
+                "values" : "int",
+                "default": {}
+            }
+        },
+        {
+            "name": "age",
+            "type": "long"
+        },
+        {
+            "name": "instructor",
+            "type": {
+                "name": "Instructor",
+                "type": "record",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "student",
+                        "type": {
+                            "type": "record",
+                            "name": "Student",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "subject",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

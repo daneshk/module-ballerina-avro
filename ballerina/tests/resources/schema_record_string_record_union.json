@@ -1,0 +1,40 @@
+{
+    "type": "record",
+    "name": "Course",
+    "namespace": "example.avro",
+    "fields": [
+        {
+            "name": "name",
+            "type": ["string", "null"]
+        },
+        {
+            "name": "value",
+            "type": "float"
+        },
+        {
+            "name": "credits",
+            "type": ["null", "int"]
+        },
+        {
+            "name": "student",
+            "type": [
+                "null", 
+                {
+                    "type": "record",
+                    "name": "Student",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": ["string", "null"]
+                        },
+                        {
+                            "name": "subject",
+                            "type": ["string", "null"]
+                        }
+                    ]
+                }, 
+                "string"
+            ]
+        }
+    ]
+}

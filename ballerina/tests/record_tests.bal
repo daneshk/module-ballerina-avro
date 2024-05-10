@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/test;
+import ballerina/io;
 
 @test:Config {
     groups: ["record"]
@@ -35,11 +36,7 @@ public isolated function testRecords() returns error? {
         name: "Liam",
         subject: "geology"
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(student);
-    Student deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(student, deserializedValue);
+    return verifyOperation(Student, student, schema);
 }
 
 @test:Config {
@@ -61,67 +58,15 @@ public isolated function testRecordsWithDifferentTypeOfFields() returns error? {
         name: "Liam",
         age: 52
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(student);
-    Person deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(student, deserializedValue);
+    return verifyOperation(Person, student, schema);
 }
 
 @test:Config {
     groups: ["record"]
 }
 public isolated function testNestedRecords() returns error? {
-    string schema = string `
-    {
-        "namespace": "example.avro",
-        "type": "record",
-        "name": "Lecturer",
-        "fields": [
-            {
-                "name": "name",
-                "type": {
-                    "type": "map",
-                    "values" : "int",
-                    "default": {}
-                }
-            },
-            {
-                "name": "age",
-                "type": "long"
-            },
-            {
-                "name": "instructor",
-                "type": {
-                    "name": "Instructor",
-                    "type": "record",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "type": "string"
-                        },
-                        {
-                            "name": "student",
-                            "type": {
-                                "type": "record",
-                                "name": "Student",
-                                "fields": [
-                                    {
-                                        "name": "name",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "name": "subject",
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
-        ]
-    }`;
+    string jsonFileName = string `tests/resources/schema_record_nested.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Lecturer3 lecturer = {
         name: {"John": 1, "Sam": 2, "Liam": 3},
@@ -135,11 +80,7 @@ public isolated function testNestedRecords() returns error? {
         }
     };
 
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(lecturer);
-    Lecturer3 deserializedValue = check avro.fromAvro(serialize);
-    // deserialize.instructor.student.name = "Sam";
-    test:assertEquals(deserializedValue, lecturer);
+    return verifyOperation(Lecturer3, lecturer, schema);
 }
 
 @test:Config {
@@ -162,14 +103,11 @@ public isolated function testArraysInRecords() returns error? {
         colors: ["maroon", "dark red", "light red"]
     };
 
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(colors);
-    Color deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(Color, colors, schema);
 }
 
 @test:Config {
-    groups: ["record", "array", "aaaa"]
+    groups: ["record", "array"]
 }
 public isolated function testArraysInReadOnlyRecords() returns error? {
     string schema = string `
@@ -183,15 +121,12 @@ public isolated function testArraysInReadOnlyRecords() returns error? {
             ]
         }`;
 
-    Color & readonly colors = {
+    ReadOnlyColors colors = {
         name: "Red",
         colors: ["maroon", "dark red", "light red"]
     };
 
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(colors);
-    Color & readonly deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(colors, deserializedValue);
+    return verifyOperation(ReadOnlyColors, colors, schema);
 }
 
 @test:Config {
@@ -232,50 +167,11 @@ public isolated function testArraysInRecordsWithInvalidSchema() returns error? {
 }
 
 @test:Config {
-    groups: ["record", "union", "pm"]
+    groups: ["record", "union"]
 }
 public isolated function testRecordsWithStringRecordUnionType() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "Course",
-            "namespace": "example.avro",
-            "fields": [
-                {
-                    "name": "name",
-                    "type": ["string", "null"]
-                },
-                {
-                    "name": "value",
-                    "type": "float"
-                },
-                {
-                    "name": "credits",
-                    "type": ["null", "int"]
-                },
-                {
-                    "name": "student",
-                    "type": [
-                        "null", 
-                        {
-                            "type": "record",
-                            "name": "Student",
-                            "fields": [
-                                {
-                                    "name": "name",
-                                    "type": ["string", "null"]
-                                },
-                                {
-                                    "name": "subject",
-                                    "type": ["string", "null"]
-                                }
-                            ]
-                        }, 
-                        "string"
-                    ]
-                }
-            ]
-        }`;
+    string jsonFileName = string `tests/resources/schema_record_string_record_union.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     MultipleUnionRecord course = {
         name: "data",
@@ -284,53 +180,15 @@ public isolated function testRecordsWithStringRecordUnionType() returns error? {
         student: string `{name: "Jon", subject: "geo"}adsk`
     };
 
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(course);
-    MultipleUnionRecord deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(deserializedValue, course);
+    return verifyOperation(MultipleUnionRecord, course, schema);
 }
 
 @test:Config {
     groups: ["record", "union"]
 }
 public isolated function testRecordsWithUnionTypes() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "Course",
-            "namespace": "example.avro",
-            "fields": [
-                {
-                    "name": "name",
-                    "type": ["string", "null"]
-                },
-                {
-                    "name": "value",
-                    "type": "float"
-                },
-                {
-                    "name": "credits",
-                    "type": ["null", "int"]
-                },
-                {
-                    "name": "student",
-                    "type": {
-                        "type": "record",
-                        "name": "Student",
-                        "fields": [
-                            {
-                                "name": "name",
-                                "type": ["string", "null"]
-                            },
-                            {
-                                "name": "subject",
-                                "type": ["string", "null"]
-                            }
-                        ]
-                    }
-                }
-            ]
-        }`;
+    string jsonFileName = string `tests/resources/schema_record_union.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     UnionRecord course = {
         name: "data",
@@ -338,11 +196,7 @@ public isolated function testRecordsWithUnionTypes() returns error? {
         credits: 5,
         student: {name: "Jon", subject: "geo"}
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(course);
-    UnionRecord deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(deserializedValue, course);
+    return verifyOperation(UnionRecord, course, schema);
 }
 
 @test:Config {
@@ -364,11 +218,7 @@ public isolated function testRecordsWithIntFields() returns error? {
         name: "Liam",
         age: 52
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(student);
-    Person deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(student, deserializedValue);
+    return verifyOperation(Person, student, schema);
 }
 
 @test:Config {
@@ -390,11 +240,7 @@ public isolated function testRecordsWithLongFields() returns error? {
         name: "Liam",
         age: 52
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(student);
-    Person deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(student, deserializedValue);
+    return verifyOperation(Person, student, schema);
 }
 
 @test:Config {
@@ -416,11 +262,7 @@ public isolated function testRecordsWithFloatFields() returns error? {
         name: "Liam",
         age: 52.656
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(student);
-    Students deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(student, deserializedValue);
+    return verifyOperation(Students, student, schema);
 }
 
 @test:Config {
@@ -442,11 +284,7 @@ public isolated function testRecordsWithDoubleFields() returns error? {
         name: "Liam",
         age: 52.656
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(student);
-    Students deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(student, deserializedValue);
+    return verifyOperation(Students, student, schema);
 }
 
 @test:Config {
@@ -468,72 +306,15 @@ public isolated function testRecordsWithBooleanFields() returns error? {
         name: "Liam",
         under19: false
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(student);
-    StudentRec deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(student, deserializedValue);
+    return verifyOperation(StudentRec, student, schema);
 }
 
 @test:Config {
     groups: ["record", "union"]
 }
 public isolated function testOptionalValuesInRecords() returns error? {
-    string schema = string `
-    {
-        "type": "record",
-        "name": "Lecturer5",
-        "fields": [
-            {
-                "name": "name",
-                "type": [
-                    "null", 
-                    {
-                        "type": "map",
-                        "values": "int"
-                    }
-                ]
-            },
-            {
-                "name": "bytes",
-                "type": ["null", "bytes"]
-            },
-            {
-                "name": "instructorClone",
-                "type": ["null", {
-                    "type": "record",
-                    "name": "Instructor",
-                    "fields": [
-                    {
-                        "name": "name",
-                        "type": ["null", "string"]
-                    },
-                    {
-                        "name": "student",
-                        "type": ["null", {
-                        "type": "record",
-                        "name": "Student",
-                        "fields": [
-                            {
-                            "name": "name",
-                            "type": "string"
-                            },
-                            {
-                            "name": "subject",
-                            "type": "string"
-                            }
-                        ]
-                        }]
-                    }
-                    ]
-                }]
-            },
-            {
-                "name": "instructors",
-                "type": ["null", "Instructor"]
-            }
-        ]
-    }`;
+    string jsonFileName = string `tests/resources/schema_record_optional_fields.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Instructor instructor = {
         name: "John",
@@ -553,114 +334,15 @@ public isolated function testOptionalValuesInRecords() returns error? {
         instructorClone: instructor.cloneReadOnly(),
         instructors: instructor
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(lecturer5);
-    Lecturer5 deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(deserializedValue, lecturer5);
+    return verifyOperation(Lecturer5, lecturer5, schema);
 }
 
 @test:Config {
     groups: ["record", "union"]
 }
 public isolated function testOptionalMultipleFieldsInRecords() returns error? {
-    string schema = string `
-    {
-        "type": "record",
-        "name": "Lecturer6",
-        "fields": [
-            {
-                "name": "temporary",
-                "type": ["null", "boolean"]
-            },
-            {
-                "name": "map",
-                "type": [
-                    "null", 
-                    {
-                        "type": "map",
-                        "values": "int"
-                    }
-                ]
-            },
-            {
-                "name": "number",
-                "type": [
-                    "null",
-                    {
-                        "type": "enum",
-                        "name": "Numbers",
-                        "symbols": [ "ONE", "TWO", "THREE", "FOUR" ]
-                    }
-                ]
-            },
-            {
-                "name": "bytes",
-                "type": ["null", {
-                    "type": "fixed",
-                    "name": "FixedBytes",
-                    "size": 2
-                }]
-            },
-            {
-                "name": "age",
-                "type": ["null", "long"]
-            },
-            {
-                "name": "name",
-                "type": ["null", "string"]
-            },
-            {
-                "name": "floatNumber",
-                "type": ["null", "float"]
-            },
-            {
-                "name": "colors",
-                "type": ["null", {
-                    "type": "array",
-                    "items": {
-                        "type": "enum",
-                        "name": "ColorEnum",
-                        "symbols": ["ONE", "TWO", "THREE"]
-                    }
-                }]
-            },
-            {
-                "name": "instructorClone",
-                "type": ["null", {
-                    "type": "record",
-                    "name": "Instructor",
-                    "fields": [
-                    {
-                        "name": "name",
-                        "type": ["null", "string"]
-                    },
-                    {
-                        "name": "student",
-                        "type": ["null", {
-                            "type": "record",
-                            "name": "Student",
-                            "fields": [
-                                {
-                                "name": "name",
-                                "type": "string"
-                                },
-                                {
-                                "name": "subject",
-                                "type": "string"
-                                }
-                            ]
-                        }]
-                    }]
-                }]
-            },
-            {
-                "name": "instructors",
-                "type": ["null", "Instructor"]
-            }
-        ]
-    }`;
-
+    string jsonFileName = string `tests/resources/schema_record_multiple_optional_fields.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
     Instructor instructor = {
         name: "John",
         student: {
@@ -686,9 +368,5 @@ public isolated function testOptionalMultipleFieldsInRecords() returns error? {
         instructorClone: instructor.cloneReadOnly(),
         instructors: instructor
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(lecturer6);
-    Lecturer6 deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(deserializedValue, lecturer6);
+    return verifyOperation(Lecturer6, lecturer6, schema);
 }

@@ -17,21 +17,13 @@
 import ballerina/io;
 import ballerina/test;
 
-public type UnionEnumRecord record {
-    string|Numbers? field1;
-};
-
-public type UnionFixedRecord record {
-    string|byte[]? field1;
-};
-
-public type UnionRec record {
-    string|UnionEnumRecord? field1;
-};
-
-public type ReadOnlyRec readonly & record {
-    string|UnionEnumRecord? & readonly field1;
-};
+public isolated function verifyOperation(typedesc<anydata> providedType, 
+                                         anydata value, string schema) returns error? {
+    Schema avro = check new (schema);
+    byte[] serializedValue = check avro.toAvro(value);
+    var deserializedValue = check avro.fromAvro(serializedValue, providedType);
+    test:assertEquals(deserializedValue, value);
+}
 
 @test:Config {
     groups: ["enum", "union"]
@@ -43,10 +35,7 @@ public isolated function testUnionEnums() returns error? {
     UnionEnumRecord number = {
         field1: ONE
     };
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(number);
-    UnionEnumRecord deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(number, deserializedValue);
+    return verifyOperation(UnionEnumRecord, number, schema);
 }
 
 @test:Config {
@@ -59,10 +48,7 @@ public isolated function testUnionFixed() returns error? {
     UnionFixedRecord number = {
         field1: "ON".toBytes()
     };
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(number);
-    UnionFixedRecord deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(number, deserializedValue);
+    return verifyOperation(UnionFixedRecord, number, schema);
 }
 
 @test:Config {
@@ -72,13 +58,10 @@ public isolated function testUnionFixeWithReadOnlyValues() returns error? {
     string jsonFileName = string `tests/resources/schema_union_fixed_strings.json`;
     string schema = (check io:fileReadJson(jsonFileName)).toString();
 
-    UnionFixedRecord & readonly number = {
+    ReadOnlyUnionFixed number = {
         field1: "ON".toBytes().cloneReadOnly()
     };
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(number);
-    UnionFixedRecord & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(number, deserializedValue);
+    return verifyOperation(ReadOnlyUnionFixed, number, schema);
 }
 
 @test:Config {
@@ -93,11 +76,7 @@ public isolated function testUnionsWithRecordsAndStrings() returns error? {
             field1: "ONE"
         }
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(number);
-    UnionRec deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(number, deserializedValue);
+    return verifyOperation(UnionRec, number, schema);
 }
 
 @test:Config {
@@ -112,11 +91,7 @@ public isolated function testUnionsWithReadOnlyRecords() returns error? {
             field1: "ONE".cloneReadOnly()
         }
     };
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(number);
-    ReadOnlyRec deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(number, deserializedValue);
+    return verifyOperation(ReadOnlyRec, number, schema);
 }
 
 @test:Config {
@@ -132,11 +107,7 @@ public isolated function testEnums() returns error? {
         }`;
 
     Numbers number = "ONE";
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(number);
-    Numbers deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(number, deserializedValue);
+    return verifyOperation(Numbers, number, schema);
 }
 
 @test:Config {
@@ -152,11 +123,7 @@ public isolated function testEnumsWithReadOnlyValues() returns error? {
         }`;
 
     Numbers & readonly number = "ONE";
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(number);
-    Numbers & readonly deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(number, deserializedValue);
+    return verifyOperation(Numbers, number, schema);
 }
 
 @test:Config {
@@ -208,11 +175,7 @@ public isolated function testFixed() returns error? {
         }`;
 
     byte[] value = "u00ffffffffffffx".toBytes();
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    byte[] deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(ByteArray, value, schema);
 }
 
 @test:Config {
@@ -237,12 +200,7 @@ public function testDbSchemaWithRecords() returns error? {
     SchemaChangeKey changeKey = {
         databaseName: "my-db"
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(changeKey);
-    SchemaChangeKey deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(changeKey, deserializedValue);
-
+    return verifyOperation(SchemaChangeKey, changeKey, schema);
 }
 
 @test:Config {
@@ -313,11 +271,7 @@ public function testComplexDbSchema() returns error? {
             data_collection_order: 1
         }
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(envelope);
-    Envelope deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(deserializedValue, envelope);
+    return verifyOperation(Envelope, envelope, schema);
 }
 
 @test:Config {
@@ -438,9 +392,5 @@ public function testComplexDbSchemaWithNestedRecords() returns error? {
         },
         MessageSource: "MessageSource"
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(envelope2);
-    Envelope2 deserializedValue = check avro.fromAvro(serialize);
-    test:assertEquals(deserializedValue, envelope2);
+    return verifyOperation(Envelope2, envelope2, schema);
 }

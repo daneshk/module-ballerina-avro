@@ -270,3 +270,67 @@ public type Envelope2 record {
     Block2? 'transaction;
     string? MessageSource;
 };
+
+
+public type UnionEnumRecord record {
+    string|Numbers? field1;
+};
+
+public type UnionFixedRecord record {
+    string|byte[]? field1;
+};
+
+public type UnionRec record {
+    string|UnionEnumRecord? field1;
+};
+
+public type ReadOnlyRec readonly & record {
+    string|UnionEnumRecord? & readonly field1;
+};
+
+type ReadOnlyUnionFixed UnionFixedRecord & readonly;
+type ByteArray byte[];
+type ReadOnlyIntArray int[] & readonly;
+type ReadOnlyStringArray string[] & readonly;
+type StringArray string[];
+type String2DArray string[][];
+type ReadOnlyColors Color & readonly;
+type NullType ();
+type ByteArrayMap map<byte[]>;
+type MapOfByteArrayMap map<map<byte[]>>;
+type ReadOnlyMapOfReadOnlyRecord map<Instructor & readonly> & readonly;
+type ReadOnlyMapOfRecord map<Instructor> & readonly;
+type RecordMap map<Instructor>;
+type IntMap map<int>;
+type EnumMap map<Numbers>;
+type EnumArrayMap map<Numbers[]>;
+type FloatMap map<float>;
+type FloatArrayMap map<float[]>;
+type StringMap map<string>;
+type BooleanMap map<boolean>;
+type ReadOnlyBooleanMap map<boolean> & readonly;
+type MapOfIntMap map<map<int>>;
+type ReadOnlyMapOfReadOnlyMap map<map<map<int>>> & readonly;
+type MapOfMap map<map<map<int>>>;
+type IntArrayMap map<int[]>;
+type ReadOnlyIntArrayMap map<int[]> & readonly;
+type StringArrayMap map<string[]>;
+type ByteArrayArrayMap map<byte[][]>;
+type BooleanArrayMap map<boolean[]>;
+type MapOfRecordArray map<Instructor[]>;
+type MapOfArrayOfRecordArray map<Instructor[][]>;
+type StringArrayArrayMap map<string[][]>;
+type MapOfRecordMap map<map<Lecturer>>;
+type MapOfRecordArrayMap map<map<Lecturer[]>>;
+type ReadOnlyMapOfRecordArray map<map<Lecturer[]>> & readonly;
+type ArrayOfByteArray byte[][];
+type ReadOnlyStudent2DArray Student[][] & readonly;
+type Student2DArray Student[][];
+type ReadOnlyStudentArray Student[] & readonly;
+type StudentArray Student[];
+type BooleanArray boolean[];
+type IntArray int[];
+type FloatArray float[];
+type EnumArray Numbers[];
+type Enum2DArray Numbers[][];
+type ReadOnlyString2DArray string[][] & readonly;

@@ -1,0 +1,95 @@
+{
+    "type": "record",
+    "name": "Lecturer6",
+    "fields": [
+        {
+            "name": "temporary",
+            "type": ["null", "boolean"]
+        },
+        {
+            "name": "map",
+            "type": [
+                "null", 
+                {
+                    "type": "map",
+                    "values": "int"
+                }
+            ]
+        },
+        {
+            "name": "number",
+            "type": [
+                "null",
+                {
+                    "type": "enum",
+                    "name": "Numbers",
+                    "symbols": [ "ONE", "TWO", "THREE", "FOUR" ]
+                }
+            ]
+        },
+        {
+            "name": "bytes",
+            "type": ["null", {
+                "type": "fixed",
+                "name": "FixedBytes",
+                "size": 2
+            }]
+        },
+        {
+            "name": "age",
+            "type": ["null", "long"]
+        },
+        {
+            "name": "name",
+            "type": ["null", "string"]
+        },
+        {
+            "name": "floatNumber",
+            "type": ["null", "float"]
+        },
+        {
+            "name": "colors",
+            "type": ["null", {
+                "type": "array",
+                "items": {
+                    "type": "enum",
+                    "name": "ColorEnum",
+                    "symbols": ["ONE", "TWO", "THREE"]
+                }
+            }]
+        },
+        {
+            "name": "instructorClone",
+            "type": ["null", {
+                "type": "record",
+                "name": "Instructor",
+                "fields": [
+                {
+                    "name": "name",
+                    "type": ["null", "string"]
+                },
+                {
+                    "name": "student",
+                    "type": ["null", {
+                        "type": "record",
+                        "name": "Student",
+                        "fields": [
+                            {
+                            "name": "name",
+                            "type": "string"
+                            },
+                            {
+                            "name": "subject",
+                            "type": "string"
+                            }
+                        ]
+                    }]
+                }]
+            }]
+        },
+        {
+            "name": "instructors",
+            "type": ["null", "Instructor"]
+        }
+    ]
+}

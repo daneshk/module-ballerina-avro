@@ -36,11 +36,7 @@ public isolated function testRecordsWithBytes() returns error? {
         name: "Liam",
         favorite_color: "yellow".toBytes()
     };
-
-    Schema avro = check new(schema);
-    byte[] serializedValue = check avro.toAvro(student);
-    Student1 deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, student);
+    return verifyOperation(Student1, student, schema);
 }
 
 @test:Config {
@@ -56,11 +52,7 @@ public isolated function testArraysWithBytes() returns error? {
         }`;
 
     byte[][] numbers = ["22.4".toBytes(), "556.84350".toBytes(), "78.0327".toBytes()];
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(numbers);
-    byte[][] deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, numbers);
+    return verifyOperation(ArrayOfByteArray, numbers, schema);
 }
 
 @test:Config {
@@ -75,11 +67,7 @@ public isolated function testBytes() returns error? {
         }`;
 
     byte[] value = "5".toBytes();
-
-    Schema avro = check new (schema);
-    byte[] serializedValue = check avro.toAvro(value);
-    byte[] deserializedValue = check avro.fromAvro(serializedValue);
-    test:assertEquals(deserializedValue, value);
+    return verifyOperation(ByteArray, value, schema);
 }
 
 @test:Config {
@@ -100,10 +88,5 @@ public isolated function testNestedRecordsWithBytes() returns error? {
             byteData: "ddd".toBytes().cloneReadOnly()
         }
     };
-
-    Schema avro = check new (schema);
-    byte[] serialize = check avro.toAvro(lecturer4);
-    Lecturer4 deserializedValue = check avro.fromAvro(serialize);
-    // deserialize.instructor.student.name = "Sam";
-    test:assertEquals(deserializedValue, lecturer4);
+    return verifyOperation(Lecturer4, lecturer4, schema);
 }
