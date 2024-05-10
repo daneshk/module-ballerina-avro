@@ -1,0 +1,17 @@
+{
+    "type": "record",
+    "name": "ExampleRecord",
+    "fields": [
+        {
+            "name": "field1", 
+            "type": [
+                "string", 
+                {
+                    "type": "fixed",
+                    "name": "Fixed",
+                    "size": 2
+                }
+            ]
+        }
+    ]
+}

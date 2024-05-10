@@ -91,7 +91,7 @@ public isolated function testMapsOfFixedMaps() returns error? {
     groups: ["map", "record", "kkk"]
 }
 public isolated function testReadOnlyMapsWithReadOnlyRecords() returns error? {
-    string jsonFileName = string `tests/resources/schema_map.json`;
+    string jsonFileName = string `tests/resources/schema_map_readonly.json`;
     string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     map<Instructor & readonly> & readonly instructors = {
@@ -110,7 +110,7 @@ public isolated function testReadOnlyMapsWithReadOnlyRecords() returns error? {
     groups: ["map", "record", "kkk"]
 }
 public isolated function testMapsWithRecordsWithReadOnly() returns error? {
-    string jsonFileName = string `tests/resources/schema_map_2.json`;
+    string jsonFileName = string `tests/resources/schema_map_records_readonly.json`;
     string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     map<Instructor> & readonly instructors = {
@@ -129,7 +129,7 @@ public isolated function testMapsWithRecordsWithReadOnly() returns error? {
     groups: ["map", "record"]
 }
 public isolated function testMapsWithReadOnlyRecordsWithReadOnly() returns error? {
-    string jsonFileName = string `tests/resources/schema_map_3.json`;
+    string jsonFileName = string `tests/resources/schema_map_readonly_records_readonly.json`;
     string schema = (check io:fileReadJson(jsonFileName)).toString();
         
     map<Instructor & readonly> & readonly instructors = {
@@ -148,7 +148,7 @@ public isolated function testMapsWithReadOnlyRecordsWithReadOnly() returns error
     groups: ["map", "record"]
 }
 public isolated function testMapsWithReadOnlyRecords() returns error? {
-    string jsonFileName = string `tests/resources/schema_map_4.json`;
+    string jsonFileName = string `tests/resources/schema_map_readonly_records.json`;
     string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     map<Instructor & readonly> instructors = {
@@ -167,7 +167,7 @@ public isolated function testMapsWithReadOnlyRecords() returns error? {
     groups: ["map", "record"]
 }
 public isolated function testMapsWithRecords() returns error? {
-    string jsonFileName = string `tests/resources/schema_map_5.json`;
+    string jsonFileName = string `tests/resources/schema_map_records.json`;
     string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     map<Instructor> instructors = {
@@ -782,103 +782,12 @@ public isolated function testMapsWithBooleanArray() returns error? {
     test:assertEquals(deserialize, colors);
 }
 
-// @test:Config {
-//     groups: ["map", "record", "ggg"]
-// }
-// public isolated function testMapsWithRecordArray() returns error? {
-//     string schema = string `
-//         {
-//             "type": "map",
-//             "values": {
-//                 "type": "array",
-//                 "items": {
-//                     "type": "array",
-//                     "items": {
-//                         "type": "record",
-//                         "name": "Instructor",
-//                         "fields": [
-//                             {
-//                                 "name": "name",
-//                                 "type": ["null", "string"]
-//                             },
-//                             {
-//                                 "name": "student",
-//                                 "type": ["null", {
-//                                     "type": "record",
-//                                     "name": "Student",
-//                                     "fields": [
-//                                         {
-//                                             "name": "name",
-//                                             "type": "string"
-//                                         },
-//                                         {
-//                                             "name": "subject",
-//                                             "type": "string"
-//                                         }
-//                                     ]
-//                                 }]
-//                             }
-//                         ]
-//                     }
-//                 }
-//             },
-//             "default": {}
-//         }`;
-
-//     map<Instructor[]> instructors = {
-//         "john": [{name: "John", student: {name: "Alice", subject: "Math"}}, {name: "John", student: {name: "Alice", subject: "Math"}}],
-//         "doe": [{name: "Doe", student: {name: "Bob", subject: "Science"}}, {name: "Doe", student: {name: "Bob", subject: "Science"}}],
-//         "jane": [{name: "Jane", student: {name: "Charlie", subject: "English"}}, {name: "Jane", student: {name: "Charlie", subject: "English"}}]
-//     };
-
-//     Schema avro = check new (schema);
-//     byte[] encodedValue = check avro.toAvro(instructors);
-//     map<Instructor[]> deserialize = check avro.fromAvro(encodedValue);
-//     test:assertEquals(instructors, deserialize);
-// }
-
 @test:Config {
-    groups: ["map", "record", "gg"]
+    groups: ["map", "record"]
 }
 public isolated function testMapsWithArrayOfRecordArray() returns error? {
-    string schema = string `
-        {
-            "type": "map",
-            "values": {
-                "type": "array",
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "type": "record",
-                        "name": "Instructor",
-                        "fields": [
-                            {
-                                "name": "name",
-                                "type": ["null", "string"]
-                            },
-                            {
-                                "name": "student",
-                                "type": ["null", {
-                                    "type": "record",
-                                    "name": "Student",
-                                    "fields": [
-                                        {
-                                            "name": "name",
-                                            "type": "string"
-                                        },
-                                        {
-                                            "name": "subject",
-                                            "type": "string"
-                                        }
-                                    ]
-                                }]
-                            }
-                        ]
-                    }
-                }
-            },
-            "default": {}
-        }`;
+    string jsonFileName = string `tests/resources/schema_map_array_record_arrays.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     map<Instructor[][]> instructors = {
         "john": [[{name: "John", student: {name: "Alice", subject: "Math"}}, {name: "John", student: {name: "Alice", subject: "Math"}}]],
@@ -928,54 +837,8 @@ public isolated function testArrayOfStringArrayMaps() returns error? {
     groups: ["map", "record"]
 }
 public isolated function testMapsWithNestedRecordMaps() returns error? {
-    string schema = string `
-    {
-        "type": "map",
-        "values": {
-            "type": "map",
-            "values": {
-                "type": "record",
-                "name": "Lecturer",
-                "fields": [
-                    {
-                        "name": "name",
-                        "type": ["null", "string"]
-                    },
-                    {
-                        "name": "instructor",
-                        "type": ["null", {
-                            "type": "record",
-                            "name": "Instructor",
-                            "fields": [
-                                {
-                                    "name": "name",
-                                    "type": ["null", "string"]
-                                },
-                                {
-                                    "name": "student",
-                                    "type": ["null", {
-                                        "type": "record",
-                                        "name": "Student",
-                                        "fields": [
-                                            {
-                                                "name": "name",
-                                                "type": ["null", "string"]
-                                            },
-                                            {
-                                                "name": "subject",
-                                                "type": ["null", "string"]
-                                            }
-                                        ]
-                                    }]
-                                }
-                            ]
-                        }]
-                    }
-                ]
-            }
-        }
-    }`;
-
+    string jsonFileName = string `tests/resources/schema_map_record_maps.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Lecturer lec = {
         name: "John",
@@ -1004,57 +867,8 @@ public isolated function testMapsWithNestedRecordMaps() returns error? {
     groups: ["map", "record"]
 }
 public isolated function testMapsWithNestedRecordArrayMaps() returns error? {
-    string schema = string `
-    {
-        "type": "map",
-        "values": {
-            "type": "map",
-            "values": {
-                "type": "array",
-                "items": {
-                    "type": "record",
-                    "name": "Lecturer",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "type": ["null", "string"]
-                        },
-                        {
-                            "name": "instructor",
-                            "type": ["null", {
-                                "type": "record",
-                                "name": "Instructor",
-                                "fields": [
-                                    {
-                                        "name": "name",
-                                        "type": ["null", "string"]
-                                    },
-                                    {
-                                        "name": "student",
-                                        "type": ["null", {
-                                            "type": "record",
-                                            "name": "Student",
-                                            "fields": [
-                                                {
-                                                    "name": "name",
-                                                    "type": ["null", "string"]
-                                                },
-                                                {
-                                                    "name": "subject",
-                                                    "type": ["null", "string"]
-                                                }
-                                            ]
-                                        }]
-                                    }
-                                ]
-                            }]
-                        }
-                    ]
-                }
-            }
-        }
-    }`;
-
+    string jsonFileName = string `tests/resources/schema_map_record_array.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Lecturer[] lecs = [{name: "John", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}},
                             {name: "Doe", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}}];
@@ -1074,58 +888,28 @@ public isolated function testMapsWithNestedRecordArrayMaps() returns error? {
 @test:Config {
     groups: ["map", "record"]
 }
-public isolated function testMapsWithNestedRecordArrayReadOnlyMaps() returns error? {
-    string schema = string `
-    {
-        "type": "map",
-        "values": {
-            "type": "map",
-            "values": {
-                "type": "array",
-                "items": {
-                    "type": "record",
-                    "name": "Lecturer",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "type": ["null", "string"]
-                        },
-                        {
-                            "name": "instructor",
-                            "type": ["null", {
-                                "type": "record",
-                                "name": "Instructor",
-                                "fields": [
-                                    {
-                                        "name": "name",
-                                        "type": ["null", "string"]
-                                    },
-                                    {
-                                        "name": "student",
-                                        "type": ["null", {
-                                            "type": "record",
-                                            "name": "Student",
-                                            "fields": [
-                                                {
-                                                    "name": "name",
-                                                    "type": ["null", "string"]
-                                                },
-                                                {
-                                                    "name": "subject",
-                                                    "type": ["null", "string"]
-                                                }
-                                            ]
-                                        }]
-                                    }
-                                ]
-                            }]
-                        }
-                    ]
-                }
-            }
-        }
-    }`;
+public isolated function testMapsWithRecordArray() returns error? {
+    string jsonFileName = string `tests/resources/schema_map_array_record.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
+    map<Instructor[]> instructors = {
+        "john": [{name: "John", student: {name: "Alice", subject: "Math"}}, {name: "John", student: {name: "Alice", subject: "Math"}}],
+        "doe": [{name: "Doe", student: {name: "Bob", subject: "Science"}}, {name: "Doe", student: {name: "Bob", subject: "Science"}}],
+        "jane": [{name: "Jane", student: {name: "Charlie", subject: "English"}}, {name: "Jane", student: {name: "Charlie", subject: "English"}}]
+    };
+
+    Schema avro = check new (schema);
+    byte[] encodedValue = check avro.toAvro(instructors);
+    map<Instructor[]> deserialize = check avro.fromAvro(encodedValue);
+    test:assertEquals(instructors, deserialize);
+}
+
+@test:Config {
+    groups: ["map", "record"]
+}
+public isolated function testMapsWithNestedRecordArrayReadOnlyMaps() returns error? {
+    string jsonFileName = string `tests/resources/schema_map_record_array_readonly.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Lecturer[] lecs = [{name: "John", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}},
                             {name: "Doe", instructor: {name: "Jane", student: {name: "Charlie", subject: "English"}}}];

@@ -37,21 +37,8 @@ public type ReadOnlyRec readonly & record {
     groups: ["enum", "union"]
 }
 public isolated function testUnionEnums() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "ExampleRecord",
-            "fields": [
-                {
-                    "name": "field1", 
-                    "type": ["string", {
-                        "type": "enum",
-                        "name": "Numbers",
-                        "symbols": ["ONE", "TWO"]
-                    }]
-                }
-            ]
-        }`;
+    string jsonFileName = string `tests/resources/schema_union_enums.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     UnionEnumRecord number = {
         field1: ONE
@@ -66,24 +53,8 @@ public isolated function testUnionEnums() returns error? {
     groups: ["fixed", "union"]
 }
 public isolated function testUnionFixed() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "ExampleRecord",
-            "fields": [
-                {
-                    "name": "field1", 
-                    "type": [
-                        "string", 
-                        {
-                            "type": "fixed",
-                            "name": "Fixed",
-                            "size": 2
-                        }
-                    ]
-                }
-            ]
-        }`;
+    string jsonFileName = string `tests/resources/schema_union_fixed.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     UnionFixedRecord number = {
         field1: "ON".toBytes()
@@ -98,24 +69,8 @@ public isolated function testUnionFixed() returns error? {
     groups: ["fixed", "union"]
 }
 public isolated function testUnionFixeWithReadOnlyValues() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "ExampleRecord",
-            "fields": [
-                {
-                    "name": "field1", 
-                    "type": [
-                        "string", 
-                        {
-                            "type": "fixed",
-                            "name": "Fixed",
-                            "size": 2
-                        }
-                    ]
-                }
-            ]
-        }`;
+    string jsonFileName = string `tests/resources/schema_union_fixed_strings.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     UnionFixedRecord & readonly number = {
         field1: "ON".toBytes().cloneReadOnly()
@@ -130,38 +85,8 @@ public isolated function testUnionFixeWithReadOnlyValues() returns error? {
     groups: ["fixed", "union"]
 }
 public isolated function testUnionsWithRecordsAndStrings() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "UnionRec",
-            "fields": [
-                {
-                    "name": "field1",
-                    "type": [
-                        "null",
-                        "string",
-                        {
-                            "type": "record",
-                            "name": "UnionEnumRecord",
-                            "fields": [
-                                {
-                                    "name": "field1",
-                                    "type": [
-                                        "null", 
-                                        "string", 
-                                        {
-                                            "type": "enum",
-                                            "name": "Numbers",
-                                            "symbols": ["ONE", "TWO"]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }`;
+    string jsonFileName = string `tests/resources/schema_union_records_strings.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     UnionRec number = {
         field1: {
@@ -179,38 +104,8 @@ public isolated function testUnionsWithRecordsAndStrings() returns error? {
     groups: ["fixed", "union"]
 }
 public isolated function testUnionsWithReadOnlyRecords() returns error? {
-    string schema = string `
-        {
-            "type": "record",
-            "name": "UnionRec",
-            "fields": [
-                {
-                    "name": "field1",
-                    "type": [
-                        "null",
-                        "string",
-                        {
-                            "type": "record",
-                            "name": "UnionEnumRecord",
-                            "fields": [
-                                {
-                                    "name": "field1",
-                                    "type": [
-                                        "null", 
-                                        "string", 
-                                        {
-                                            "type": "enum",
-                                            "name": "Numbers",
-                                            "symbols": ["ONE", "TWO"]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }`;
+    string jsonFileName = string `tests/resources/schema_union_records.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     ReadOnlyRec number = {
         field1: {
@@ -354,9 +249,8 @@ public function testDbSchemaWithRecords() returns error? {
     groups: ["record"]
 }
 public function testComplexDbSchema() returns error? {
-    string jsonFileName = string `tests/resources/schema_1.json`;
-    json result = check io:fileReadJson(jsonFileName);
-    string schema = result.toString();
+    string jsonFileName = string `tests/resources/schema_records.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Envelope envelope = {
         before: {
@@ -430,7 +324,7 @@ public function testComplexDbSchema() returns error? {
     groups: ["record"]
 }
 public function testComplexDbSchemaWithNestedRecords() returns error? {
-    string jsonFileName = string `tests/resources/schema_2.json`;
+    string jsonFileName = string `tests/resources/schema_nested_records.json`;
     json result = check io:fileReadJson(jsonFileName);
     string schema = result.toString();
 

@@ -1,0 +1,22 @@
+{
+    "type": "array",
+    "name" : "recordArray", 
+    "namespace": "data", 
+    "items": {
+        "type": "array",
+        "items": {
+            "type": "record",
+            "name": "Student",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": ["string", "null"]
+                },
+                {
+                    "name": "subject",
+                    "type": ["string", "null"]
+                }
+            ]
+        }
+    }
+}

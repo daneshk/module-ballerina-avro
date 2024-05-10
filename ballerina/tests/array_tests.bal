@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/test;
+import ballerina/io;
 
 @test:Config {
     groups: ["array", "int"]
@@ -344,26 +345,8 @@ public isolated function testArraysWithFixed() returns error? {
     groups: ["record", "array"]
 }
 public isolated function testRecordsInArrays() returns error? {
-    string schema = string `
-        {
-            "type": "array",
-            "name" : "recordArray", 
-            "namespace": "data", 
-            "items": {
-                "type": "record",
-                "name": "Student",
-                "fields": [
-                    {
-                        "name": "name",
-                        "type": ["string", "null"]
-                    },
-                    {
-                        "name": "subject",
-                        "type": ["string", "null"]
-                    }
-                ]
-            }
-        }`;
+    string jsonFileName = string `tests/resources/schema_array_records.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Student[] students = [{
         name: "Liam",
@@ -383,26 +366,8 @@ public isolated function testRecordsInArrays() returns error? {
     groups: ["record", "array"]
 }
 public isolated function testRecordsInReadOnlyArrays() returns error? {
-    string schema = string `
-        {
-            "type": "array",
-            "name" : "recordArray", 
-            "namespace": "data", 
-            "items": {
-                "type": "record",
-                "name": "Student",
-                "fields": [
-                    {
-                        "name": "name",
-                        "type": ["string", "null"]
-                    },
-                    {
-                        "name": "subject",
-                        "type": ["string", "null"]
-                    }
-                ]
-            }
-        }`;
+    string jsonFileName = string `tests/resources/schema_array_readonly_records.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Student[] & readonly students = [{
         name: "Liam",
@@ -422,29 +387,8 @@ public isolated function testRecordsInReadOnlyArrays() returns error? {
     groups: ["record", "array"]
 }
 public isolated function testRecordArraysInArrays() returns error? {
-    string schema = string `
-        {
-            "type": "array",
-            "name" : "recordArray", 
-            "namespace": "data", 
-            "items": {
-                "type": "array",
-                "items": {
-                    "type": "record",
-                    "name": "Student",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "type": ["string", "null"]
-                        },
-                        {
-                            "name": "subject",
-                            "type": ["string", "null"]
-                        }
-                    ]
-                }
-            }
-        }`;
+    string jsonFileName = string `tests/resources/schema_array_record_arrays.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Student[][] students = [[{
         name: "Liam",
@@ -470,29 +414,8 @@ public isolated function testRecordArraysInArrays() returns error? {
     groups: ["record", "array"]
 }
 public isolated function testRecordArraysInReadOnlyArrays() returns error? {
-    string schema = string `
-        {
-            "type": "array",
-            "name" : "recordArray", 
-            "namespace": "data", 
-            "items": {
-                "type": "array",
-                "items": {
-                    "type": "record",
-                    "name": "Student",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "type": ["string", "null"]
-                        },
-                        {
-                            "name": "subject",
-                            "type": ["string", "null"]
-                        }
-                    ]
-                }
-            }
-        }`;
+    string jsonFileName = string `tests/resources/schema_array_readonly_arrays.json`;
+    string schema = (check io:fileReadJson(jsonFileName)).toString();
 
     Student[][] & readonly students = [[{
         name: "Liam",

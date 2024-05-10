@@ -1,0 +1,14 @@
+{
+    "type": "record",
+    "name": "ExampleRecord",
+    "fields": [
+        {
+            "name": "field1", 
+            "type": ["string", {
+                "type": "enum",
+                "name": "Numbers",
+                "symbols": ["ONE", "TWO"]
+            }]
+        }
+    ]
+}

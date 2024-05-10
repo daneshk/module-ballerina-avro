@@ -169,7 +169,7 @@ public isolated function testArraysInRecords() returns error? {
 }
 
 @test:Config {
-    groups: ["record", "array"]
+    groups: ["record", "array", "aaaa"]
 }
 public isolated function testArraysInReadOnlyRecords() returns error? {
     string schema = string `
