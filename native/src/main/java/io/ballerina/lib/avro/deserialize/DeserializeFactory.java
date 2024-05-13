@@ -25,14 +25,10 @@ public class DeserializeFactory {
 
     public static Deserializer generateDeserializer(Schema schema, Type type) {
         return switch (schema.getType()) {
-            case NULL -> new NullDeserializer();
-            case FLOAT, DOUBLE -> new DoubleDeserializer();
-            case STRING, ENUM -> new StringDeserializer();
             case ARRAY -> new ArrayDeserializer(type, schema);
             case FIXED -> new FixedDeserializer(type, schema);
             case MAP -> new MapDeserializer(schema, type);
             case RECORD -> new RecordDeserializer(type, schema);
-            case BYTES -> new ByteDeserializer();
             default -> new PrimitiveDeserializer(type, schema);
         };
     }

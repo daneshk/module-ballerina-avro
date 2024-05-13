@@ -20,8 +20,8 @@ package io.ballerina.lib.avro.deserialize.visitor;
 
 import io.ballerina.lib.avro.deserialize.ArrayDeserializer;
 import io.ballerina.lib.avro.deserialize.MapDeserializer;
+import io.ballerina.lib.avro.deserialize.PrimitiveDeserializer;
 import io.ballerina.lib.avro.deserialize.RecordDeserializer;
-import io.ballerina.lib.avro.deserialize.StringDeserializer;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.types.Type;
@@ -69,8 +69,8 @@ public class RecordUtils {
     }
 
     public static void processStringField(BMap<BString, Object> avroRecord,
-                                    Schema.Field field, Object fieldData) {
-        StringDeserializer stringDes = new StringDeserializer();
+                                    Schema.Field field, Object fieldData) throws Exception {
+        PrimitiveDeserializer stringDes = new PrimitiveDeserializer(null, field.schema());
         Object fieldValue = stringDes.accept(new DeserializeVisitor(), fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }

@@ -153,33 +153,58 @@ public class DeserializeVisitor implements IDeserializeVisitor {
         return (BMap<BString, Object>) ValueUtils.convert(avroRecord, type);
     }
 
-    public Object visit(PrimitiveDeserializer primitiveDeserializer, Object data) {
+    public Object visit(PrimitiveDeserializer primitiveDeserializer, Object data) throws Exception {
         Schema schema = primitiveDeserializer.getSchema();
         Type type = primitiveDeserializer.getType();
-        if (schema.getType().equals(Schema.Type.ARRAY)) {
-            GenericData.Array<Object> array = (GenericData.Array<Object>) data;
-            switch (schema.getElementType().getType()) {
-                case STRING -> {
-                    return ValueUtils.convert(visitStringArray(array), type);
-                }
-                case INT -> {
-                    return ValueUtils.convert(visitIntArray(array), type);
-                }
-                case LONG -> {
-                    return ValueUtils.convert(visitLongArray(array), type);
-                }
-                case FLOAT, DOUBLE -> {
-                    return ValueUtils.convert(visitDoubleArray(array), type);
-                }
-                case BOOLEAN -> {
-                    return ValueUtils.convert(visitBooleanArray(array), type);
-                }
-                default -> {
-                    return ValueUtils.convert(visitBytesArray(array, primitiveDeserializer.getType()), type);
-                }
+        switch(schema.getType()) {
+            case ARRAY -> {
+                return visitPrimitiveArrays(primitiveDeserializer, (GenericData.Array<Object>) data, schema, type);
             }
-        } else {
-            return data;
+            case STRING, ENUM -> {
+                return StringUtils.fromString(data.toString());
+            }
+            case FLOAT, DOUBLE -> {
+                if (data instanceof Float) {
+                    return Double.parseDouble(data.toString());
+                }
+                return data;
+            }
+            case NULL -> {
+                if (data != null) {
+                    throw new Exception("The value does not match with the null schema");
+                }
+                return null;
+            }
+            case BYTES -> {
+                return ValueCreator.createArrayValue(((ByteBuffer) data).array());
+            }
+            default -> {
+                return data;
+            }
+        }
+    }
+
+    private Object visitPrimitiveArrays(PrimitiveDeserializer primitiveDeserializer, GenericData.Array<Object> data,
+                                        Schema schema, Type type) {
+        switch (schema.getElementType().getType()) {
+            case STRING -> {
+                return ValueUtils.convert(visitStringArray(data), type);
+            }
+            case INT -> {
+                return ValueUtils.convert(visitIntArray(data), type);
+            }
+            case LONG -> {
+                return ValueUtils.convert(visitLongArray(data), type);
+            }
+            case FLOAT, DOUBLE -> {
+                return ValueUtils.convert(visitDoubleArray(data), type);
+            }
+            case BOOLEAN -> {
+                return ValueUtils.convert(visitBooleanArray(data), type);
+            }
+            default -> {
+                return ValueUtils.convert(visitBytesArray(data, primitiveDeserializer.getType()), type);
+            }
         }
     }
 

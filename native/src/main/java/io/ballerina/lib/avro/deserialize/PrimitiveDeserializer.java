@@ -30,7 +30,7 @@ public class PrimitiveDeserializer extends Deserializer {
     }
 
     @Override
-    public Object accept(DeserializeVisitor visitor, Object data) {
+    public Object accept(DeserializeVisitor visitor, Object data) throws Exception {
         return visitor.visit(this, data);
     }
 
