@@ -22,7 +22,7 @@ import io.ballerina.lib.avro.serialize.ArraySerializer;
 import io.ballerina.lib.avro.serialize.EnumSerializer;
 import io.ballerina.lib.avro.serialize.FixedSerializer;
 import io.ballerina.lib.avro.serialize.MapSerializer;
-import io.ballerina.lib.avro.serialize.PrimitiveDeserializer;
+import io.ballerina.lib.avro.serialize.PrimitiveSerializer;
 import io.ballerina.lib.avro.serialize.RecordSerializer;
 import io.ballerina.lib.avro.serialize.Serializer;
 import io.ballerina.lib.avro.serialize.UnionSerializer;
@@ -34,7 +34,6 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
-import io.ballerina.runtime.api.values.BString;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -50,7 +49,7 @@ public class SerializeVisitor implements ISerializeVisitor {
     public Serializer createSerializer(Schema schema) {
         return switch (schema.getValueType().getType()) {
             case INT, LONG, FLOAT, DOUBLE, BOOLEAN, STRING, BYTES ->
-                    new PrimitiveDeserializer(schema.getValueType());
+                    new PrimitiveSerializer(schema.getValueType());
             case RECORD ->
                     new RecordSerializer(schema.getValueType());
             case MAP ->
@@ -64,11 +63,6 @@ public class SerializeVisitor implements ISerializeVisitor {
             default ->
                     throw new IllegalArgumentException("Unsupported schema type: " + schema.getValueType().getType());
         };
-    }
-
-    @Override
-    public String visitString(Object data) {
-        return ((BString) data).getValue();
     }
 
     @Override
@@ -95,13 +89,13 @@ public class SerializeVisitor implements ISerializeVisitor {
             case UNION ->
                     new UnionSerializer(schema).convert(this, fieldData);
             default ->
-                    new PrimitiveDeserializer(schema).convert(this, fieldData);
+                    new PrimitiveSerializer(schema).convert(this, fieldData);
         };
     }
 
     @Override
-    public Object visit(PrimitiveDeserializer primitiveDeserializer, Object data) {
-        switch (primitiveDeserializer.getSchema().getType()) {
+    public Object visit(PrimitiveSerializer primitiveSerializer, Object data) throws Exception {
+        switch (primitiveSerializer.getSchema().getType()) {
             case INT -> {
                 return ((Long) data).intValue();
             }
@@ -116,6 +110,12 @@ public class SerializeVisitor implements ISerializeVisitor {
             }
             case STRING -> {
                 return data.toString();
+            }
+            case NULL -> {
+                if (data != null) {
+                    throw new Exception("The value does not match with the null schema");
+                }
+                return null;
             }
             default -> {
                 return data;
@@ -156,12 +156,12 @@ public class SerializeVisitor implements ISerializeVisitor {
         return Objects.requireNonNull(visitor).visit(data, arraySerializer.getSchema(), array);
     }
 
-    public Object visitUnion(UnionSerializer unionSerializer, Object data) throws Exception {
+    public Object visit(UnionSerializer unionSerializer, Object data) throws Exception {
         Schema fieldSchema = unionSerializer.getSchema();
         Type typeName = TypeUtils.getType(data);
         switch (typeName.getTag()) {
             case TypeTags.STRING_TAG -> {
-                return visitiUnionStrings(data, fieldSchema);
+                return visitUnionStrings(data, fieldSchema);
             }
             case TypeTags.ARRAY_TAG -> {
                 return visitUnionArrays(data, fieldSchema);
@@ -189,7 +189,13 @@ public class SerializeVisitor implements ISerializeVisitor {
         return fieldSchema.getTypes().stream()
                 .filter(schema -> schema.getType().equals(Schema.Type.FLOAT))
                 .findFirst()
-                .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
+                .map(schema -> {
+                    try {
+                        return new PrimitiveSerializer(schema).convert(this, data);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .orElse(data);
     }
 
@@ -197,23 +203,29 @@ public class SerializeVisitor implements ISerializeVisitor {
         return fieldSchema.getTypes().stream()
                 .filter(schema -> schema.getType().equals(Schema.Type.INT))
                 .findFirst()
-                .map(schema -> new PrimitiveDeserializer(schema).convert(this, data))
+                .map(schema -> {
+                    try {
+                        return new PrimitiveSerializer(schema).convert(this, data);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .orElse(data);
     }
 
-    private Object visitiUnionStrings(Object data, Schema fieldSchema) {
+    private Object visitUnionStrings(Object data, Schema fieldSchema) throws Exception {
         return fieldSchema.getTypes().stream()
                 .filter(type -> type.getType().equals(Schema.Type.ENUM))
                 .findFirst()
                 .map(type -> visit(new EnumSerializer(type), data))
-                .orElse(visit(new PrimitiveDeserializer(fieldSchema), data.toString()));
+                .orElse(visit(new PrimitiveSerializer(fieldSchema), data.toString()));
     }
 
-    private Object visitUnionArrays(Object data, Schema fieldSchema) {
+    private Object visitUnionArrays(Object data, Schema fieldSchema) throws Exception {
         for (Schema schema : fieldSchema.getTypes()) {
             switch (schema.getType()) {
                 case BYTES -> {
-                    return new PrimitiveDeserializer(schema).convert(this, data);
+                    return new PrimitiveSerializer(schema).convert(this, data);
                 }
                 case FIXED -> {
                     return new FixedSerializer(schema).convert(this, data);

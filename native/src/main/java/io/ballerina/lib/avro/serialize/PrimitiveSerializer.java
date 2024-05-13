@@ -21,14 +21,14 @@ package io.ballerina.lib.avro.serialize;
 import io.ballerina.lib.avro.serialize.visitor.SerializeVisitor;
 import org.apache.avro.Schema;
 
-public class StringSerializer extends Serializer {
+public class PrimitiveSerializer extends Serializer {
 
-    public StringSerializer(Schema schema) {
+    public PrimitiveSerializer(Schema schema) {
         super(schema);
     }
 
     @Override
-    public Object convert(SerializeVisitor serializeVisitor, Object data) {
-        return serializeVisitor.visitString(data);
+    public Object convert(SerializeVisitor serializeVisitor, Object data) throws Exception {
+        return serializeVisitor.visit(this, data);
     }
 }

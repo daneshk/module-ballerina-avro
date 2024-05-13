@@ -29,6 +29,6 @@ public class UnionSerializer extends Serializer {
 
     @Override
     public Object convert(SerializeVisitor serializeVisitor, Object data) throws Exception {
-        return serializeVisitor.visitUnion(this, data);
+        return serializeVisitor.visit(this, data);
     }
 }
