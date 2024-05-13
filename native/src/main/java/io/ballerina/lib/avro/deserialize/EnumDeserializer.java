@@ -30,12 +30,12 @@ public class EnumDeserializer extends Deserializer {
     }
 
     @Override
-    public Object visit(DeserializeVisitor visitor, Object data) {
+    public Object accept(DeserializeVisitor visitor, Object data) {
         return visitor.visit(this, (GenericData.Array<Object>) data);
     }
 
     @Override
-    public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
+    public Object accept(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
         return visitor.visit(this, data);
     }
 }

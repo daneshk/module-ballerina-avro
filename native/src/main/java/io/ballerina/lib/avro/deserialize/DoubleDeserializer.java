@@ -24,12 +24,12 @@ import org.apache.avro.generic.GenericData;
 public class DoubleDeserializer extends Deserializer {
 
     @Override
-    public Object visit(DeserializeVisitor visitor, Object data) {
+    public Object accept(DeserializeVisitor visitor, Object data) {
         return visitor.visitDouble(data);
     }
 
     @Override
-    public Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
+    public Object accept(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception {
         return visitor.visitDouble(data);
     }
 }

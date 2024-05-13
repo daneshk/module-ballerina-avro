@@ -46,6 +46,6 @@ public abstract class Deserializer {
         return TypeUtils.getReferredType(type);
     }
 
-    public abstract Object visit(DeserializeVisitor visitor, Object data) throws Exception;
-    public abstract Object visit(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception;
+    public abstract Object accept(DeserializeVisitor visitor, Object data) throws Exception;
+    public abstract Object accept(DeserializeVisitor visitor, GenericData.Array<Object> data) throws Exception;
 }

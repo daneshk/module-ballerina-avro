@@ -206,14 +206,14 @@ public class DeserializeVisitor implements IDeserializeVisitor {
                 return visitUnionArray(data, (ArrayType) type, schema);
             }
             default -> {
-                return visitBytes(data);
+                return (BArray) data;
             }
         }
     }
 
     private BArray visitRecordArray(GenericData.Array<Object> data, Type type, Schema schema) throws Exception {
         RecordDeserializer recordDeserializer = new RecordDeserializer(type, schema.getElementType());
-        return (BArray) recordDeserializer.visit(this, data);
+        return (BArray) recordDeserializer.accept(this, data);
     }
 
     private BArray visitUnionArray(GenericData.Array<Object> data, ArrayType type, Schema schema) throws Exception {
@@ -222,7 +222,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
         ArrayDeserializer arrayDeserializer = new ArrayDeserializer(elementType, schema.getElementType());
         int index = 0;
         for (Object currentData : data) {
-            Object deserializedObject = arrayDeserializer.visit(this, (GenericData.Array<Object>) currentData);
+            Object deserializedObject = arrayDeserializer.accept(this, (GenericData.Array<Object>) currentData);
             objects[index++] = deserializedObject;
         }
         return ValueCreator.createArrayValue(objects, type);
@@ -238,14 +238,14 @@ public class DeserializeVisitor implements IDeserializeVisitor {
                 for (Object datum : data) {
                     Type fieldType = ((ArrayType) type).getElementType();
                     RecordDeserializer recordDes = new RecordDeserializer(fieldType, schema.getElementType());
-                    recordList.add(recordDes.visit(this, datum));
+                    recordList.add(recordDes.accept(this, datum));
                 }
             }
             case TypeTags.TYPE_REFERENCED_TYPE_TAG -> {
                 for (Object datum : data) {
                     Type fieldType = ((ReferenceType) type).getReferredType();
                     RecordDeserializer recordDes = new RecordDeserializer(fieldType, schema.getElementType());
-                    recordList.add(recordDes.visit(this, (GenericRecord) datum));
+                    recordList.add(recordDes.accept(this, (GenericRecord) datum));
                 }
             }
         }
@@ -266,7 +266,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
         Schema fieldSchema = schema.getValueType();
         Type fieldType = type.getConstrainedType();
         MapDeserializer mapDes = new MapDeserializer(fieldSchema, fieldType);
-        Object fieldValue = mapDes.visit(this, value);
+        Object fieldValue = mapDes.accept(this, value);
         avroRecord.put(fromString(key.toString()), fieldValue);
     }
 
@@ -274,7 +274,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
                                   MapType type, Object key, GenericRecord value) throws Exception {
         Type fieldType = type.getConstrainedType();
         RecordDeserializer recordDes = new RecordDeserializer(fieldType, schema.getValueType());
-        Object fieldValue = recordDes.visit(this, value);
+        Object fieldValue = recordDes.accept(this, value);
         avroRecord.put(fromString(key.toString()), fieldValue);
     }
 
@@ -288,7 +288,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
 
     public Object visit(ArrayDeserializer arrayDeserializer, GenericData.Array<Object> data) throws Exception {
         Deserializer deserializer = createDeserializer(arrayDeserializer.getSchema(), arrayDeserializer.getType());
-        return deserializer.visit(new DeserializeArrayVisitor(), data);
+        return deserializer.accept(new DeserializeArrayVisitor(), data);
     }
 
     public BArray visit(EnumDeserializer enumDeserializer, GenericData.Array<Object> data) {
@@ -334,7 +334,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
     private BArray visitBytesArray(GenericData.Array<Object> data, Type type) {
         List<BArray> values = new ArrayList<>();
         for (Object datum : data) {
-            values.add(visitBytes(datum));
+            values.add(ValueCreator.createArrayValue(((ByteBuffer) datum).array()));
         }
         return ValueCreator.createArrayValue(values.toArray(new BArray[data.size()]), (ArrayType) type);
     }
@@ -389,10 +389,6 @@ public class DeserializeVisitor implements IDeserializeVisitor {
             return Double.parseDouble(data.toString());
         }
         return (double) data;
-    }
-
-    public BArray visitBytes(Object data) {
-        return ValueCreator.createArrayValue(((ByteBuffer) data).array());
     }
 
     public BArray visitFixed(Object data) {

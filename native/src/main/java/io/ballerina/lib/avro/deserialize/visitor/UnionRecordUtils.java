@@ -116,7 +116,7 @@ public class UnionRecordUtils {
                                          BMap<BString, Object> ballerinaRecord, Schema schemaType) throws Exception {
         if (fieldData instanceof GenericRecord) {
             RecordDeserializer recordDes = new RecordDeserializer(type, schemaType);
-            Object fieldValue = recordDes.visit(new DeserializeVisitor(), (GenericRecord) fieldData);
+            Object fieldValue = recordDes.accept(new DeserializeVisitor(), (GenericRecord) fieldData);
             ballerinaRecord.put(StringUtils.fromString(field.name()), fieldValue);
         }
     }

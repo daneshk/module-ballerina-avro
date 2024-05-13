@@ -78,14 +78,14 @@ public class DeserializeRecordVisitor extends DeserializeVisitor {
                                  Schema.Field field, Object fieldData) throws Exception {
         Type mapType = extractMapType(avroRecord.getType());
         MapDeserializer mapDeserializer = new MapDeserializer(field.schema(), mapType);
-        Object fieldValue = mapDeserializer.visit(this, fieldData);
+        Object fieldValue = mapDeserializer.accept(this, fieldData);
         avroRecord.put(StringUtils.fromString(field.name()), fieldValue);
     }
 
     private void processArrayField(BMap<BString, Object> avroRecord,
                                    Schema.Field field, Object fieldData) throws Exception {
         ArrayDeserializer arrayDes = new ArrayDeserializer(avroRecord.getType(), field.schema());
-        Object fieldValue = arrayDes.visit(this, (GenericData.Array<Object>) fieldData);
+        Object fieldValue = arrayDes.accept(this, (GenericData.Array<Object>) fieldData);
         avroRecord.put(StringUtils.fromString(field.name()), fieldValue);
     }
 
@@ -99,14 +99,14 @@ public class DeserializeRecordVisitor extends DeserializeVisitor {
                                     Schema.Field field, Object fieldData) throws Exception {
         Type recType = extractRecordType((RecordType) avroRecord.getType());
         RecordDeserializer recordDes = new RecordDeserializer(recType, field.schema());
-        Object fieldValue = recordDes.visit(this, (GenericRecord) fieldData);
+        Object fieldValue = recordDes.accept(this, (GenericRecord) fieldData);
         avroRecord.put(StringUtils.fromString(field.name()), fieldValue);
     }
 
     private void processStringField(BMap<BString, Object> avroRecord,
                                     Schema.Field field, Object fieldData) throws Exception {
         StringDeserializer stringDes = new StringDeserializer();
-        Object fieldValue = stringDes.visit(this, fieldData);
+        Object fieldValue = stringDes.accept(this, fieldData);
         avroRecord.put(StringUtils.fromString(field.name()), fieldValue);
     }
 

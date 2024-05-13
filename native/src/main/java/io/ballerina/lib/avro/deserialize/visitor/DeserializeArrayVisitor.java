@@ -53,6 +53,6 @@ public class DeserializeArrayVisitor extends DeserializeVisitor {
     public Object visitNestedArray(ArrayDeserializer arrayDeserializer,
                                    GenericData.Array<Object> data) throws Exception {
         Deserializer deserializer = createDeserializer(arrayDeserializer.getSchema(), arrayDeserializer.getType());
-        return deserializer.visit(this, data);
+        return deserializer.accept(this, data);
     }
 }

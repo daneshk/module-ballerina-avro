@@ -43,14 +43,14 @@ public class RecordUtils {
                                  Schema.Field field, Object fieldData) throws Exception {
         Type mapType = extractMapType(avroRecord.getType());
         MapDeserializer mapDeserializer = new MapDeserializer(field.schema(), mapType);
-        Object fieldValue = mapDeserializer.visit(new DeserializeVisitor(), fieldData);
+        Object fieldValue = mapDeserializer.accept(new DeserializeVisitor(), fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }
 
     public static void processArrayField(BMap<BString, Object> avroRecord,
                                          Schema.Field field, Object fieldData, Type type) throws Exception {
         ArrayDeserializer arrayDes = new ArrayDeserializer(type, field.schema());
-        Object fieldValue = arrayDes.visit(new DeserializeVisitor(), (GenericData.Array<Object>) fieldData);
+        Object fieldValue = arrayDes.accept(new DeserializeVisitor(), (GenericData.Array<Object>) fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }
 
@@ -64,14 +64,14 @@ public class RecordUtils {
                                     Schema.Field field, Object fieldData) throws Exception {
         Type recType = extractRecordType((RecordType) avroRecord.getType());
         RecordDeserializer recordDes = new RecordDeserializer(recType, field.schema());
-        Object fieldValue = recordDes.visit(new DeserializeVisitor(), fieldData);
+        Object fieldValue = recordDes.accept(new DeserializeVisitor(), fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }
 
     public static void processStringField(BMap<BString, Object> avroRecord,
                                     Schema.Field field, Object fieldData) {
         StringDeserializer stringDes = new StringDeserializer();
-        Object fieldValue = stringDes.visit(new DeserializeVisitor(), fieldData);
+        Object fieldValue = stringDes.accept(new DeserializeVisitor(), fieldData);
         avroRecord.put(fromString(field.name()), fieldValue);
     }
 
