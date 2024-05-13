@@ -34,16 +34,16 @@ public abstract class Deserializer {
     }
     
     public Deserializer(Type type, Schema schema) {
-        this.schema = schema == null ? null : new Schema.Parser().parse(schema.toString());
+        this.schema = schema == null ? null : schema;
         this.type = type == null ? null : TypeUtils.getReferredType(type);
     }
 
     public Schema getSchema() {
-        return new Schema.Parser().parse(schema.toString());
+        return this.schema;
     }
 
     public Type getType() {
-        return TypeUtils.getReferredType(type);
+        return this.type;
     }
 
     public abstract Object accept(DeserializeVisitor visitor, Object data) throws Exception;

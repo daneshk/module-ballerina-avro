@@ -25,7 +25,7 @@ import org.apache.avro.Schema;
 
 public abstract class Serializer {
 
-    private final String schema;
+    private final Schema schema;
     private final Type type;
 
     public Serializer() {
@@ -35,20 +35,20 @@ public abstract class Serializer {
 
     public Serializer(Schema schema) {
         this.type = null;
-        this.schema = schema.toString();
+        this.schema = schema;
     }
 
     public Serializer(Schema schema, Type type) {
         this.type = TypeUtils.getImpliedType(type);
-        this.schema = schema.toString();
+        this.schema = schema;
     }
 
     public Schema getSchema() {
-        return new Schema.Parser().parse(schema);
+        return this.schema;
     }
 
     public Type getType() {
-        return TypeUtils.getImpliedType(type);
+        return this.type;
     }
 
     public abstract Object convert(SerializeVisitor serializeVisitor, Object data) throws Exception;

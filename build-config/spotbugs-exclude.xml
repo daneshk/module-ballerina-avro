@@ -26,7 +26,21 @@
         <Method name = "visit" />
         <Bug pattern="BC_UNCONFIRMED_CAST" />
     </Match>
+    <Match>
         <Class name="io.ballerina.lib.avro.deserialize.visitor.DeserializeVisitor" />
         <Method name = "extractMapType" />
         <Bug pattern="BC_UNCONFIRMED_CAST" />
+    </Match>
+    <Match>
+        <Class name="io.ballerina.lib.avro.deserialize.Deserializer" />
+        <Bug pattern="EI_EXPOSE_REP" />
+    </Match>
+    <Match>
+        <Class name="io.ballerina.lib.avro.serialize.Serializer" />
+        <Bug pattern="EI_EXPOSE_REP" />
+    </Match>
+    <Match>
+        <Class name="io.ballerina.lib.avro.serialize.Serializer" />
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
 </FindBugsFilter>
