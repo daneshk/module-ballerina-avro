@@ -25,7 +25,7 @@ The conforming implementation of the specification is released and included in t
     * 3.1 [The `toAvro` API](#31-the-toavro-api)
         * 3.1.1 [API Parameters](#311-api-parameters)
             * 3.1.1.1 [The `data` Parameter](#3111-the-data-parameter)
-                * 3.1.1.1.1 [Accepted Ballerina types](#31111-accepted-ballerina-types)
+                * 3.1.1.1.1 [Map Avro types to Ballerina Types](#31111-map-avro-types-to-ballerina-types)
         * 3.1.2 [Return type](#312-return-type)
 4. [Deserialize bytes to a specific Ballerina type](#4-deserialize-bytes-to-a-specific-ballerina-type)
     * 4.1 [The `fromAvro` API](#41-the-fromavro-api)
@@ -74,11 +74,23 @@ byte[] serializedData = check schema.toAvro("avro-data");
 
 The `data` parameter accepts the following Ballerina data types that is needed to be serialized into `byte` array.
 
-###### 3.1.1.1.1 Accepted Ballerina types
+###### 3.1.1.1.1 Map Avro types to Ballerina Types
 
-* `json`
-* `enum`
-* `record`
+The following table summarizes how Avro types are mapped to corresponding Ballerina types. These rules are applicable when a Ballerina data is serialized/deserialized according to an Avro schema.
+
+| Avro Type    | Ballerina Type | Example                                       |
+|--------------|----------------|-----------------------------------------------|
+| null         | nil            | ()                                            |
+| boolean      | boolean        | true                                          |
+| int,long     | int            | 1                                             |
+| float,double | float          | 1.1                                           |
+| bytes        | byte[]         | "000FFF".toBytes()                            |
+| string       | string         | "foo"                                         |
+| record       | record         | type Student record { string name; int age; } |
+| enum         | enum           | enum Color { RED, GREEN, BLUE }               |
+| array        | array          | [1,2,3,4,5]                                   |
+| map          | map            | {"a": 1}                                      |
+| fixed        | byte[]         | "000FFFF".toBytes()                           |
 
 #### 3.1.2 Return type
 
