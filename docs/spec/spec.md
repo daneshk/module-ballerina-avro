@@ -76,7 +76,7 @@ The `data` parameter accepts the following Ballerina data types that is needed t
 
 ###### 3.1.1.1.1 Map Avro types to Ballerina Types
 
-The following table summarizes how Avro types are mapped to corresponding Ballerina types. These rules are applicable when a Ballerina data is serialized/deserialized according to an Avro schema.
+The following table summarizes how Avro types are mapped to corresponding Ballerina types. These rules are applicable when serializing/deserializing Ballerina data according to an Avro schema.
 
 | Avro Type    | Ballerina Type | Example                                       |
 |--------------|----------------|-----------------------------------------------|
