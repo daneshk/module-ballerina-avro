@@ -78,19 +78,23 @@ The `data` parameter accepts the following Ballerina data types that is needed t
 
 The following table summarizes how Avro types are mapped to corresponding Ballerina types. These rules are applicable when serializing/deserializing Ballerina data according to an Avro schema.
 
-| Avro Type    | Ballerina Type | Example                                       |
-|--------------|----------------|-----------------------------------------------|
-| null         | nil            | ()                                            |
-| boolean      | boolean        | true                                          |
-| int,long     | int            | 1                                             |
-| float,double | float          | 1.1                                           |
-| bytes        | byte[]         | "000FFF".toBytes()                            |
-| string       | string         | "foo"                                         |
-| record       | record         | type Student record { string name; int age; } |
-| enum         | enum           | enum Color { RED, GREEN, BLUE }               |
-| array        | array          | [1,2,3,4,5]                                   |
-| map          | map            | {"a": 1}                                      |
-| fixed        | byte[]         | "000FFFF".toBytes()                           |
+| Avro Type    | Ballerina Type |
+|--------------|----------------|
+| null         | nil            |
+| boolean      | boolean        |
+| int,long     | int            |
+| float,double | float          |
+| bytes        | byte[]         |
+| string       | string         |
+| record       | record         |
+| enum         | enum           |
+| array        | array          |
+| map          | map            |
+| fixed        | byte[]         |
+
+>**Note:** The Ballerina [`int`](https://ballerina.io/spec/lang/2023R1/#section_5.2.3) type can represent integers up to 64 bits in size using the two's complement representation. Therefore, it can handle both `int` (32-bit signed integer) and `long` (64-bit signed integer) Avro types.
+
+>**Note:** The Ballerina [`float`](https://ballerina.io/spec/lang/2023R1/#section_5.2.4.1) type supports the IEEE 754-2008 64-bit binary (radix 2) floating-point number standard. Therefore, it can handle both `float` (32-bit single precision IEEE 754 floating-point number) and `double` (64-bit double precision IEEE 754 floating-point number) Avro types.
 
 #### 3.1.2 Return type
 
