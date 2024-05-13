@@ -1,0 +1,30 @@
+{
+    "type": "record",
+    "name": "Lecturer4",
+    "fields": [
+        {
+            "name": "name",
+            "type": {
+                "type": "map",
+                "values": "int"
+            }
+        },
+        {
+            "name": "byteData",
+            "type": "bytes"
+        },
+        {
+            "name": "instructor",
+            "type": {
+                "type": "record",
+                "name": "ByteRecord",
+                "fields": [
+                    {
+                        "name": "byteData",
+                        "type": "bytes"
+                    }
+                ]
+            }
+        }
+    ]
+}

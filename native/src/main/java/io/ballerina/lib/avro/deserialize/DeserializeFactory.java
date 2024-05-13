@@ -16,9 +16,20 @@
  * under the License.
  */
 
-module io.ballerina.stdlib.serdes {
-    requires io.ballerina.runtime;
-    requires io.ballerina.lang;
-    requires com.fasterxml.jackson.databind;
-    requires org.apache.avro;
+package io.ballerina.lib.avro.deserialize;
+
+import io.ballerina.runtime.api.types.Type;
+import org.apache.avro.Schema;
+
+public class DeserializeFactory {
+
+    public static Deserializer generateDeserializer(Schema schema, Type type) {
+        return switch (schema.getType()) {
+            case ARRAY -> new ArrayDeserializer(type, schema);
+            case FIXED -> new FixedDeserializer(type, schema);
+            case MAP -> new MapDeserializer(schema, type);
+            case RECORD -> new RecordDeserializer(type, schema);
+            default -> new PrimitiveDeserializer(type, schema);
+        };
+    }
 }

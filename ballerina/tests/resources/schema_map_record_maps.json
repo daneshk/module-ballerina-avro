@@ -1,0 +1,46 @@
+{
+    "type": "map",
+    "values": {
+        "type": "map",
+        "values": {
+            "type": "record",
+            "name": "Lecturer",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": ["null", "string"]
+                },
+                {
+                    "name": "instructor",
+                    "type": ["null", {
+                        "type": "record",
+                        "name": "Instructor",
+                        "fields": [
+                            {
+                                "name": "name",
+                                "type": ["null", "string"]
+                            },
+                            {
+                                "name": "student",
+                                "type": ["null", {
+                                    "type": "record",
+                                    "name": "Student",
+                                    "fields": [
+                                        {
+                                            "name": "name",
+                                            "type": ["null", "string"]
+                                        },
+                                        {
+                                            "name": "subject",
+                                            "type": ["null", "string"]
+                                        }
+                                    ]
+                                }]
+                            }
+                        ]
+                    }]
+                }
+            ]
+        }
+    }
+}

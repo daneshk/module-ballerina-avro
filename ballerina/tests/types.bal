@@ -19,6 +19,21 @@ public type Student record {
     string subject;
 };
 
+public type Student1 record {
+    string name;
+    byte[] favorite_color;
+};
+
+type Students record {
+    string name;
+    float age;
+};
+
+type StudentRec record {
+    string name;
+    boolean under19;
+};
+
 public type Person record {
     string name;
     int age;
@@ -31,7 +46,7 @@ public type Course record {
 
 public type Instructor record {
     string? name;
-    Student student;
+    Student? & readonly student;
 };
 
 public type Lecturer record {
@@ -39,9 +54,80 @@ public type Lecturer record {
     Instructor instructor;
 };
 
+public type Lecturer1 readonly & record {
+    string? name;
+    Instructor & readonly instructor;
+};
+
+public type Lecturer2 record {
+    string? name;
+    int age;
+    Instructor & readonly instructor;
+};
+
+public type Lecturer3 readonly & record {
+    map<int> & readonly name;
+    int age;
+    Instructor & readonly instructor;
+};
+
+public type Lecturer4 readonly & record {
+    map<int> & readonly name;
+    byte[] byteData;
+    ByteRecord? instructor;
+};
+
+public type Lecturer5 record {
+    map<int>? & readonly name;
+    byte[]? bytes;
+    Instructor? & readonly instructorClone;
+    Instructor? instructors;
+};
+
+public type Lecturer6 record {
+    boolean? temporary;
+    map<int>? & readonly maps;
+    byte[]? bytes;
+    int? age;
+    string? name;
+    Numbers? number;
+    float? floatNumber;
+    string[]? colors;
+    Instructor? & readonly instructorClone;
+    Instructor? instructors;
+};
+
+public type ByteRecord readonly & record {
+    byte[] byteData;
+};
+
+type UnionRecord record {
+    string? name;
+    int? credits;
+    float value;
+    StudentRecord? student;
+};
+
+type MultipleUnionRecord record {
+    string? name;
+    int? credits;
+    float value;
+    string|StudentRecord? student;
+};
+
+type StudentRecord record {
+    string? name;
+    string? subject;
+};
+
 public type Color record {
     string? name;
     string[] colors;
+};
+
+type Color1 record {
+    string name;
+    byte[] colors;
 };
 
 public type FixedRec record {
@@ -184,3 +270,67 @@ public type Envelope2 record {
     Block2? 'transaction;
     string? MessageSource;
 };
+
+
+public type UnionEnumRecord record {
+    string|Numbers? field1;
+};
+
+public type UnionFixedRecord record {
+    string|byte[]? field1;
+};
+
+public type UnionRec record {
+    string|UnionEnumRecord? field1;
+};
+
+public type ReadOnlyRec readonly & record {
+    string|UnionEnumRecord? & readonly field1;
+};
+
+type ReadOnlyUnionFixed UnionFixedRecord & readonly;
+type ByteArray byte[];
+type ReadOnlyIntArray int[] & readonly;
+type ReadOnlyStringArray string[] & readonly;
+type StringArray string[];
+type String2DArray string[][];
+type ReadOnlyColors Color & readonly;
+type NullType ();
+type ByteArrayMap map<byte[]>;
+type MapOfByteArrayMap map<map<byte[]>>;
+type ReadOnlyMapOfReadOnlyRecord map<Instructor & readonly> & readonly;
+type ReadOnlyMapOfRecord map<Instructor> & readonly;
+type RecordMap map<Instructor>;
+type IntMap map<int>;
+type EnumMap map<Numbers>;
+type EnumArrayMap map<Numbers[]>;
+type FloatMap map<float>;
+type FloatArrayMap map<float[]>;
+type StringMap map<string>;
+type BooleanMap map<boolean>;
+type ReadOnlyBooleanMap map<boolean> & readonly;
+type MapOfIntMap map<map<int>>;
+type ReadOnlyMapOfReadOnlyMap map<map<map<int>>> & readonly;
+type MapOfMap map<map<map<int>>>;
+type IntArrayMap map<int[]>;
+type ReadOnlyIntArrayMap map<int[]> & readonly;
+type StringArrayMap map<string[]>;
+type ByteArrayArrayMap map<byte[][]>;
+type BooleanArrayMap map<boolean[]>;
+type MapOfRecordArray map<Instructor[]>;
+type MapOfArrayOfRecordArray map<Instructor[][]>;
+type StringArrayArrayMap map<string[][]>;
+type MapOfRecordMap map<map<Lecturer>>;
+type MapOfRecordArrayMap map<map<Lecturer[]>>;
+type ReadOnlyMapOfRecordArray map<map<Lecturer[]>> & readonly;
+type ArrayOfByteArray byte[][];
+type ReadOnlyStudent2DArray Student[][] & readonly;
+type Student2DArray Student[][];
+type ReadOnlyStudentArray Student[] & readonly;
+type StudentArray Student[];
+type BooleanArray boolean[];
+type IntArray int[];
+type FloatArray float[];
+type EnumArray Numbers[];
+type Enum2DArray Numbers[][];
+type ReadOnlyString2DArray string[][] & readonly;

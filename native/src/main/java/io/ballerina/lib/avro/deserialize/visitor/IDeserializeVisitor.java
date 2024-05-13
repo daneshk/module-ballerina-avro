@@ -16,9 +16,14 @@
  * under the License.
  */
 
-module io.ballerina.stdlib.serdes {
-    requires io.ballerina.runtime;
-    requires io.ballerina.lang;
-    requires com.fasterxml.jackson.databind;
-    requires org.apache.avro;
+package io.ballerina.lib.avro.deserialize.visitor;
+
+import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BString;
+
+public interface IDeserializeVisitor {
+
+    public double visitDouble(Object data);
+    public BString visitString(Object data);
+    BArray visitFixed(Object data);
 }

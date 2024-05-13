@@ -16,9 +16,21 @@
  * under the License.
  */
 
-module io.ballerina.stdlib.serdes {
-    requires io.ballerina.runtime;
-    requires io.ballerina.lang;
-    requires com.fasterxml.jackson.databind;
-    requires org.apache.avro;
+package io.ballerina.lib.avro.serialize;
+
+import org.apache.avro.Schema;
+
+public class MessageFactory {
+
+    public static Serializer createMessage(Schema schema) {
+        return switch (schema.getType()) {
+            case ARRAY -> new ArraySerializer(schema);
+            case FIXED -> new FixedSerializer(schema);
+            case ENUM -> new EnumSerializer(schema);
+            case MAP -> new MapSerializer(schema);
+            case RECORD -> new RecordSerializer(schema);
+            case BYTES -> new ByteSerializer();
+            default -> new PrimitiveSerializer(schema);
+        };
+    }
 }

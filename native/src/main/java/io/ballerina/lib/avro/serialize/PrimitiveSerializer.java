@@ -16,9 +16,19 @@
  * under the License.
  */
 
-module io.ballerina.stdlib.serdes {
-    requires io.ballerina.runtime;
-    requires io.ballerina.lang;
-    requires com.fasterxml.jackson.databind;
-    requires org.apache.avro;
+package io.ballerina.lib.avro.serialize;
+
+import io.ballerina.lib.avro.serialize.visitor.SerializeVisitor;
+import org.apache.avro.Schema;
+
+public class PrimitiveSerializer extends Serializer {
+
+    public PrimitiveSerializer(Schema schema) {
+        super(schema);
+    }
+
+    @Override
+    public Object convert(SerializeVisitor serializeVisitor, Object data) throws Exception {
+        return serializeVisitor.visit(this, data);
+    }
 }
