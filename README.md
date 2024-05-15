@@ -35,7 +35,7 @@ import ballerina/avro;
 
 public function main() returns error? {
     int value = 5;
-    byte[] serializeData = check schema.toAvro(value);
+    byte[] serializedData = check schema.toAvro(value);
 }
 ```
 
@@ -48,7 +48,7 @@ import ballerina/avro;
 
 public function main() returns error? {
     byte[] data = // Avro encoded message ;
-    int deserializeData = check schema.fromAvro(data);
+    int deserializedData = check schema.fromAvro(data);
 }
 ```
 
