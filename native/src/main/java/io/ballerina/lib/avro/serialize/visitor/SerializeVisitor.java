@@ -34,6 +34,7 @@ import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -97,39 +98,32 @@ public class SerializeVisitor implements ISerializeVisitor {
 
     @Override
     public Object visit(PrimitiveSerializer primitiveSerializer, Object data) throws Exception {
-        switch (primitiveSerializer.getSchema().getType()) {
-            case INT -> {
-                return ((Long) data).intValue();
-            }
-            case FLOAT -> {
-                return ((Double) data).floatValue();
-            }
+        return switch (primitiveSerializer.getSchema().getType()) {
+            case INT -> ((Long) data).intValue();
+            case FLOAT -> ((Double) data).floatValue();
             case DOUBLE -> {
-                if (data instanceof Long) {
-                    return ((Long) data).doubleValue();
-                } else {
-                    return data;
+                if (data instanceof Long longValue) {
+                    yield longValue.doubleValue();
+                } else if (data instanceof BDecimal decimalValue) {
+                    yield decimalValue.floatValue();
                 }
+                yield data;
             }
             case BYTES -> {
                 ByteBuffer byteBuffer = ByteBuffer.allocate(((BArray) data).getByteArray().length);
                 byteBuffer.put(((BArray) data).getByteArray());
                 byteBuffer.position(0);
-                return byteBuffer;
+                yield byteBuffer;
             }
-            case STRING -> {
-                return data.toString();
-            }
+            case STRING -> data.toString();
             case NULL -> {
                 if (data != null) {
                     throw new Exception("The value does not match with the null schema");
                 }
-                return null;
+                yield null;
             }
-            default -> {
-                return data;
-            }
-        }
+            default -> data;
+        };
     }
 
     public Map<String, Object> visit(MapSerializer mapSerializer, BMap<?, ?> data) throws Exception {
