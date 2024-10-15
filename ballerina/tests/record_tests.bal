@@ -373,7 +373,7 @@ public isolated function testOptionalMultipleFieldsInRecords() returns error? {
 
 
 @test:Config {
-    groups: ["map", "record"]
+    groups: ["record", "union"]
 }
 public isolated function testTypeCastingInRecords() returns error? {
     string jsonFileName = string `tests/resources/schema_complex.json`;
