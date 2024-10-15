@@ -363,3 +363,4 @@ type FloatArray float[];
 type EnumArray Numbers[];
 type Enum2DArray Numbers[][];
 type ReadOnlyString2DArray string[][] & readonly;
+type DataRecord record{};

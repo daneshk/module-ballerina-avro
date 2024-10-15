@@ -371,7 +371,6 @@ public isolated function testOptionalMultipleFieldsInRecords() returns error? {
     return verifyOperation(Lecturer6, lecturer6, schema);
 }
 
-
 @test:Config {
     groups: ["record", "union"]
 }
@@ -409,7 +408,7 @@ public isolated function testTypeCastingInRecords() returns error? {
     };
     Schema avro = check new (schema);
     byte[] serializedValue = check avro.toAvro(recordValue);
-    var deserializedValue = check avro.fromAvro(serializedValue, Record);
+    Record deserializedValue = check avro.fromAvro(serializedValue);
     
     json expected = {
         "hrdCasinoGgrLt":4999.01,
@@ -443,32 +442,27 @@ public isolated function testTypeCastingInRecords() returns error? {
     test:assertEquals(deserializedValue.toJson(), expected.toJson());
 }
 
-type Record record {
-    decimal? hrdCasinoGgrLt;
-    string? hrdAccountCreationTimestamp;
-    float? hrdSportsBetCountLifetime;
-    float? hrdSportsFreeBetAmountLifetime;
-    string? hriUnityId;
-    string? hrdLastRealMoneySportsbookBetTs;
-    string? hrdLoyaltyTier;
-    string? rowInsertTimestampEst;
-    float? ltvSports365Total;
-    string? hrdFirstDepositTimestamp;
-    boolean? hrdVipStatus;
-    string? hrdLastRealMoneyCasinoWagerTs;
-    float? hrdSportsCashBetAmountLifetime;
-    string? hrdAccountStatus;
-    string? hrdAccountId;
-    float? ltvAllVerticals365Total;
-    boolean? hrdOptInSms;
-    float? ltvCasino365Total;
-    string? hrdAccountSubStatus;
-    float? hrdCasinoTotalWagerLifetime;
-    float? hrdSportsGgrLt;
-    string? currentGeoSegment;
-    string? kycStatus;
-    string? signupGeoSegment;
-    float? hrdSportsBetAmountLifetime;
-    boolean? hrdOptInEmail;
-    boolean? hrdOptInPush;
-};
+@test:Config {
+    groups: ["record", "union"]
+}
+public isolated function testUnionsWithRecords() returns error? {
+    string schema = string `{
+        "type": "record",
+        "name": "DataRecord",
+        "namespace": "data",
+        "fields": [
+            {
+            "name": "shortValue",
+            "type": ["null", "int", "double"]
+            }
+        ]
+    }`;
+    int:Signed16 short = 5555;
+    json value = {
+        "shortValue": short
+    };
+    Schema avro = check new (schema);
+    byte[] serializedValue = check avro.toAvro(value);
+    DataRecord deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(deserializedValue, value);
+}
