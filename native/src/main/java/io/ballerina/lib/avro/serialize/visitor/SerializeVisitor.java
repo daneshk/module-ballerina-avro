@@ -99,8 +99,18 @@ public class SerializeVisitor implements ISerializeVisitor {
     @Override
     public Object visit(PrimitiveSerializer primitiveSerializer, Object data) throws Exception {
         return switch (primitiveSerializer.getSchema().getType()) {
-            case INT -> ((Long) data).intValue();
-            case FLOAT -> ((Double) data).floatValue();
+            case INT -> {
+                if (data instanceof Long longValue) {
+                    yield longValue.intValue();
+                }
+                yield data;
+            }
+            case FLOAT -> {
+                if (data instanceof Double doubleValue) {
+                    yield doubleValue.floatValue();
+                }
+                yield data;
+            }
             case DOUBLE -> {
                 if (data instanceof Long longValue) {
                     yield longValue.doubleValue();
