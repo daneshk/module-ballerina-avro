@@ -289,7 +289,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
 
     private BMap<BString, Object> createAvroRecord(Type type) {
         if (type.getTag() == TypeTags.ANYDATA_TAG) {
-            return ValueCreator.createMapValue(TypeCreator.createMapType(PredefinedTypes.TYPE_ANYDATA));
+            return ValueCreator.createMapValue();
         }
         return ValueCreator.createRecordValue((RecordType) getMutableType(type));
     }
