@@ -27,10 +27,12 @@ import io.ballerina.lib.avro.deserialize.MapDeserializer;
 import io.ballerina.lib.avro.deserialize.PrimitiveDeserializer;
 import io.ballerina.lib.avro.deserialize.RecordDeserializer;
 import io.ballerina.lib.avro.deserialize.UnionDeserializer;
+import io.ballerina.runtime.api.creators.TypeCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Field;
 import io.ballerina.runtime.api.types.MapType;
+import io.ballerina.runtime.api.types.PredefinedTypes;
 import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.types.ReferenceType;
 import io.ballerina.runtime.api.types.Type;
@@ -287,7 +289,7 @@ public class DeserializeVisitor implements IDeserializeVisitor {
 
     private BMap<BString, Object> createAvroRecord(Type type) {
         if (type.getTag() == TypeTags.ANYDATA_TAG) {
-            return ValueCreator.createMapValue();
+            return ValueCreator.createMapValue(TypeCreator.createMapType(PredefinedTypes.TYPE_ANYDATA));
         }
         return ValueCreator.createRecordValue((RecordType) getMutableType(type));
     }
