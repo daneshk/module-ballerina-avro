@@ -79,10 +79,7 @@ spotbugsTest {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId "io.ballerina.lib"
-            artifactId "avro-native"
-            version = project.version
-            artifact jar
+            artifact source: createArtifactZip, extension: 'zip'
         }
     }
 
