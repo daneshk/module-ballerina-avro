@@ -76,23 +76,4 @@ spotbugsTest {
     enabled = false
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact source: createArtifactZip, extension: 'zip'
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ballerina-platform/avro")
-            credentials {
-                username = System.getenv("packageUser")
-                password = System.getenv("packagePAT")
-            }
-        }
-    }
-}
-
 publish.dependsOn build
