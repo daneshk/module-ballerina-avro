@@ -83,7 +83,8 @@ public class DeserializeVisitor implements IDeserializeVisitor {
         Type originalType = recordDeserializer.getType();
         Type type = recordDeserializer.getType();
         Schema schema = recordDeserializer.getSchema();
-        BMap<BString, Object> avroRecord = createAvroRecord(type);
+        BMap<BString, Object> avroRecord = (type.getTag() == TypeTags.ANYDATA_TAG)
+                ? ValueCreator.createMapValue() : createAvroRecord(type);
         for (Schema.Field field : schema.getFields()) {
             Object fieldData = rec.get(field.name());
             switch (field.schema().getType()) {
@@ -112,6 +113,9 @@ public class DeserializeVisitor implements IDeserializeVisitor {
 
         if (originalType.isReadOnly()) {
             avroRecord.freezeDirect();
+        }
+        if (type.getTag() == TypeTags.ANYDATA_TAG) {
+            return (BMap<BString, Object>) ValueUtils.convert(avroRecord, type);
         }
         return avroRecord;
     }
