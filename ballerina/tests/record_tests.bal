@@ -42,6 +42,30 @@ public isolated function testRecords() returns error? {
 @test:Config {
     groups: ["record"]
 }
+public isolated function testRecordsWithAnydataType() returns error? {
+    string schema = string `
+        {
+            "namespace": "example.avro",
+            "type": "record",
+            "name": "Student",
+            "fields": [
+                {"name": "name", "type": "string"},
+                {"name": "subject", "type": "string"}
+            ]
+        }`;
+
+    Student student = {
+        name: "Liam",
+        subject: "geology"
+    };
+    Schema avro = check new (schema);
+    byte[] serializedValue = check avro.toAvro(student);
+    anydata deserializedValue = check avro.fromAvro(serializedValue);
+    test:assertEquals(deserializedValue.cloneWithType(Student), student);
+}
+@test:Config {
+    groups: ["record"]
+}
 public isolated function testRecordsWithDifferentTypeOfFields() returns error? {
     string schema = string `
         {
